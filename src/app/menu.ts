@@ -43,6 +43,6 @@ export const menu: IMenu = {
             href: '/unidades',
             name: 'unidades',
             icon: Business,
-        }           
+        }      
     ]
 }

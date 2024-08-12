@@ -1,13 +1,15 @@
 import { useContext, useEffect, useState } from 'react';
-import { Link, ListItemButton, ListItemDecorator, ListItemContent, ListItem, List, Sheet, Box, SvgIcon, ListDivider } from '@mui/joy';
+import { Link, ListItemButton, ListItemDecorator, ListItemContent, ListItem, List, Sheet, Box, SvgIcon, ListDivider, Button } from '@mui/joy';
 import { IMenu, menu } from '../app/menu';
 import { MenuContext } from '@/shared/contexts/MenuContext';
 import Usuario from './Usuario';
 import { ListSubheader } from '@mui/material';
 import * as usuarioServices from '@/shared/services/usuario.services';
 import { IUsuario } from '@/shared/services/usuario.services';
+import { useRouter } from 'next/navigation';
 
 const RenderMenu = (menu: IMenu, pagina?: string) => {
+
   const [permissao, setPermissao] = useState('USR');
   useEffect(() => {
     usuarioServices.validaUsuario()
@@ -72,6 +74,7 @@ export default function SecondSidebar({
   menuOverride?: IMenu;
 }) {
   const { closeSidebar } = useContext(MenuContext);
+  const router = useRouter();
   return (
     <>
       <Box
@@ -119,6 +122,7 @@ export default function SecondSidebar({
           maxWidth: 250,
         }}
       > 
+        <Button color='primary' variant='solid' onClick={() => {router.push('/auxiliar')}}>Novo Chamado</Button>
         <Box
           sx={{
             flex: 1,
