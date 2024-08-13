@@ -49,7 +49,7 @@ export default function Msg(props: msg) {
                     borderRadius: 15, 
                     borderTopLeftRadius: props.index ? 0 : 15,
                     borderTopRightRadius: !props.index ? 0 : 15}}
-                    color={!props.index ? 'primary' : 'neutral'}
+                    color={!props.index ? 'primary' : 'success'}
                     variant="solid"
                     >
                     {props.text}
