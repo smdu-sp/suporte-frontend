@@ -98,8 +98,8 @@ export default function Auxiliar() {
             titulo='Auxiliar'
             pagina='auxiliar'
         >
-            <Sheet sx={{ width: '100%', height: '900px', bgcolor: 'primary.solidDisabledColor', borderRadius: '10px' }}>
-                <Box sx={{ display: 'flex', px: 4, bgcolor: 'neutral.softActiveBg', alignItems: 'center', height: '8%', borderBottom: '1px solid', borderTopLeftRadius: '10px', borderTopRightRadius: '10px' }}>
+            <Sheet sx={{ width: '100%', height: '900px', borderRadius: '10px', marginTop: 2 }} variant="outlined">
+                <Sheet sx={{ display: 'flex', px: 4, alignItems: 'center', height: '8%', borderTopLeftRadius: '10px', borderTopRightRadius: '10px' }} variant="soft">
                     <Avatar sx={{ mr: 2 }}>
                         <Image
                             src={Logo}
@@ -117,7 +117,7 @@ export default function Auxiliar() {
                     >
                         Online
                     </Chip>
-                </Box>
+                </Sheet>
                 <Box sx={{ p: 2, height: '72%', overflow: 'auto' }}>
                     {mensagem && mensagem.length > 0 ? mensagem.map((mensagem) => (
                         <Msg
@@ -148,16 +148,18 @@ export default function Auxiliar() {
                                 }}
                             />
                         </Box>
-                        <Box sx={{
-                            bgcolor: 'white',
-                            height: '60px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            p: 1,
-                            borderBottomLeftRadius: 10,
-                            borderBottomRightRadius: 10,
-                        }}>
+                        <Sheet 
+                            sx={{
+                                height: '60px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                p: 1,
+                                borderBottomLeftRadius: 10,
+                                borderBottomRightRadius: 10,
+                            }}
+                            variant="soft"
+                        >
                             <Box sx={{ display: 'flex', gap: 2 }}>
                                 {tipos && tipos.length > 0 && status === 0 ? tipos.map((tipos) => (
                                     <Button
@@ -205,7 +207,7 @@ export default function Auxiliar() {
                                     Enviar
                                 </Button>
                             </Box>
-                        </Box>
+                        </Sheet>
                     </Box>
                 </Box>
             </Sheet>
