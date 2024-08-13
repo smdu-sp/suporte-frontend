@@ -7,6 +7,7 @@ import { ListSubheader } from '@mui/material';
 import * as usuarioServices from '@/shared/services/usuario.services';
 import { IUsuario } from '@/shared/services/usuario.services';
 import { useRouter } from 'next/navigation';
+import AddIcon from '@mui/icons-material/Add';
 
 const RenderMenu = (menu: IMenu, pagina?: string) => {
 
@@ -122,7 +123,7 @@ export default function SecondSidebar({
           maxWidth: 250,
         }}
       > 
-        <Button color='primary' variant='solid' onClick={() => {router.push('/auxiliar')}}>Novo Chamado</Button>
+        <Button startDecorator={<AddIcon/>} color='primary' variant='solid' onClick={() => {router.push('/auxiliar')}}>Novo Chamado</Button>
         <Box
           sx={{
             flex: 1,
