@@ -22,7 +22,7 @@ export default function Auxiliar() {
     const [mensagem, setMensagem] = useState<IMensagem[]>([])
     const [status, setStatus] = useState(0)
     const [nome, setNome] = useState('');
-    const [textaa, setTextaa] = useState('');
+    const [textCampo, setTextCampo] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -135,14 +135,15 @@ export default function Auxiliar() {
                                 disabled={status !== 1}
                                 sx={{ width: '100%', height: '90px', borderRadius: '0px', borderTopLeftRadius: 10, borderTopRightRadius: 10, fontSize: 20 }}
                                 placeholder={status !== 1 ? 'Escolha uma das categorias abaixo...' : 'Digite aqui...'}
-                                onChange={(e) => setTexto(e.target.value)}
-                                value={status !== 1 ? 'Escolha uma das categorias abaixo...' : texto}
+                                onChange={(e) => setTextCampo(e.target.value)}
+                                value={textCampo}
                                 onKeyDown={(event) => {
                                     if (event.key === 'Enter') {
-                                        setStatus(2); 
-                                        setUser(nome); 
+                                        setStatus(2);
+                                        setUser(nome);
                                         setIndex(false);
-                                        setTexto('')
+                                        setTexto(textCampo)
+                                        setTextCampo('')
                                     }
                                 }}
                             />
@@ -192,7 +193,13 @@ export default function Auxiliar() {
                             <Box>
                                 <Button
                                     color="primary"
-                                    onClick={() => { setStatus(2); setUser(nome); setIndex(false) }}
+                                    onClick={() => {
+                                        setStatus(2);
+                                        setUser(nome);
+                                        setIndex(false);
+                                        setTexto(textCampo);
+                                        setTextCampo('');
+                                    }}
                                     endDecorator={<SendIcon />}
                                 >
                                     Enviar
