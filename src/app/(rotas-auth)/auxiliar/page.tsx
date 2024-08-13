@@ -1,12 +1,14 @@
 'use client'
 import Content from "@/components/Content";
-import { Avatar, Box, Button, Card, Chip, Sheet, Typography } from "@mui/joy";
+import { Avatar, Box, Button, Card, Chip, Input, Sheet, Typography } from "@mui/joy";
 import CircleIcon from '@mui/icons-material/Circle';
 import Logo from '@/assets/sis-icon.png'
 import Msg from "@/components/Menssagem";
 import Image from "next/image";
 import react, { useEffect, useState } from 'react'
 import { useRouter } from "next/navigation";
+import * as usuarioServices from "@/shared/services/usuario.services";
+import { IUsuario } from "@/shared/services/usuario.services";
 
 export default function Auxiliar() {
     interface IMensagem {
@@ -18,6 +20,21 @@ export default function Auxiliar() {
     const [index, setIndex] = useState<boolean>(true)
     const [mensagem, setMensagem] = useState<IMensagem[]>([])
     const [status, setStatus] = useState(0)
+    const [nome, setNome] = useState('');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await usuarioServices.validaUsuario()
+                .then((response: IUsuario) => {
+                    setNome(
+                        response.nome.split(' ')[0] + ' ' +
+                        response.nome.split(' ')[
+                        response.nome.split(' ').length - 1
+                        ]);
+                });
+        };
+        fetchData();
+    }, []);
 
     const router = useRouter()
 
@@ -27,16 +44,14 @@ export default function Auxiliar() {
             user: user,
             index: index
         }
+        setUser('Suporte')
+        setIndex(true)
         setMensagem([...mensagem, newMessage])
         if (status === 1) {
             setTexto(text[1].text)
-            setUser('Suporte')
-            setIndex(true)
             setMensagem([...mensagem, newMessage])
         } else if (status === 2) {
             setTexto(text[2].text)
-            setUser('Suporte')
-            setIndex(true)
             setMensagem([...mensagem, newMessage])
             setTimeout(() => {
                 router.push('/chamados/detalhes')
@@ -46,7 +61,7 @@ export default function Auxiliar() {
 
     const text = [
         { 'text': 'Olá, com qual tipo de problema posso te ajudar?' },
-        { 'text': 'Certo, Quão urgente é esta solicitação?' },
+        { 'text': 'Poderia descrever com poucas paralavras o que aconteceu?' },
         { 'text': 'Ok, estou te encaminhando para o sistema correspondente... ' }
     ]
 
@@ -61,25 +76,25 @@ export default function Auxiliar() {
     ]
 
     const prioridade = [
-        { 'name': 'Baixa'},
-        { 'name': 'Média'},
-        { 'name': 'Alta'}
+        { 'name': 'Baixa' },
+        { 'name': 'Média' },
+        { 'name': 'Alta' }
     ]
 
     useEffect(() => {
         newMensagem()
-    }, [texto, user, index])
+    }, [user, index])
 
     return (
         <Content
             breadcrumbs={[
                 { label: 'Auxiliar', href: '/auxiliar' }
             ]}
-            titulo=''
+            titulo='Auxiliar'
             pagina='auxiliar'
         >
-            <Sheet sx={{ width: '100%', height: '80vh', bgcolor: 'neutral.100' }}>
-                <Box sx={{ display: 'flex', px: 4, bgcolor: 'neutral.50', alignItems: 'center', height: '8%' }}>
+            <Sheet sx={{ width: '100%', height: '80vh', bgcolor: 'primary.solidDisabledColor' }}>
+                <Box sx={{ display: 'flex', px: 4, bgcolor: 'neutral.softActiveBg', alignItems: 'center', height: '8%', borderBottom: '1px solid' }}>
                     <Avatar sx={{ mr: 2 }}>
                         <Image
                             src={Logo}
@@ -98,7 +113,7 @@ export default function Auxiliar() {
                         Online
                     </Chip>
                 </Box>
-                <Box sx={{ p: 2, height: '87%' }}>
+                <Box sx={{ p: 2, height: '87%', overflow: 'auto' }}>
                     {mensagem && mensagem.length > 0 ? mensagem.map((mensagem) => (
                         <Msg
                             key={mensagem.text}
@@ -114,27 +129,47 @@ export default function Auxiliar() {
                             key={tipos.name}
                             onClick={() => {
                                 setTexto(tipos.name);
-                                setUser('Gustavo');
+                                setUser(nome);
                                 setIndex(false);
                                 setStatus(1)
                             }}
                         >
                             {tipos.name}
                         </Button>
-                    )) :
-                        prioridade.length > 0 ? prioridade.map((prioridades) => (
-                            <Button sx={{ minWidth: '130px' }}
-                                key={prioridades.name}
-                                onClick={() => {
-                                    setTexto(prioridades.name);
-                                    setUser('Gustavo');
-                                    setIndex(false);
-                                    setStatus(2)
-                                }}
+                    )) : status === 1 ?
+                        <Box sx={{ width: '100%', px: 3, display: 'flex', gap: 1, mb: 1 }}>
+                            <Input 
+                            sx={{ width: '100%' }} 
+                            placeholder="Digite aqui..."
+                            onChange={(e) => setTexto(e.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    setStatus(2); setUser(nome); setIndex(false)
+                                }
+                              }}
+                            />
+                            <Button
+                                sx={{ minWidth: '130px' }}
+                                color="primary"
+                                onClick={() => { setStatus(2); setUser(nome); setIndex(false)  }}
                             >
-                                {prioridades.name}
+                                Enviar
                             </Button>
-                        )) : null
+                        </Box>
+                        : status === 2 &&
+                            prioridade.length > 0 ? prioridade.map((prioridades) => (
+                                <Button sx={{ minWidth: '130px' }}
+                                    key={prioridades.name}
+                                    onClick={() => {
+                                        setTexto(prioridades.name);
+                                        setUser(nome);
+                                        setIndex(false);
+                                        setStatus(3)
+                                    }}
+                                >
+                                    {prioridades.name}
+                                </Button>
+                            )) : null
                     }
                 </Box>
             </Sheet>
