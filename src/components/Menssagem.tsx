@@ -20,16 +20,11 @@ export default function Msg(props: msg) {
                 props.index &&
                 <Box sx={{ mr: 2 }}>
                     <Avatar>
-                        {
-                            props.index ?
-                                <Image
-                                    src={Img}
-                                    alt="Prefeitura"
-                                    width={30}
-                                />
-                                :
-                                null
-                        }
+                        <Image
+                            src={Img}
+                            alt="Prefeitura"
+                            width={30}
+                        />
                     </Avatar>
                 </Box>
             }
@@ -43,33 +38,23 @@ export default function Msg(props: msg) {
                 <Typography fontSize={14}>
                     {props.user}
                 </Typography>
-                <Card sx={{ 
-                    maxWidth: 400, 
-                    border: 'none', 
-                    borderRadius: 15, 
+                <Card sx={{
+                    maxWidth: 400,
+                    border: 'none',
+                    borderRadius: 15,
                     borderTopLeftRadius: props.index ? 0 : 15,
-                    borderTopRightRadius: !props.index ? 0 : 15}}
+                    borderTopRightRadius: !props.index ? 0 : 15
+                }}
                     color={!props.index ? 'primary' : 'success'}
                     variant="solid"
-                    >
+                >
                     {props.text}
                 </Card>
             </Box>
             {
                 !props.index &&
-                <Box sx={{ ml: 2, display: 'flex', alignItems: 'start'}}>
-                    <Avatar>
-                        {
-                            props.index ?
-                                <Image
-                                    src={Img}
-                                    alt="Prefeitura"
-                                    width={30}
-                                />
-                                :
-                                null
-                        }
-                    </Avatar>
+                <Box sx={{ ml: 2, display: 'flex', alignItems: 'start' }}>
+                    <Avatar></Avatar>
                 </Box>
             }
         </Box>

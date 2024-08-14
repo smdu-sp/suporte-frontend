@@ -10,7 +10,13 @@ import { useRouter } from "next/navigation";
 import * as usuarioServices from "@/shared/services/usuario.services";
 import { IUsuario } from "@/shared/services/usuario.services";
 import SendIcon from '@mui/icons-material/Send';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { IPaginadoTipo, ITipo } from '@/shared/services/tipo.services';
+import * as tipoServices from '@/shared/services/tipo.services';
+import * as categoriaServices from '@/shared/services/categoria.services';
+import { ICategoria } from '@/shared/services/categoria.services';
+import * as subcategoriasServices from '@/shared/services/subcategorias.servise';
+import { ISubCategoria } from '@/shared/services/subcategorias.servise';
+
 export default function Auxiliar() {
     interface IMensagem {
         text: string,
@@ -24,6 +30,9 @@ export default function Auxiliar() {
     const [nome, setNome] = useState('');
     const [textCampo, setTextCampo] = useState('');
     const [idCategoria, setIdCategoria] = useState(0);
+    const [tipos, setTipos] = useState<ITipo[]>([]);
+    const [categoria, setCategoria] = useState<ICategoria[]>([]);
+    const [subCategoria, setSubCategoria] = useState<ISubCategoria[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -37,6 +46,10 @@ export default function Auxiliar() {
                 });
         };
         fetchData();
+        tipoServices.buscarTudo()
+            .then((response: IPaginadoTipo) => {
+                setTipos(response.data);
+            })
     }, []);
 
     const router = useRouter()
@@ -59,37 +72,41 @@ export default function Auxiliar() {
         } else if (status === 3) {
             setTexto(text[3].text)
             setMensagem([...mensagem, newMessage])
+        } else if (status === 4) {
+            setTexto(text[4].text)
+            setMensagem([...mensagem, newMessage])
             setTimeout(() => {
-                router.push(`/chamados/detalhes?tipo=${idCategoria}`)
+                router.push(`/chamados/detalhes?tipo=`)
             }, 3000)
-        }
+        } 
+    }
+
+    const buscarCategoria = (id: string) => {
+        categoriaServices.buscar_por_tipo(id)
+            .then((response) => {
+                setCategoria(response);
+                console.log(response);
+            })
+    }
+
+
+    const buscarSubCategoria = (id: string) => {
+        subcategoriasServices.buscar_por_categoria(id)
+            .then((response) => {
+                setSubCategoria(response);
+                console.log(response);
+            })
     }
 
     const text = [
-        { 'text': 'Olá, com qual tipo de problema posso te ajudar?' },
+        { 'text': 'Olá, Como posso te ajudar?' },
+        { 'text': 'Certo, qual o problema?' },
+        { 'text': 'O que em especifico esta acontecendo?' },
         { 'text': 'Poderia descrever com poucas paralavras o que aconteceu?' },
-        { 'text': 'Qual o nivel de prioridade?' },
         { 'text': 'Ok, estou te encaminhando para o sistema correspondente... ' }
     ]
 
     const [texto, setTexto] = useState<string>(text[0].text)
-
-    const tipos = [
-        {
-            'id': 1,
-            'name': 'GLPI'
-        },
-        {
-            'id': 2,
-            'name': 'DSUP'
-        },
-    ]
-
-    const prioridade = [
-        { 'name': 'Baixa' },
-        { 'name': 'Média' },
-        { 'name': 'Alta' }
-    ]
 
     useEffect(() => {
         newMensagem()
@@ -137,13 +154,13 @@ export default function Auxiliar() {
                     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', px: 3 }}>
                         <Box sx={{}}>
                             <Textarea
-                                disabled={status !== 1}
+                                disabled={status !== 3}
                                 sx={{ width: '100%', height: '90px', borderRadius: '0px', borderTopLeftRadius: 10, borderTopRightRadius: 10, fontSize: 20 }}
-                                placeholder={status !== 1 ? 'Escolha uma das categorias abaixo...' : 'Digite aqui...'}
+                                placeholder={status !== 3 ? 'Escolha uma das categorias abaixo...' : 'Digite aqui...'}
                                 onChange={(e) => setTextCampo(e.target.value)}
                                 value={textCampo}
                                 onKeyDown={(event) => {
-                                    if (event.key === 'Enter' && status === 1) {
+                                    if (event.key === 'Enter' && status === 3 && textCampo !== '') {
                                         setStatus(2);
                                         setUser(nome);
                                         setIndex(false);
@@ -166,47 +183,69 @@ export default function Auxiliar() {
                             variant="soft"
                         >
                             <Box sx={{ display: 'flex', gap: 2 }}>
-                                {tipos && tipos.length > 0 && status === 0 ? tipos.map((tipos) => (
-                                    <Button
-                                        sx={{ minWidth: '130px' }}
-                                        key={tipos.name}
-                                        onClick={() => {
-                                            setTexto(tipos.name);
-                                            setUser(nome);
-                                            setIndex(false);
-                                            setIdCategoria(tipos.id);
-                                            setStatus(1)
-                                        }}
-                                    >
-                                        {tipos.name}
-                                    </Button>
-                                )) : status === 2 &&
-                                    prioridade.length > 0 ? prioridade.map((prioridades) => (
-                                        <Button sx={{ minWidth: '130px' }}
-                                            key={prioridades.name}
+                                {status === 0 ?
+                                    tipos && tipos.length > 0 && status === 0 ? tipos.map((tipos) => (
+                                        <Button
+                                            sx={{ minWidth: '130px' }}
+                                            key={tipos.id}
                                             onClick={() => {
-                                                setTexto(prioridades.name);
+                                                setTexto(tipos.nome);
                                                 setUser(nome);
                                                 setIndex(false);
-                                                setStatus(3)
+                                                setStatus(1)
+                                                buscarCategoria(tipos.id)
                                             }}
                                         >
-                                            {prioridades.name}
+                                            {tipos.nome}
                                         </Button>
-                                    )) : null
+                                    )) : ''
+                                    : null}
+                                {
+                                    status === 1 ?
+                                        categoria && categoria.length > 0 ? categoria.map((categoria) => (
+                                            <Button sx={{ minWidth: '130px' }}
+                                                key={categoria.id}
+                                                onClick={() => {
+                                                    setTexto(categoria.nome);
+                                                    setUser(nome);
+                                                    setIndex(false);
+                                                    setStatus(2)
+                                                    buscarSubCategoria(categoria.id)
+                                                }}
+                                            >
+                                                {categoria.nome}
+                                            </Button>
+                                        )) : ''
+                                        : null}
+                                {
+                                    status === 2 &&
+                                        subCategoria && subCategoria.length > 0 ? subCategoria.map((subCategoria) => (
+                                            <Button sx={{ minWidth: '130px' }}
+                                                key={subCategoria.id}
+                                                onClick={() => {
+                                                    setTexto(subCategoria.nome);
+                                                    setUser(nome);
+                                                    setIndex(false);
+                                                    setStatus(3)
+                                                    buscarSubCategoria(subCategoria.id)
+                                                }}
+                                            >
+                                                {subCategoria.nome}
+                                            </Button>
+                                        )) : null
                                 }
                             </Box>
                             <Box>
                                 <Button
                                     color="primary"
                                     onClick={() => {
-                                        setStatus(2);
+                                        setStatus(4);
                                         setUser(nome);
                                         setIndex(false);
                                         setTexto(textCampo);
                                         setTextCampo('');
                                     }}
-                                    disabled={status !== 1}
+                                    disabled={status !== 3 || textCampo === ''}
                                     endDecorator={<SendIcon />}
                                 >
                                     Enviar
