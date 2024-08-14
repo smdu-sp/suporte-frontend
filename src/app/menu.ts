@@ -43,6 +43,12 @@ export const menu: IMenu = {
             href: '/unidades',
             name: 'unidades',
             icon: Business,
+        }  ,
+        {
+            title: 'Tipos',
+            href: '/tipos',
+            name: 'tipos',
+            icon: Business,
         }      
     ]
 }
