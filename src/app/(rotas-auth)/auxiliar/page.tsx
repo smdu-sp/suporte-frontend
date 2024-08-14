@@ -23,6 +23,7 @@ export default function Auxiliar() {
     const [status, setStatus] = useState(0)
     const [nome, setNome] = useState('');
     const [textCampo, setTextCampo] = useState('');
+    const [idCategoria, setIdCategoria] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,7 +60,7 @@ export default function Auxiliar() {
             setTexto(text[3].text)
             setMensagem([...mensagem, newMessage])
             setTimeout(() => {
-                router.push('/chamados/detalhes')
+                router.push(`/chamados/detalhes?tipo=${idCategoria}`)
             }, 3000)
         }
     }
@@ -74,10 +75,14 @@ export default function Auxiliar() {
     const [texto, setTexto] = useState<string>(text[0].text)
 
     const tipos = [
-        { 'name': 'Computador' },
-        { 'name': 'Internet' },
-        { 'name': 'Impressora' },
-        { 'name': 'Monitor' }
+        {
+            'id': 1,
+            'name': 'GLPI'
+        },
+        {
+            'id': 2,
+            'name': 'DSUP'
+        },
     ]
 
     const prioridade = [
@@ -118,7 +123,7 @@ export default function Auxiliar() {
                         Online
                     </Chip>
                 </Sheet>
-                <Box sx={{ p: 2, height: '72%', overflow: 'auto' }}>
+                <Box sx={{ p: 2, height: '72%', overflow: 'auto', '&::-webkit-scrollbar': { width: '5px' } }}>
                     {mensagem && mensagem.length > 0 ? mensagem.map((mensagem) => (
                         <Msg
                             key={mensagem.text}
@@ -138,7 +143,7 @@ export default function Auxiliar() {
                                 onChange={(e) => setTextCampo(e.target.value)}
                                 value={textCampo}
                                 onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
+                                    if (event.key === 'Enter' && status === 1) {
                                         setStatus(2);
                                         setUser(nome);
                                         setIndex(false);
@@ -148,7 +153,7 @@ export default function Auxiliar() {
                                 }}
                             />
                         </Box>
-                        <Sheet 
+                        <Sheet
                             sx={{
                                 height: '60px',
                                 display: 'flex',
@@ -163,14 +168,13 @@ export default function Auxiliar() {
                             <Box sx={{ display: 'flex', gap: 2 }}>
                                 {tipos && tipos.length > 0 && status === 0 ? tipos.map((tipos) => (
                                     <Button
-                                        sx={{ minWidth: '130px', border: '1px solid green' }}
-                                        variant="soft"
-                                        color="success"
+                                        sx={{ minWidth: '130px' }}
                                         key={tipos.name}
                                         onClick={() => {
                                             setTexto(tipos.name);
                                             setUser(nome);
                                             setIndex(false);
+                                            setIdCategoria(tipos.id);
                                             setStatus(1)
                                         }}
                                     >
@@ -202,6 +206,7 @@ export default function Auxiliar() {
                                         setTexto(textCampo);
                                         setTextCampo('');
                                     }}
+                                    disabled={status !== 1}
                                     endDecorator={<SendIcon />}
                                 >
                                     Enviar

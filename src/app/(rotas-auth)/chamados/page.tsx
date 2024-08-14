@@ -17,7 +17,7 @@ import * as servicoServices from '@/shared/services/servico.services';
 import { IUsuario } from '@/shared/services/usuario.services';
 import { IServico } from '@/shared/services/servico.services';
 
-export default function Chamados(){
+export default function Chamados() {
   return (
     <Suspense>
       <SearchChamados />
@@ -56,13 +56,13 @@ function SearchChamados() {
     color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides>
   } = {
     aberto: false,
-    confirmaOperacao: () => {},
+    confirmaOperacao: () => { },
     titulo: '',
     pergunta: '',
     color: 'primary'
   }
 
-  const tipos: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[]  = [
+  const tipos: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[] = [
     { label: '', color: 'neutral' },
     { label: 'Elétrica', color: 'primary' },
     { label: 'Hidráulica', color: 'warning' },
@@ -70,7 +70,7 @@ function SearchChamados() {
     { label: 'Outros', color: 'neutral' },
   ]
 
-  const prioridades: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[]  = [
+  const prioridades: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[] = [
     { label: '', color: 'neutral' },
     { label: 'Baixa', color: 'neutral' },
     { label: 'Média', color: 'success' },
@@ -78,7 +78,7 @@ function SearchChamados() {
     { label: 'Urgente', color: 'danger' },
   ]
 
-  const statusChip: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[]  = [
+  const statusChip: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[] = [
     { label: '', color: 'neutral' },
     { label: 'Aberto', color: 'neutral' },
     { label: 'Em andamento', color: 'primary' },
@@ -99,20 +99,20 @@ function SearchChamados() {
       router.push(pathname);
     }
     unidadeServices.listaCompleta()
-        .then((response: IUnidade[]) => {
-            setUnidades(response);
-        })
+      .then((response: IUnidade[]) => {
+        setUnidades(response);
+      })
     usuarioServices.listaCompleta()
-        .then((response: IUsuario[]) => {
-          if (response && response.length > 0){
-            setUsuarios(response);
-            setTecnicos(response.filter((usuario: IUsuario) => usuario.permissao === 'TEC'));
-          }
-        })
+      .then((response: IUsuario[]) => {
+        if (response && response.length > 0) {
+          setUsuarios(response);
+          setTecnicos(response.filter((usuario: IUsuario) => usuario.permissao === 'TEC'));
+        }
+      })
     usuarioServices.validaUsuario()
-        .then((response: IUsuario) => {
-            setLogado(response);
-        })
+      .then((response: IUsuario) => {
+        setLogado(response);
+      })
   }
 
   useEffect(() => {
@@ -124,8 +124,8 @@ function SearchChamados() {
 
   useEffect(() => {
     buscaOrdens();
-  }, [ status, pagina, limite, unidade_id, solicitante_id, tipo ]);
-  
+  }, [status, pagina, limite, unidade_id, solicitante_id, tipo]);
+
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -162,12 +162,12 @@ function SearchChamados() {
   };
 
   function abreviaNome(nome: string): string {
-      const removeSecretaria = nome.split(' - ')[0];
-      const nomes = removeSecretaria.split(' ');
-      return nomes[0] + ' ' + nomes[nomes.length - 1];
+    const removeSecretaria = nome.split(' - ')[0];
+    const nomes = removeSecretaria.split(' ');
+    return nomes[0] + ' ' + nomes[nomes.length - 1];
   }
 
-  function atribuirChamado(){
+  function atribuirChamado() {
     servicoServices.criar({ ordem_id, prioridade, tecnico_id }).then((response: IServico) => {
       if (response.id) {
         setAlert('Chamado atribuído!', 'Chamado atribuído com sucesso!', 'success', 3000, Check);
@@ -195,32 +195,32 @@ function SearchChamados() {
       setPrioridade(1);
       setOrdem_id('');
     }}>
-        <ModalDialog>
-            <DialogTitle>Iniciar chamado</DialogTitle>
-            <Stack spacing={2}>
-                {['DEV', 'ADM'].includes(logado?.permissao || '') ? (
-                <FormControl>
-                    <FormLabel>Técnico</FormLabel>
-                    <Select value={tecnico_id} onChange={(_, value) => setTecnico_id(value || '')}>
-                      {tecnicos.map((tecnico) => (
-                        <Option key={tecnico.id} value={tecnico.id}>{tecnico.nome}</Option>
-                      ))}
-                    </Select>
-                </FormControl>) : null}
-                <FormControl>
-                    <FormLabel>Prioridade</FormLabel>
-                    <Select value={prioridade} onChange={(_, value) => setPrioridade(Number(value))}>
-                        <Option value={1}>Baixa</Option>
-                        <Option value={2}>Media</Option>
-                        <Option value={3}>Alta</Option>
-                        <Option value={4}>Urgente</Option>
-                    </Select>
-                </FormControl>
-                <Button color="success" onClick={() => atribuirChamado()}>
-                  {['DEV', 'ADM'].includes(logado?.permissao || '') ? 'Atribuir' : 'Assumir'} chamado
-                </Button>
-            </Stack>
-        </ModalDialog>
+      <ModalDialog>
+        <DialogTitle>Iniciar chamado</DialogTitle>
+        <Stack spacing={2}>
+          {['DEV', 'ADM'].includes(logado?.permissao || '') ? (
+            <FormControl>
+              <FormLabel>Técnico</FormLabel>
+              <Select value={tecnico_id} onChange={(_, value) => setTecnico_id(value || '')}>
+                {tecnicos.map((tecnico) => (
+                  <Option key={tecnico.id} value={tecnico.id}>{tecnico.nome}</Option>
+                ))}
+              </Select>
+            </FormControl>) : null}
+          <FormControl>
+            <FormLabel>Prioridade</FormLabel>
+            <Select value={prioridade} onChange={(_, value) => setPrioridade(Number(value))}>
+              <Option value={1}>Baixa</Option>
+              <Option value={2}>Media</Option>
+              <Option value={3}>Alta</Option>
+              <Option value={4}>Urgente</Option>
+            </Select>
+          </FormControl>
+          <Button color="success" onClick={() => atribuirChamado()}>
+            {['DEV', 'ADM'].includes(logado?.permissao || '') ? 'Atribuir' : 'Assumir'} chamado
+          </Button>
+        </Stack>
+      </ModalDialog>
     </Modal>
     <Content
       breadcrumbs={[
@@ -228,11 +228,6 @@ function SearchChamados() {
       ]}
       titulo='Chamados'
       pagina='chamados'
-      button={
-        <Button onClick={() => router.push('/chamados/detalhes/')} color='primary' size='lg'>
-          Novo Chamado
-        </Button>
-      }
     >
       <Snackbar
         variant="solid"
@@ -295,27 +290,27 @@ function SearchChamados() {
           </Select>
         </FormControl>
         <FormControl>
-            <FormLabel>Tipo</FormLabel>
-            <Select
-                size="sm"
-                value={tipo}
-                onChange={(_, newValue) => {
-                  router.push(pathname + '?' + createQueryString('tipo', String(newValue || newValue === 0 ? newValue : 1)));
-                  setTipo(newValue || newValue === 0 ? newValue : 1);
-                }}
-                placeholder="Tipo de chamado"
-            >
-                <Option value={0}>Todos</Option>
-                <Option value={1}>Elétrica</Option>
-                <Option value={2}>Hidráulica</Option>
-                <Option value={3}>Telefonia</Option>
-                <Option value={4}>Outros</Option>
-            </Select>
+          <FormLabel>Tipo</FormLabel>
+          <Select
+            size="sm"
+            value={tipo}
+            onChange={(_, newValue) => {
+              router.push(pathname + '?' + createQueryString('tipo', String(newValue || newValue === 0 ? newValue : 1)));
+              setTipo(newValue || newValue === 0 ? newValue : 1);
+            }}
+            placeholder="Tipo de chamado"
+          >
+            <Option value={0}>Todos</Option>
+            <Option value={1}>Elétrica</Option>
+            <Option value={2}>Hidráulica</Option>
+            <Option value={3}>Telefonia</Option>
+            <Option value={4}>Outros</Option>
+          </Select>
         </FormControl>
         {!logado || logado?.permissao === 'USR' ? null : (<>
           <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Unidade: </FormLabel>
-          <Autocomplete
+            <FormLabel>Unidade: </FormLabel>
+            <Autocomplete
               options={unidades}
               getOptionLabel={(option) => option && option.sigla}
               renderOption={(props, option) => (
@@ -330,18 +325,18 @@ function SearchChamados() {
                 setUnidade_id(value ? value.id : '');
               }}
               filterOptions={(options, { inputValue }) => {
-                  if (unidades) return (options as IUnidade[]).filter((option) => (
-                      (option).nome.toLowerCase().includes(inputValue.toLowerCase()) || 
-                      (option).sigla.toLowerCase().includes(inputValue.toLowerCase())
-                  ));
-                  return [];
+                if (unidades) return (options as IUnidade[]).filter((option) => (
+                  (option).nome.toLowerCase().includes(inputValue.toLowerCase()) ||
+                  (option).sigla.toLowerCase().includes(inputValue.toLowerCase())
+                ));
+                return [];
               }}
               noOptionsText="Nenhuma unidade encontrada"
-          />
-        </FormControl>
-        <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Solicitante: </FormLabel>
-          <Autocomplete
+            />
+          </FormControl>
+          <FormControl sx={{ flex: 1 }} size="sm">
+            <FormLabel>Solicitante: </FormLabel>
+            <Autocomplete
               options={usuarios}
               getOptionLabel={(option) => option && option.nome}
               renderOption={(props, option) => (
@@ -353,19 +348,19 @@ function SearchChamados() {
               value={solicitante_id && solicitante_id !== '' ? usuarios.find((usuario: IUsuario) => usuario.id === solicitante_id) : null}
               onChange={(_, value) => {
                 router.push(pathname + '?' + createQueryString('solicitante_id', value ? value.id : ''));
-                setSolicitante_id(value ? value.id : '') ;
+                setSolicitante_id(value ? value.id : '');
               }}
               filterOptions={(options, { inputValue }) => {
-                  if (usuarios) return (options as IUsuario[]).filter((option) => (
-                      (option).nome.toLowerCase().includes(inputValue.toLowerCase()) || 
-                      (option).login.toLowerCase().includes(inputValue.toLowerCase()) || 
-                      (option).email.toLowerCase().includes(inputValue.toLowerCase())
-                  ));
-                  return [];
+                if (usuarios) return (options as IUsuario[]).filter((option) => (
+                  (option).nome.toLowerCase().includes(inputValue.toLowerCase()) ||
+                  (option).login.toLowerCase().includes(inputValue.toLowerCase()) ||
+                  (option).email.toLowerCase().includes(inputValue.toLowerCase())
+                ));
+                return [];
               }}
               noOptionsText="Nenhuma unidade encontrada"
-          />
-        </FormControl></>)}
+            />
+          </FormControl></>)}
       </Box>
       <Table hoverRow sx={{ tableLayout: 'auto' }}>
         <thead>
@@ -411,7 +406,7 @@ function SearchChamados() {
                           <Build />
                         </IconButton>
                       </Tooltip> :
-                    null}
+                      null}
                   </div>
                 </td>
               </tr>
