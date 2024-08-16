@@ -1,5 +1,5 @@
 import { Business, Handyman, Home, Person } from '@mui/icons-material';
-
+import LineAxisIcon from '@mui/icons-material/LineAxis';
 export interface IMenuOption {
     title:  string;
     href:   string;
@@ -21,6 +21,12 @@ export const menu: IMenu = {
             href: '/',
             name: '/',
             icon: Home,
+        },
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+            name: 'Dashboard',
+            icon: LineAxisIcon,
         },
     ],
     userOptions: [

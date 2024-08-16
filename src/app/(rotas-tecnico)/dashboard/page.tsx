@@ -10,6 +10,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Card, CardContent, Button, Box, Typography, ThemeProvider, createTheme } from "@mui/material";
 import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
+import CardDashboard from "@/components/CardDashboard";
 
 dayjs.locale("pt-br");
 
@@ -26,8 +27,8 @@ const theme = createTheme({
       active: '#001E3C',
     },
     success: {
-      main: '#009688', 
-      dark: '#00695C', 
+      main: '#009688',
+      dark: '#00695C',
     },
   },
 });
@@ -35,7 +36,13 @@ const theme = createTheme({
 export default function Dashboard() {
   const [value, setValue] = React.useState<Dayjs | null>(dayjs("2024-04-17"));
   return (
-    <Content>
+    <Content
+      breadcrumbs={[
+        { label: 'Dashboard', href: '/dashboard' }
+      ]}
+      titulo='Dashboard'
+      pagina='dashboard'
+    >
       <Box
         sx={{
           display: "flex",
@@ -77,47 +84,74 @@ export default function Dashboard() {
           </Button>
         </LocalizationProvider>
       </Box>
+      <Box sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: 2,
+        py: 2
+      }}>
+        <CardDashboard
+          minWidth="24%"
+          titulo="Chamados"
+          descricao="Chamados abertos hoje: 20"
+          valor={5}
+        />
+        <CardDashboard
+          minWidth="24%"
+          titulo="Chamados Atribuidos"
+          descricao="Encerrados hoje: 2"
+          valor={25}
+        />
+        <CardDashboard
+          minWidth="24%"
+          titulo="Avaliação Anual"
+          descricao="Ano anterior: 3.5"
+          valor={4.5}
+        />
+        <CardDashboard
+          minWidth="24%"
+          titulo="Avaliação Mensal"
+          descricao="Mês anterior: 4.8"
+          valor={4.9}
+        />
+      </Box>
       <Box
         sx={{
+          minHeight: "100%",
           display: "flex",
-          gap: 4,
-          alignItems: "center",
           justifyContent: "space-between",
-          width: "100%",          
+          alignItems: "center",
+          gap: 2,
         }}
       >
-        <ThemeProvider theme={theme}>
-          <Card>
-            <CardContent
-              sx={{
-                bgcolor: 'background.paper',
-                boxShadow: 1,
-                borderRadius: 2,
-                p: 2,
-                minWidth: 300,
-              }}
-            >
-              <Typography sx={{ color: 'text.secondary' }}>Chamados Novos</Typography>
-              <Typography sx={{ color: 'text.primary', fontSize: 34, fontWeight: 'medium' }}>
-                0  
-              </Typography>
-              <Typography
-                sx={{
-                  color: 'success.dark',
-                  display: 'inline',
-                  fontWeight: 'bold',
-                  mx: 0.5,
-                  fontSize: 14,
-                }}
-              >
-                +18.77%
-              </Typography>
-              <Typography sx={{ color: 'text.secondary', display: 'inline', fontSize: 14 }}>
-                vs. last week
-              </Typography>
-            </CardContent>
-          </Card>
-        </ThemeProvider>
+        <Box
+          sx={{
+            border: 'solid 2px ',
+            WebkitBoxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 10px',
+            borderColor: 'divider',
+            minHeight: 460,
+            width: '60%',
+            boxShadow: 3,
+            borderRadius: 5,
+          }}
+        >
+
+        </Box>
+        <Box
+          sx={{
+            border: 'solid 2px ',
+            WebkitBoxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 10px',
+            borderColor: 'divider',
+            minHeight: 460,
+            width: '40%',
+            boxShadow: 3,
+            borderRadius: 5,
+          }}
+        >
+          
+        </Box>
       </Box>
     </Content>
   );
