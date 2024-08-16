@@ -29,10 +29,12 @@ export default function Auxiliar() {
     const [status, setStatus] = useState(0)
     const [nome, setNome] = useState('');
     const [textCampo, setTextCampo] = useState('');
-    const [idCategoria, setIdCategoria] = useState(0);
     const [tipos, setTipos] = useState<ITipo[]>([]);
     const [categoria, setCategoria] = useState<ICategoria[]>([]);
     const [subCategoria, setSubCategoria] = useState<ISubCategoria[]>([]);
+    const [idTipo, setIdTipo] = useState('');
+    const [idCategoria, setIdCategoria] = useState('');
+    const [idSubCategoria, setIdSubCategoria] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,22 +65,15 @@ export default function Auxiliar() {
         setUser('Suporte')
         setIndex(true)
         setMensagem([...mensagem, newMessage])
-        if (status === 1) {
-            setTexto(text[1].text)
-            setMensagem([...mensagem, newMessage])
-        } else if (status === 2) {
-            setTexto(text[2].text)
-            setMensagem([...mensagem, newMessage])
-        } else if (status === 3) {
-            setTexto(text[3].text)
-            setMensagem([...mensagem, newMessage])
-        } else if (status === 4) {
-            setTexto(text[4].text)
-            setMensagem([...mensagem, newMessage])
+
+        setTexto(text[status].text)
+        setMensagem([...mensagem, newMessage])
+
+        if (status === 4) {
             setTimeout(() => {
-                router.push(`/chamados/detalhes?tipo=`)
+                router.push(`/chamados/detalhes?tipo=${idTipo}&categoria=${idCategoria}&subcategoria=${idSubCategoria}`)
             }, 3000)
-        } 
+        }
     }
 
     const buscarCategoria = (id: string) => {
@@ -161,7 +156,7 @@ export default function Auxiliar() {
                                 value={textCampo}
                                 onKeyDown={(event) => {
                                     if (event.key === 'Enter' && status === 3 && textCampo !== '') {
-                                        setStatus(2);
+                                        setStatus(4);
                                         setUser(nome);
                                         setIndex(false);
                                         setTexto(textCampo)
@@ -192,8 +187,9 @@ export default function Auxiliar() {
                                                 setTexto(tipos.nome);
                                                 setUser(nome);
                                                 setIndex(false);
-                                                setStatus(1)
+                                                setStatus(1);
                                                 buscarCategoria(tipos.id)
+                                                setIdTipo(tipos.id)
                                             }}
                                         >
                                             {tipos.nome}
@@ -209,8 +205,9 @@ export default function Auxiliar() {
                                                     setTexto(categoria.nome);
                                                     setUser(nome);
                                                     setIndex(false);
-                                                    setStatus(2)
+                                                    setStatus(2);
                                                     buscarSubCategoria(categoria.id)
+                                                    setIdCategoria(categoria.id)
                                                 }}
                                             >
                                                 {categoria.nome}
@@ -227,7 +224,7 @@ export default function Auxiliar() {
                                                     setUser(nome);
                                                     setIndex(false);
                                                     setStatus(3)
-                                                    buscarSubCategoria(subCategoria.id)
+                                                    setIdSubCategoria(subCategoria.id)
                                                 }}
                                             >
                                                 {subCategoria.nome}
