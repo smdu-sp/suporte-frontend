@@ -11,6 +11,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Card, CardContent, Button, Box, Typography, ThemeProvider, createTheme } from "@mui/material";
 import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
 import CardDashboard from "@/components/CardDashboard";
+import TickPlacementBars from "@/components/Grafico";
+import Pessoas from "@/components/Pessoas";
 
 dayjs.locale("pt-br");
 
@@ -135,9 +137,12 @@ export default function Dashboard() {
             width: '60%',
             boxShadow: 3,
             borderRadius: 5,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'end',
           }}
         >
-
+          <TickPlacementBars />
         </Box>
         <Box
           sx={{
@@ -148,9 +153,12 @@ export default function Dashboard() {
             width: '40%',
             boxShadow: 3,
             borderRadius: 5,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
-          
+          <Pessoas />
         </Box>
       </Box>
     </Content>
