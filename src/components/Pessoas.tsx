@@ -8,32 +8,38 @@ const pessoas = [
     {
         "nome": "José",
         "email": "jose@prefeitura.sp.gov.br",
-        "nota": 5
+        "nota": 5,
+        "leg": false
     },
     {
         "nome": "Fernando",
         "email": "fernando@prefeitura.sp.gov.br",
-        "nota": 3
+        "nota": 3,
+        "leg": true
     },
     {
         "nome": "Guilherme",
         "email": "guilherme@prefeitura.sp.gov.br",
-        "nota": 5
+        "nota": 5,
+        "leg": false
     },
     {
         "nome": "Diego",
         "email": "diego@prefeitura.sp.gov.br",
-        "nota": 4
+        "nota": 4,
+        "leg": true
     },
     {
         "nome": "Bruno",
         "email": "bruno@prefeitura.sp.gov.br",
-        "nota": 2
+        "nota": 2,
+        "leg": false
     },
     {
         "nome": "Gustavo",
         "email": "gustavo@prefeitura.sp.gov.br",
-        "nota": 4.5
+        "nota": 4.5,
+        "leg": true
     },
 ]
 
@@ -93,7 +99,9 @@ export default function Pessoas(p: PessoasProps) {
                             </Box>
                         </Box>
                         <Box sx={{ pr: 8 }} >
-                            <Typography level="h4" endDecorator={pessoa.nota}><SsidChartSharpIcon /></Typography>
+                            <Typography level="h4" endDecorator={pessoa.nota}>
+                                <SsidChartSharpIcon color={pessoa.leg ? 'success' : 'error'} sx={{ transform: pessoa.leg ? 'rotate(0deg)' : 'scaleX(-1)' }} />
+                            </Typography>
                         </Box>
                     </Sheet>
                 ))}
