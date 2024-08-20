@@ -2,15 +2,11 @@
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
-import { Option, Select } from '@mui/joy';
+import { Option, Select, useTheme } from '@mui/joy';
 import { useEffect, useState } from 'react';
 
 const chartSetting = {
-    yAxis: [
-        {
-            label: '',
-        },
-    ],
+    yAxis: [],
     series: [{ dataKey: 'seoul' }],
     height: 450,
     sx: {
@@ -21,7 +17,7 @@ const chartSetting = {
 };
 
 export default function TickPlacementBars() {
-
+    const { palette } = useTheme();
     const [tipo, setTipo] = useState(0);
 
     const dataset = [
@@ -67,6 +63,7 @@ export default function TickPlacementBars() {
                     },
                 ]}
                 {...chartSetting}
+                colors={[palette.text.primary]}
             />
         </div>
     );
