@@ -72,6 +72,7 @@ export default function Pessoas(p: PessoasProps) {
             >
                 {pessoas.map((pessoa) => (
                     <Sheet
+                        key={pessoa.email}
                         sx={{
                             width: '100%',
                             height: 70,
