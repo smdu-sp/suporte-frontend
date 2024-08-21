@@ -22,7 +22,7 @@ const chartSetting = {
 
 export default function TickPlacementBars() {
 
-    const [tipo, setTipo] = useState(0);
+    const theme = useTheme()
 
     const dataset = [
         {
@@ -67,6 +67,7 @@ export default function TickPlacementBars() {
                     },
                 ]}
                 {...chartSetting}
+                colors={[theme.palette.text.primary]}
             />
         </div>
     );
