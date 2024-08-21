@@ -8,42 +8,48 @@ import "dayjs/locale/pt-br";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Card, CardContent, Button, Box, Typography, ThemeProvider, createTheme } from "@mui/material";
-import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
+import {
+  Card,
+  CardContent,
+  Button,
+  Box,
+  Typography,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
 import CardDashboard from "@/components/CardDashboard";
 import TickPlacementBars from "@/components/Grafico";
 import Pessoas from "@/components/Pessoas";
+import DatePickerComponent from "@/components/DatePicker";
 
 dayjs.locale("pt-br");
 
 const theme = createTheme({
   palette: {
     background: {
-      paper: '#fff',
+      paper: "#fff",
     },
     text: {
-      primary: '#173A5E',
-      secondary: '#46505A',
+      primary: "#173A5E",
+      secondary: "#46505A",
     },
     action: {
-      active: '#001E3C',
+      active: "#001E3C",
     },
     success: {
-      main: '#009688',
-      dark: '#00695C',
+      main: "#009688",
+      dark: "#00695C",
     },
   },
 });
 
 export default function Dashboard() {
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs("2024-04-17"));
+  const [value, setValue] = React.useState<Dayjs | null>(dayjs(Date.now()));
   return (
     <Content
-      breadcrumbs={[
-        { label: 'Dashboard', href: '/dashboard' }
-      ]}
-      titulo='Dashboard'
-      pagina='dashboard'
+      breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }]}
+      titulo="Dashboard"
+      pagina="dashboard"
     >
       <Box
         sx={{
@@ -53,47 +59,33 @@ export default function Dashboard() {
           alignItems: "center",
         }}
       >
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label="Data de Início"
-            defaultValue={dayjs("2024-01-01")} // Ajuste o formato da data aqui
-            sx={{
-              width: 200,
-              height: 50,
-            }}
-          />
-          <DatePicker
-            label="Data Fim"
-            value={value}
-            onChange={(newValue) => setValue(newValue)}
-            sx={{
-              width: 200,
-              height: 50,
-            }}
-          />
-          <Button
-            sx={{
-              color: theme.palette.background.paper,
-              borderColor: theme.palette.text.primary,
-              backgroundColor: theme.palette.text.primary,
-              "&:hover": {
-                backgroundColor: theme.palette.action.active,
-              },
-            }}
-            variant="outlined"
-          >
-            Salvar
-          </Button>
-        </LocalizationProvider>
+        <DatePickerComponent label="Data Inicial"  />
+        <DatePickerComponent label="Data Final" onChange={(newValue: any) => setValue(newValue)} />
+        <Button 
+          sx={{
+            color: theme.palette.background.paper,
+            borderColor: theme.palette.text.primary,
+            backgroundColor: theme.palette.text.primary,
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: theme.palette.action.active,
+            },
+          }}
+          variant="outlined"
+        >
+          Salvar
+        </Button>
       </Box>
-      <Box sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        gap: 2,
-        py: 2
-      }}>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 2,
+          py: 2,
+        }}
+      >
         <CardDashboard
           minWidth="24%"
           titulo="Chamados"
@@ -130,11 +122,11 @@ export default function Dashboard() {
       >
         <Box
           sx={{
-            border: 'solid 2px ',
-            WebkitBoxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 10px',
-            borderColor: 'divider',
+            border: "solid 2px ",
+            WebkitBoxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 10px",
+            borderColor: "divider",
             minHeight: 460,
-            width: '60%',
+            width: "60%",
             boxShadow: 3,
             borderRadius: 5,
             display: 'flex',
@@ -146,11 +138,11 @@ export default function Dashboard() {
         </Box>
         <Box
           sx={{
-            border: 'solid 2px ',
-            WebkitBoxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 10px',
-            borderColor: 'divider',
+            border: "solid 2px ",
+            WebkitBoxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 10px",
+            borderColor: "divider",
             minHeight: 460,
-            width: '40%',
+            width: "40%",
             boxShadow: 3,
             borderRadius: 5,
             display: 'flex',

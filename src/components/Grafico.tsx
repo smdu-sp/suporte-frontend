@@ -1,6 +1,9 @@
+'use client'
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
+import { Option, Select, useTheme } from '@mui/joy';
+import { useEffect, useState } from 'react';
 
 const chartSetting = {
     yAxis: [
@@ -8,7 +11,7 @@ const chartSetting = {
             label: '',
         },
     ],
-    series: [{ dataKey: 'seoul', label: 'Aviações Mensais' }],
+    series: [{ dataKey: 'seoul' }],
     height: 450,
     sx: {
         [`& .${axisClasses.directionY} .${axisClasses.label}`]: {
@@ -18,6 +21,9 @@ const chartSetting = {
 };
 
 export default function TickPlacementBars() {
+
+    const theme = useTheme()
+
     const dataset = [
         {
             seoul: 41,
@@ -47,23 +53,22 @@ export default function TickPlacementBars() {
             seoul: 362,
             nome: 'Fernando',
         }
-
     ];
 
     return (
-        <BarChart
-            dataset={
-                dataset.reverse()
-            }
-            colors={['']}
-            borderRadius={7}
-            xAxis={[
-                {
-                    scaleType: 'band',
-                    dataKey: 'nome',
-                },
-            ]}
-            {...chartSetting}
-        />
+        <div style={{ width: '100%', position: 'relative' }}>
+            <BarChart
+                dataset={dataset.reverse()}
+                borderRadius={7}
+                xAxis={[
+                    {
+                        scaleType: 'band',
+                        dataKey: 'nome',
+                    },
+                ]}
+                {...chartSetting}
+                colors={[theme.palette.text.primary]}
+            />
+        </div>
     );
 }
