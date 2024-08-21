@@ -21,6 +21,8 @@ import { OverridableStringUnion } from '@mui/types';
 import { TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, TimelineSeparator } from "@mui/lab";
 import { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
 import { useSearchParams } from 'next/navigation';
+import ModalAviso from "@/components/ModalAviso";
+import { buscarTudo, IPaginadoAviso } from "@/shared/services/avisos.service";
 
 export default function ChamadoDetalhes(props: { params: { id: string } }) {
 
@@ -67,6 +69,8 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
     const [motivos, setMotivos] = useState<IMotivoTipo[]>();
     const [categoria_id, setCategoria_id] = useState('')
     const [subcategoria_id, setSubcategoria_id] = useState('')
+    const [ avisoStatus, setAvisoStatus ] = useState<boolean>();
+    const [ avisos, setAvisos ] = useState<IPaginadoAviso>();
 
     const statusChip: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[] = [
         { label: '', color: 'neutral' },
@@ -251,7 +255,16 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
         return onlyNumbers.replace(/(\d{0,5})(\d{0,4})/, '$1-$2');
     }
 
+    useEffect(() => {
+        setAvisoStatus(true);
+        const buscaAvisos = async () => setAvisos(await buscarTudo()); 
+        buscaAvisos();
+    }, []);
+
     return (<>
+        
+        { avisoStatus && avisos?.data && <ModalAviso avisos={avisos.data} /> }
+
         <Modal open={adicionaMaterialModal} sx={{ zIndex: 99 }} onClose={() => setAdicionaMaterialModal(false)}>
             <ModalDialog>
                 <DialogTitle>Adicionar material utilizado</DialogTitle>
