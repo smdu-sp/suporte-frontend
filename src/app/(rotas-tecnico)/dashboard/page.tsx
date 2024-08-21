@@ -59,8 +59,8 @@ export default function Dashboard() {
           alignItems: "center",
         }}
       >
-        <DatePickerComponent label="Data de Início"  />
-        <DatePickerComponent label="Data de Fim" onChange={(newValue: any) => setValue(newValue)} />
+        <DatePickerComponent label="Data Inicial"  />
+        <DatePickerComponent label="Data Final" onChange={(newValue: any) => setValue(newValue)} />
         <Button 
           sx={{
             color: theme.palette.background.paper,
