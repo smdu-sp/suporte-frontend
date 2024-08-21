@@ -41,7 +41,7 @@ function SearchChamados() {
   const [usuarios, setUsuarios] = useState<IUsuario[]>([]);
   const [logado, setLogado] = useState<IUsuario>();
   const [atribuirChamadoModal, setAtribuirChamadoModal] = useState(false);
-  const [tipo, setTipo] = useState(searchParams.get('tipo') ? Number(searchParams.get('tipo')) : 0);
+  const [tipo_id, setTipo] = useState(searchParams.get('tipo') ? Number(searchParams.get('tipo')) : '');
   const [ordem_id, setOrdem_id] = useState('');
   const [tecnico_id, setTecnico_id] = useState('');
   const [prioridade, setPrioridade] = useState(1);
@@ -124,7 +124,7 @@ function SearchChamados() {
 
   useEffect(() => {
     buscaOrdens();
-  }, [status, pagina, limite, unidade_id, solicitante_id, tipo]);
+  }, [status, pagina, limite, unidade_id, solicitante_id, tipo_id]);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -136,7 +136,7 @@ function SearchChamados() {
   );
 
   const buscaOrdens = async () => {
-    ordemServices.buscarTudo(status, pagina, limite, unidade_id, solicitante_id, 0, '', tipo)
+    ordemServices.buscarTudo(status, pagina, limite, unidade_id, solicitante_id, 0, '', tipo_id.toString())
       .then((response: IPaginadoOrdem) => {
         setOrdens(response.data);
         setTotal(response.total);
@@ -289,11 +289,11 @@ function SearchChamados() {
             <Option value={0}>Todos</Option>
           </Select>
         </FormControl>
-        <FormControl>
+        {/* <FormControl>
           <FormLabel>Tipo</FormLabel>
           <Select
             size="sm"
-            value={tipo}
+            value={tipo_id}
             onChange={(_, newValue) => {
               router.push(pathname + '?' + createQueryString('tipo', String(newValue || newValue === 0 ? newValue : 1)));
               setTipo(newValue || newValue === 0 ? newValue : 1);
@@ -306,7 +306,7 @@ function SearchChamados() {
             <Option value={3}>Telefonia</Option>
             <Option value={4}>Outros</Option>
           </Select>
-        </FormControl>
+        </FormControl> */}
         {!logado || logado?.permissao === 'USR' ? null : (<>
           <FormControl sx={{ flex: 1 }} size="sm">
             <FormLabel>Unidade: </FormLabel>
@@ -391,9 +391,10 @@ function SearchChamados() {
                   router.push(pathname + '?' + createQueryString('unidade_id', ordem.unidade_id));
                 }} variant='outlined' color='neutral' title={ordem.unidade.nome}>{ordem.unidade.sigla}</Chip>}</td>
                 <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}><Chip onClick={() => {
-                  setTipo(ordem.tipo);
-                  router.push(pathname + '?' + createQueryString('tipo', String(ordem.tipo)));
-                }} color={tipos[ordem.tipo].color}>{tipos[ordem.tipo].label}</Chip></td>
+                  setTipo(ordem.tipo_id);
+                  router.push(pathname + '?' + createQueryString('tipo', String(ordem.tipo_id)));
+                }}>{tipo_id}</Chip>
+                </td>
                 <td>
                   <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                     {['DEV', 'ADM', 'TEC'].includes(logado ? logado.permissao : '') && ordem.status === 1 ?

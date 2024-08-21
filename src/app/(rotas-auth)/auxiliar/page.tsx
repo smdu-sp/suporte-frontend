@@ -71,7 +71,7 @@ export default function Auxiliar() {
 
         if (status === 4) {
             setTimeout(() => {
-                router.push(`/chamados/detalhes?tipo=${idTipo}&categoria=${idCategoria}&subcategoria=${idSubCategoria}`)
+                router.push(`/chamados/detalhes?id=${idSubCategoria}&desc=${textCampo}`)
             }, 3000)
         }
     }
@@ -160,7 +160,6 @@ export default function Auxiliar() {
                                         setUser(nome);
                                         setIndex(false);
                                         setTexto(textCampo)
-                                        setTextCampo('')
                                     }
                                 }}
                             />
