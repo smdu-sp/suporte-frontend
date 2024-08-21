@@ -1,8 +1,17 @@
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { Dayjs } from "dayjs";
 
-export default function DatePickerComponent(props: any) {
+interface IProps {
+    label: string;
+    defaultValue?: Dayjs | null;
+    format?: string;
+    value?: Dayjs | null;
+    onChange?: (value: Dayjs | null) => void;
+
+}
+export default function DatePickerComponent(props: IProps) {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
