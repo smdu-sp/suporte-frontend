@@ -3,7 +3,7 @@ interface IProps {
     minWidth?: string,
     titulo: string,
     valor: number,
-    descricao: string
+    descricao: string,
 }
 export default function CardDashboard(props: IProps) {
     return (

@@ -22,13 +22,15 @@ export interface IOrdem {
     solicitante?: IUsuario;
     tratar_com?: string;
     data_solicitacao: Date;
-    tipo: number;
+    tipo_id: string;
     status: number;
     prioridade: number;
     observacoes: string;
     telefone: string;
     servicos: IServico[];
     suspensaoAtiva?: boolean;
+    categoria_id: string;
+    subcategoria_id: string;
 }
 
 export interface IPaginadoOrdem {
@@ -38,6 +40,27 @@ export interface IPaginadoOrdem {
     limite: number;
 }
 
+export interface ITipo {
+    id: string,
+    nome: string
+}
+
+export interface ICategoria extends ITipo { }
+export interface ISubCategoria extends ICategoria { }
+
+export interface IMotivoTipo {
+    id: string,
+    nome: string,
+    categoria: {
+        id: string,
+        nome: string,
+        tipo: {
+            id: string,
+            nome: string
+        }
+    }
+}
+
 const baseURL = process.env.API_URL || 'http://localhost:3000/';
 
 async function buscarTudo(status: number = 1, pagina: number = 1, limite: number = 10,
@@ -45,10 +68,10 @@ async function buscarTudo(status: number = 1, pagina: number = 1, limite: number
     solicitante_id: string = '',
     andar: number = 0,
     sala: string = '',
-    tipo: number = 0
+    tipo_id: string = ''
 ): Promise<IPaginadoOrdem> {
     const session = await getServerSession(authOptions);
-    const url = `${baseURL}ordens/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&unidade_id=${unidade_id}&solicitante_id=${solicitante_id}&andar=${andar}&sala=${sala}&tipo=${tipo}`;
+    const url = `${baseURL}ordens/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&unidade_id=${unidade_id}&solicitante_id=${solicitante_id}&andar=${andar}&sala=${sala}&tipo=${tipo_id}`;
     const ordens = await fetch(`${url}`, {
         method: "GET",
         headers: {
@@ -77,7 +100,7 @@ async function buscarPorId(id: string): Promise<IOrdem> {
     return usuario;
 }
 
-async function criar(ordemDto: { unidade_id: string, andar: number, sala: string, tipo: number, observacoes: string, telefone: string, tratar_com?: string }): Promise<IOrdem> {
+async function criar(ordemDto: { unidade_id: string, andar: number, sala: string, tipo_id: string, observacoes: string, telefone: string, tratar_com?: string, categoria_id: string, subcategoria_id: string }): Promise<IOrdem> {
     const session = await getServerSession(authOptions);
     const novaUnidade = await fetch(`${baseURL}ordens/criar`, {
         method: "POST",
@@ -126,10 +149,27 @@ async function retornaPainel(): Promise<{ abertos: number, naoAtribuidos: number
     return painel;
 }
 
+async function buscaMotivos(id: string): Promise<IMotivoTipo> {
+    const session = await getServerSession(authOptions);
+    const painel = await fetch(`${baseURL}tipos/motivo/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session?.access_token}`
+        },
+    }).then(async (response) => {
+        if (response.status === 401) await Logout();
+        if (response.status !== 200) return;
+        return response.json();
+    });
+    return painel;
+}
+
 export {
     atualizar,
     buscarTudo,
     buscarPorId,
     criar,
-    retornaPainel
+    retornaPainel,
+    buscaMotivos
 };

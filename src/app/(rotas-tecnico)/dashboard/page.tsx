@@ -18,6 +18,8 @@ import {
   createTheme,
 } from "@mui/material";
 import CardDashboard from "@/components/CardDashboard";
+import TickPlacementBars from "@/components/Grafico";
+import Pessoas from "@/components/Pessoas";
 import DatePickerComponent from "@/components/DatePicker";
 
 dayjs.locale("pt-br");
@@ -127,8 +129,13 @@ export default function Dashboard() {
             width: "60%",
             boxShadow: 3,
             borderRadius: 5,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'end',
           }}
-        ></Box>
+        >
+          <TickPlacementBars />
+        </Box>
         <Box
           sx={{
             border: "solid 2px ",
@@ -138,8 +145,13 @@ export default function Dashboard() {
             width: "40%",
             boxShadow: 3,
             borderRadius: 5,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
-        ></Box>
+        >
+          <Pessoas />
+        </Box>
       </Box>
     </Content>
   );
