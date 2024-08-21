@@ -6,6 +6,11 @@ import { Option, Select, useTheme } from '@mui/joy';
 import { useEffect, useState } from 'react';
 
 const chartSetting = {
+    yAxis: [
+        {
+            label: '',
+        },
+    ],
     series: [{ dataKey: 'seoul' }],
     height: 450,
     sx: {
@@ -16,7 +21,9 @@ const chartSetting = {
 };
 
 export default function TickPlacementBars() {
-    const theme = useTheme()
+
+    const [tipo, setTipo] = useState(0);
+
     const dataset = [
         {
             seoul: 41,
@@ -60,7 +67,6 @@ export default function TickPlacementBars() {
                     },
                 ]}
                 {...chartSetting}
-                colors={[theme.palette.text.primary]}
             />
         </div>
     );
