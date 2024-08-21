@@ -1,5 +1,6 @@
 import { Business, Handyman, Home, Person } from '@mui/icons-material';
 import LineAxisIcon from '@mui/icons-material/LineAxis';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 export interface IMenuOption {
     title:  string;
     href:   string;
@@ -55,6 +56,12 @@ export const menu: IMenu = {
             href: '/tipos',
             name: 'tipos',
             icon: Business,
-        }      
+        },
+        {
+            title: 'Avisos',
+            href: '/avisos',
+            name: 'avisos',
+            icon: NotificationsIcon
+        }
     ]
 }
