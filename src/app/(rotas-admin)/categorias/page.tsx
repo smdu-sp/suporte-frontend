@@ -31,6 +31,7 @@ function SearchCategorias() {
   const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
+  const [open, setOpen] = useState(false);
 
   const confirmaVazio: {
     aberto: boolean,
@@ -114,13 +115,34 @@ function SearchCategorias() {
   const buscaTipo = async (id: string) => {
     await tipoServices.buscarPorId(id)
       .then((response: ITipo) => {
-         return(response.nome)
+        return (response.nome)
       })
   }
 
   useEffect(() => {
     console.log(buscaTipo("ad1c3cb4-56b4-4d18-a268-72c8048f7bd6"));
   }, []);
+
+  const criar = async (nome: string, tipo_id: string, status: string) => {
+    const criado: ITipo = await categoriaServices.criar(
+      { nome, tipo_id, status }
+    );
+    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
+    if (criado) {
+      setAlert('Tipo criado', 'Tipo registrado com sucesso.', 'success', 3000, Check)
+      buscaTipos();
+    };
+  }
+  const atualizar = async (id: string, nome: string, status: string) => {
+    const alterado: ITipo = await categoriaServices.atualizar({
+      id, nome, status
+    });
+    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
+    if (alterado) {
+      setAlert('Tipo alterado', 'Tipo alterado com sucesso.', 'success', 3000, Check)
+      buscaTipos();
+    };
+  }
 
   const ativaTipo = async (id: string) => {
     var resposta = await categoriaServices.ativar(id);
@@ -283,7 +305,14 @@ function SearchCategorias() {
         labelRowsPerPage="Registros por página"
         labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
       /> : null}
-      <FormCategoria />
+      <FormCategoria
+        titulo='Categoria'
+        titulo_select='Tipo Referente'
+        tipo='cat'
+        criar={criar}
+        atualizar={atualizar}
+        open={open}
+      />
     </Content>
   );
 }

@@ -92,7 +92,7 @@ async function desativar(id: string): Promise<{ autorizado: boolean }> {
     return desativado;
 }
 
-async function criar({ nome, status }: { nome: string, status: string }): Promise<ICategoria> {
+async function criar({ nome, tipo_id, status }: { nome: string, tipo_id: string, status: string }): Promise<ICategoria> {
     const session = await getServerSession(authOptions);
     const novoTipo = await fetch(`${baseURL}categorias/criar`, {
         method: "POST",
@@ -102,6 +102,7 @@ async function criar({ nome, status }: { nome: string, status: string }): Promis
         },
         body: JSON.stringify({ 
             nome,
+            tipo_id,
             status: status === 'true'
         })
     }).then((response) => {
