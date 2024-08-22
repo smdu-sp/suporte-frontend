@@ -11,8 +11,9 @@ import { TablePagination } from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
 import { IPaginadoUnidade, IUnidade } from '@/shared/services/unidade.services';
 import { IPaginadoTipo, ITipo } from '@/shared/services/tipo.services';
+import FormCategoria from '@/components/FormCategoria';
 
-export default function Tipos(){
+export default function Tipos() {
   return (
     <Suspense>
       <SearchTipos />
@@ -29,6 +30,7 @@ function SearchTipos() {
   const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
+  const [open, setOpen] = useState(false);
 
   const confirmaVazio: {
     aberto: boolean,
@@ -38,7 +40,7 @@ function SearchTipos() {
     color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides>
   } = {
     aberto: false,
-    confirmaOperacao: () => {},
+    confirmaOperacao: () => { },
     titulo: '',
     pergunta: '',
     color: 'primary'
@@ -51,8 +53,8 @@ function SearchTipos() {
 
   useEffect(() => {
     buscaTipos();
-  }, [ status, pagina, limite ]);
-  
+  }, [status, pagina, limite]);
+
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -61,6 +63,8 @@ function SearchTipos() {
     },
     [searchParams]
   );
+
+
 
   const buscaTipos = async () => {
     tipoServices.buscarTudo(status, pagina, limite, busca)
@@ -71,16 +75,37 @@ function SearchTipos() {
         setTipos(response.data);
       });
   }
-  
+
   const desativaTipo = async (id: string) => {
     var resposta = await tipoServices.desativar(id);
-    if (resposta){
+    if (resposta) {
       setAlert('Tipo desativado!', 'Esse tipo foi desativado e não será exibido para seleção.', 'success', 3000, Check);
       buscaTipos();
     } else {
       setAlert('Tente novamente!', 'Não foi possível desativar o tipo.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
+  }
+
+  const criar = async (nome: string, status: string) => {
+    const criado: ITipo = await tipoServices.criar(
+      { nome, status }
+    );
+    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
+    if (criado) {
+      setAlert('Tipo criado', 'Tipo registrado com sucesso.', 'success', 3000, Check)
+      buscaTipos();
+    };
+  }
+  const atualizar = async (id: string, nome: string, status: string) => {
+    const alterado: ITipo = await tipoServices.atualizar({
+      id, nome, status
+    });
+    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
+    if (alterado) {
+      setAlert('Tipo alterado', 'Tipo alterado com sucesso.', 'success', 3000, Check)
+      buscaTipos();
+    };
   }
 
   const mudaPagina = (
@@ -100,7 +125,7 @@ function SearchTipos() {
   };
 
   const confirmaDesativaTipo = async (id: string) => {
-    setConfirma({ 
+    setConfirma({
       aberto: true,
       confirmaOperacao: () => desativaTipo(id),
       titulo: 'Desativar tipo',
@@ -111,7 +136,7 @@ function SearchTipos() {
 
   const ativaTipo = async (id: string) => {
     var resposta = await tipoServices.ativar(id);
-    if (resposta){
+    if (resposta) {
       setAlert('Tipo ativado!', 'Esse tipo foi autorizado e será visível para seleção.', 'success', 3000, Check);
       buscaTipos();
     } else {
@@ -121,7 +146,7 @@ function SearchTipos() {
   }
 
   const confirmaAtivaTipo = async (id: string) => {
-    setConfirma({ 
+    setConfirma({
       aberto: true,
       confirmaOperacao: () => ativaTipo(id),
       titulo: 'Ativar tipo',
@@ -232,18 +257,18 @@ function SearchTipos() {
             <tr key={tipo.id} style={{
               cursor: 'pointer',
               backgroundColor: !tipo.status ?
-                  theme.vars.palette.danger.plainActiveBg : 
-                  undefined
+                theme.vars.palette.danger.plainActiveBg :
+                undefined
             }}>
-              <td onClick={() => router.push('/tipos/detalhes/' + tipo.id)}>{tipo.nome}</td>
+              <td onClick={() => { router.push('/tipos?id=' + tipo.id); setOpen(true) }}>{tipo.nome}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!tipo.status ? (
                     <Tooltip title="Ativar Unidade" arrow placement="top">
-                      <IconButton size="sm" color="success" onClick={() => confirmaAtivaTipo(tipo.id)}>
+                      <IconButton size="sm" color="success" onClick={() => { confirmaAtivaTipo(tipo.id); setOpen(true) }}>
                         <Check />
                       </IconButton>
-                    </Tooltip>                    
+                    </Tooltip>
                   ) : (
                     <Tooltip title="Desativar" arrow placement="top">
                       <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaTipo(tipo.id)}>
@@ -268,11 +293,14 @@ function SearchTipos() {
         labelRowsPerPage="Registros por página"
         labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
       /> : null}
-      <IconButton onClick={() => router.push('/tipos/detalhes/')} color='primary' variant='soft' size='lg' sx={{
-        position: 'fixed',
-        bottom: '2rem',
-        right: '2rem',
-      }}><Add /></IconButton>
+      <FormCategoria
+        titulo='Tipo'
+        titulo_select=''
+        tipo='tipo'
+        criar={criar}
+        atualizar={atualizar}
+        open={open}
+      />
     </Content>
   );
 }
