@@ -4,6 +4,7 @@ import { authOptions } from "@/shared/auth/authOptions";
 import { getServerSession } from "next-auth";
 import { signOut } from "next-auth/react";
 import { IOrdem } from "./ordem.services";
+import { ICategoria } from "./categoria.services";
 
 async function Logout() {
     await signOut({ redirect: false });
@@ -14,7 +15,7 @@ export interface ISubCategoria {
     id: string;
     nome: string;
     categoria_id: string;
-    categorias?: any[];
+    categoria?: ICategoria[];
     ordens?: IOrdem[];
     status: boolean;
 }
@@ -90,7 +91,7 @@ async function desativar(id: string): Promise<{ autorizado: boolean }> {
     return desativado;
 }
 
-async function criar({ nome, status }: { nome: string, status: string }): Promise<ISubCategoria> {
+async function criar({ nome, categoria_id, status }: { nome: string, categoria_id: string, status: string }): Promise<ISubCategoria> {
     const session = await getServerSession(authOptions);
     const novoTipo = await fetch(`${baseURL}subcategorias/criar`, {
         method: "POST",
@@ -100,6 +101,7 @@ async function criar({ nome, status }: { nome: string, status: string }): Promis
         },
         body: JSON.stringify({ 
             nome,
+            categoria_id,
             status: status === 'true'
         })
     }).then((response) => {
