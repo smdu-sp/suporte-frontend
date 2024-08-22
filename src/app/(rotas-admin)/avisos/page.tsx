@@ -11,6 +11,7 @@ import { OverridableStringUnion } from '@mui/types';
 import * as avisoService from '@/shared/services/avisos.service';
 import IAviso from '@/shared/interfaces/IAviso';
 import FormNovoAviso from '@/components/FormNovoAviso';
+import FormAtualizaAviso from '@/components/FormAtualizaAviso';
 
 export default function Avisos(){
   return (
@@ -30,6 +31,7 @@ function SearchAvisos() {
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
   const [openNovoAviso, setOpenNovoAviso] = useState<boolean>(false);
+  const [openAtualizaAviso, setOpenAtualizaAviso] = useState<boolean>(false);
 
   const confirmaVazio: {
     aberto: boolean,
@@ -236,7 +238,7 @@ function SearchAvisos() {
                   theme.vars.palette.danger.plainActiveBg : 
                   undefined
             }}>
-              <td onClick={() => router.push('/avisos/detalhes/' + avisos.id)}>{avisos.titulo}</td>
+              <td onClick={() => setOpenAtualizaAviso(true)}>{avisos.titulo}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!avisos.status ? (
@@ -254,6 +256,8 @@ function SearchAvisos() {
                   )}
                 </div>
               </td>
+
+              <FormAtualizaAviso open={openAtualizaAviso} openFuncao={setOpenAtualizaAviso} aviso={avisos} />
             </tr>
           )) : <tr><td colSpan={2}>Nenhum aviso encontrado</td></tr>}
         </tbody>
