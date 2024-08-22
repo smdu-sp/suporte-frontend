@@ -1,5 +1,9 @@
 import { Business, Handyman, Home, Person } from '@mui/icons-material';
 import LineAxisIcon from '@mui/icons-material/LineAxis';
+import TurnedInIcon from '@mui/icons-material/TurnedIn';
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import LabelImportantIcon from '@mui/icons-material/LabelImportant';
+
 export interface IMenuOption {
     title:  string;
     href:   string;
@@ -49,12 +53,24 @@ export const menu: IMenu = {
             href: '/unidades',
             name: 'unidades',
             icon: Business,
-        }  ,
+        },
         {
             title: 'Tipos',
             href: '/tipos',
             name: 'tipos',
-            icon: Business,
-        }      
+            icon: TurnedInIcon,
+        },
+        {
+            title: 'Categorias',
+            href: '/categorias',
+            name: 'categorias',
+            icon: WidgetsIcon,
+        },
+        {
+            title: 'Sub Categorias',
+            href: '/subcategorias',
+            name: 'sub categorias',
+            icon: LabelImportantIcon,
+        }
     ]
 }
