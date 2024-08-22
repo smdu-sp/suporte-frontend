@@ -393,7 +393,7 @@ function SearchChamados() {
                 <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}><Chip onClick={() => {
                   setTipo(ordem.tipo_id);
                   router.push(pathname + '?' + createQueryString('tipo', String(ordem.tipo_id)));
-                }}>{tipo_id}</Chip>
+                }}>{ordem.tipo_id}</Chip>
                 </td>
                 <td>
                   <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
