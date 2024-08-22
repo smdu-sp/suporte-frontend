@@ -4,7 +4,7 @@ import { authOptions } from "@/shared/auth/authOptions";
 import { getServerSession } from "next-auth";
 import { signOut } from "next-auth/react";
 import { IOrdem } from "./ordem.services";
-
+import { ITipo } from "./tipo.services";
 async function Logout() {
     await signOut({ redirect: false });
     window.location.href = '/login';
@@ -14,7 +14,7 @@ export interface ICategoria {
     id: string;
     nome: string;
     tipo_id: string;
-    categorias?: any[];
+    tipo?: ITipo;
     ordens?: IOrdem[];
     status: boolean;
 }

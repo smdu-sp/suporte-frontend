@@ -1,6 +1,13 @@
 import { Business, Handyman, Home, Person } from '@mui/icons-material';
 import LineAxisIcon from '@mui/icons-material/LineAxis';
+<<<<<<< HEAD
 import NotificationsIcon from '@mui/icons-material/Notifications';
+=======
+import TurnedInIcon from '@mui/icons-material/TurnedIn';
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import LabelImportantIcon from '@mui/icons-material/LabelImportant';
+
+>>>>>>> d095c2b017eddc0865b1770d12e7b8d00950eca4
 export interface IMenuOption {
     title:  string;
     href:   string;
@@ -50,11 +57,12 @@ export const menu: IMenu = {
             href: '/unidades',
             name: 'unidades',
             icon: Business,
-        }  ,
+        },
         {
             title: 'Tipos',
             href: '/tipos',
             name: 'tipos',
+<<<<<<< HEAD
             icon: Business,
         },
         {
@@ -62,6 +70,21 @@ export const menu: IMenu = {
             href: '/avisos',
             name: 'avisos',
             icon: NotificationsIcon
+=======
+            icon: TurnedInIcon,
+        },
+        {
+            title: 'Categorias',
+            href: '/categorias',
+            name: 'categorias',
+            icon: WidgetsIcon,
+        },
+        {
+            title: 'Sub Categorias',
+            href: '/subcategorias',
+            name: 'sub categorias',
+            icon: LabelImportantIcon,
+>>>>>>> d095c2b017eddc0865b1770d12e7b8d00950eca4
         }
     ]
 }
