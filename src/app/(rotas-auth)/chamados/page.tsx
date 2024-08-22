@@ -373,6 +373,8 @@ function SearchChamados() {
             <th>Solicitante</th>
             <th>Unidade</th>
             <th>Tipo</th>
+            <th>Categoria</th>
+            <th>Sub Categoria</th>
             <th style={{ textAlign: 'right' }}></th>
           </tr>
         </thead>
@@ -380,20 +382,30 @@ function SearchChamados() {
           {ordens && ordens.length > 0 ? ordens.map((ordem) => (
             <Tooltip key={ordem.id} title={ordem.observacoes} sx={{ maxWidth: '200px' }} arrow placement="bottom">
               <tr key={ordem.id} style={{ cursor: 'pointer' }}>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.id ? ordem.id : '-'}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.status ? statusChip[ordem.status].label : '-'}</td>
-                {['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || '') && <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}><Chip variant='solid' color={prioridades[ordem.prioridade].color} title={prioridades[ordem.prioridade].label}>{ordem.id ? prioridades[ordem.prioridade].label : '-'}</Chip></td>}
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{new Date(ordem.data_solicitacao).toLocaleDateString('pt-BR')} - {new Date(ordem.data_solicitacao).toLocaleTimeString('pt-BR')}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.servicos[0]?.tecnico ? abreviaNome(ordem.servicos[0]?.tecnico?.nome) : '-'}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.solicitante ? abreviaNome(ordem.solicitante.nome) : '-'}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.unidade && <Chip onClick={() => {
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.id ? ordem.id : '-'}</td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.status ? statusChip[ordem.status].label : '-'}</td>
+                {['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || '') && <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip variant='solid' color={prioridades[ordem.prioridade].color} title={prioridades[ordem.prioridade].label}>{ordem.id ? prioridades[ordem.prioridade].label : '-'}</Chip></td>}
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{new Date(ordem.data_solicitacao).toLocaleDateString('pt-BR')} - {new Date(ordem.data_solicitacao).toLocaleTimeString('pt-BR')}</td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.servicos[0]?.tecnico ? abreviaNome(ordem.servicos[0]?.tecnico?.nome) : '-'}</td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.solicitante ? abreviaNome(ordem.solicitante.nome) : '-'}</td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.unidade && <Chip onClick={() => {
                   setUnidade_id(ordem.unidade_id);
                   router.push(pathname + '?' + createQueryString('unidade_id', ordem.unidade_id));
                 }} variant='outlined' color='neutral' title={ordem.unidade.nome}>{ordem.unidade.sigla}</Chip>}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}><Chip onClick={() => {
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip color='primary' onClick={() => {
                   setTipo(ordem.tipo_id);
                   router.push(pathname + '?' + createQueryString('tipo', String(ordem.tipo_id)));
-                }}>{ordem.tipo_id}</Chip>
+                }}>{ordem.tipo?.nome}</Chip>
+                </td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip color='success' onClick={() => {
+                  setTipo(ordem.tipo_id);
+                  router.push(pathname + '?' + createQueryString('tipo', String(ordem.tipo_id)));
+                }}>{ordem.tipo?.categorias?.[0].nome}</Chip>
+                </td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip color='warning' onClick={() => {
+                  setTipo(ordem.tipo_id);
+                  router.push(pathname + '?' + createQueryString('tipo', String(ordem.tipo_id)));
+                }}>{ordem.tipo?.categorias?.[0].subcategorias?.[0].nome}</Chip>
                 </td>
                 <td>
                   <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>

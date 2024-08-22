@@ -12,7 +12,7 @@ import Add from '@mui/icons-material/Add';
 import { IconButton, Option, Select } from '@mui/joy';
 import { useState, FormEvent, Fragment, useEffect } from 'react';
 import * as tipoServices from '@/shared/services/tipo.services';
-import { ITipo } from '@/shared/services/ordem.services';
+import { ITipo } from '@/shared/services/tipo.services';
 import { IPaginadoTipo } from '@/shared/services/tipo.services';
 
 
