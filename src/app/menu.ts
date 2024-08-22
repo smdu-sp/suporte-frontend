@@ -3,7 +3,7 @@ import LineAxisIcon from '@mui/icons-material/LineAxis';
 import TurnedInIcon from '@mui/icons-material/TurnedIn';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import LabelImportantIcon from '@mui/icons-material/LabelImportant';
-
+import BookIcon from '@mui/icons-material/Book';
 export interface IMenuOption {
     title:  string;
     href:   string;
@@ -55,16 +55,16 @@ export const menu: IMenu = {
             icon: Business,
         },
         {
-            title: 'Tipos',
-            href: '/tipos',
-            name: 'tipos',
-            icon: Business,
-        },
-        {
             title: 'Avisos',
             href: '/avisos',
             name: 'avisos',
             icon: TurnedInIcon,
+        },
+        {
+            title: 'Tipos',
+            href: '/tipos',
+            name: 'tipos',
+            icon: BookIcon,
         },
         {
             title: 'Categorias',
