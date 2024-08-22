@@ -15,8 +15,8 @@ import {
   Box,
   Typography,
   ThemeProvider,
-  createTheme,
-} from "@mui/material";
+  useTheme,
+} from "@mui/joy";
 import CardDashboard from "@/components/CardDashboard";
 import TickPlacementBars from "@/components/Grafico";
 import Pessoas from "@/components/Pessoas";
@@ -24,27 +24,9 @@ import DatePickerComponent from "@/components/DatePicker";
 
 dayjs.locale("pt-br");
 
-const theme = createTheme({
-  palette: {
-    background: {
-      paper: "#fff",
-    },
-    text: {
-      primary: "#173A5E",
-      secondary: "#46505A",
-    },
-    action: {
-      active: "#001E3C",
-    },
-    success: {
-      main: "#009688",
-      dark: "#00695C",
-    },
-  },
-});
-
 export default function Dashboard() {
   const [value, setValue] = React.useState<Dayjs | null>(dayjs(Date.now()));
+  const { palette } = useTheme();
   return (
     <Content
       breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }]}
@@ -61,20 +43,13 @@ export default function Dashboard() {
       >
         <DatePickerComponent label="Data de Início"  />
         <DatePickerComponent label="Data de Fim" onChange={(newValue: any) => setValue(newValue)} />
-        <Button 
-          sx={{
-            color: theme.palette.background.paper,
-            borderColor: theme.palette.text.primary,
-            backgroundColor: theme.palette.text.primary,
-            textTransform: "none",
-            "&:hover": {
-              backgroundColor: theme.palette.action.active,
-            },
-          }}
-          variant="outlined"
-        >
-          Salvar
-        </Button>
+        <Button sx={{ 
+          backgroundColor: palette.text.primary, color: palette.background.body,
+          '&:hover': {
+            backgroundColor: palette.background.body,
+            color: palette.text.primary,
+          }
+        }}>Salvar</Button>
       </Box>
       <Box
         sx={{
