@@ -9,7 +9,6 @@ interface IProps {
     format?: string;
     value?: Dayjs | null;
     onChange?: (value: Dayjs | null) => void;
-
 }
 export default function DatePickerComponent(props: IProps) {
     return (
@@ -19,10 +18,12 @@ export default function DatePickerComponent(props: IProps) {
                 defaultValue={props.defaultValue || null} 
                 format={props.format || "DD/MM/YYYY"} 
                 value={props.value || null}
-                onChange={props.onChange || (() => {})} 
-                sx={{
-                    width:  200, 
-                    height: 50, 
+                dayOfWeekFormatter={day => day.format('ddd')}
+                onChange={props.onChange || (() => {})}
+                slotProps={{ 
+                    textField: { 
+                        size: 'small',
+                    }
                 }}
             />
         </LocalizationProvider>

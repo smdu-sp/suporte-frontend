@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 import { IUnidade } from "./unidade.services";
 import { IUsuario } from "./usuario.services";
 import { IServico } from "./servico.services";
+import { ITipo } from "./tipo.services";
 
 async function Logout() {
     await signOut({ redirect: false });
@@ -23,6 +24,7 @@ export interface IOrdem {
     tratar_com?: string;
     data_solicitacao: Date;
     tipo_id: string;
+    tipo?: ITipo;
     status: number;
     prioridade: number;
     observacoes: string;
@@ -39,14 +41,6 @@ export interface IPaginadoOrdem {
     pagina: number;
     limite: number;
 }
-
-export interface ITipo {
-    id: string,
-    nome: string
-}
-
-export interface ICategoria extends ITipo { }
-export interface ISubCategoria extends ICategoria { }
 
 export interface IMotivoTipo {
     id: string,

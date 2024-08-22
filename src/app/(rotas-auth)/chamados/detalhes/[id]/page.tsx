@@ -107,9 +107,9 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
         ordemServices.buscaMotivos(id)
             .then((response) => {
                 setMotivos([response]);
-                setTipo([response][0].categoria.tipo.id)
-                setCategoria_id([response][0].categoria.id)
-                setSubcategoria_id([response][0].id)
+                setTipo(response.categoria.tipo.id)
+                setCategoria_id(response.categoria.id)
+                setSubcategoria_id(response.id)
             }).then(() => {
                 nextSearchParams.delete('desc');
                 nextSearchParams.delete('id');
