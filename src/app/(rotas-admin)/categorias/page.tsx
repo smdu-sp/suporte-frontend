@@ -11,7 +11,7 @@ import { AlertsContext } from '@/providers/alertsProvider';
 import { TablePagination } from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
 import { IPaginadoCategoria, ICategoria } from '@/shared/services/categoria.services';
-import { ITipo } from '@/shared/services/ordem.services';
+import { ITipo } from '@/shared/services/tipo.services';
 import FormCategoria from '@/components/FormCategoria';
 
 export default function Tipos() {

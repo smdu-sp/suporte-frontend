@@ -2,7 +2,7 @@ import { Business, Handyman, Home, Person } from '@mui/icons-material';
 import LineAxisIcon from '@mui/icons-material/LineAxis';
 import TurnedInIcon from '@mui/icons-material/TurnedIn';
 import WidgetsIcon from '@mui/icons-material/Widgets';
-import LabelImportantIcon from '@mui/icons-material/LabelImportant';
+import SquareIcon from '@mui/icons-material/Square';
 
 export interface IMenuOption {
     title:  string;
@@ -70,7 +70,7 @@ export const menu: IMenu = {
             title: 'Sub Categorias',
             href: '/subcategorias',
             name: 'sub categorias',
-            icon: LabelImportantIcon,
+            icon: SquareIcon,
         }
     ]
 }
