@@ -3,7 +3,7 @@
 import Content from '@/components/Content';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, FormControl, FormLabel, IconButton, Input, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
-import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
+import { Add, Cancel, Check, Clear, Refresh, Search, Warning } from '@mui/icons-material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertsContext } from '@/providers/alertsProvider';
 import { TablePagination } from '@mui/material';
@@ -242,13 +242,13 @@ function SearchAvisos() {
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!avisos.status ? (
-                    <Tooltip title="Ativar Unidade" arrow placement="top">
+                    <Tooltip title="Ativar Aviso" arrow placement="top">
                       <IconButton size="sm" color="success" onClick={() => confirmaAtivaAviso(avisos.id ? avisos.id : '')}>
                         <Check />
                       </IconButton>
                     </Tooltip>                    
                   ) : (
-                    <Tooltip title="Desativar" arrow placement="top">
+                    <Tooltip title="Desativar Aviso" arrow placement="top">
                       <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaAviso(avisos.id ? avisos.id : '')}>
                         <Cancel />
                       </IconButton>
@@ -256,7 +256,6 @@ function SearchAvisos() {
                   )}
                 </div>
               </td>
-
               <FormAtualizaAviso open={openAtualizaAviso} openFuncao={setOpenAtualizaAviso} aviso={avisos} />
             </tr>
           )) : <tr><td colSpan={2}>Nenhum aviso encontrado</td></tr>}
