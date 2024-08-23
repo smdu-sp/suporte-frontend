@@ -3,7 +3,7 @@
 import Content from '@/components/Content';
 import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, FormControl, FormLabel, IconButton, Input, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
-import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
+import { Add, Cancel, Check, Clear, Refresh, Search, Warning } from '@mui/icons-material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertsContext } from '@/providers/alertsProvider';
 import { TablePagination } from '@mui/material';
@@ -11,6 +11,7 @@ import { OverridableStringUnion } from '@mui/types';
 import * as avisoService from '@/shared/services/avisos.service';
 import IAviso from '@/shared/interfaces/IAviso';
 import FormNovoAviso from '@/components/FormNovoAviso';
+import FormAtualizaAviso from '@/components/FormAtualizaAviso';
 
 export default function Avisos(){
   return (
@@ -30,6 +31,7 @@ function SearchAvisos() {
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
   const [openNovoAviso, setOpenNovoAviso] = useState<boolean>(false);
+  const [openAtualizaAviso, setOpenAtualizaAviso] = useState<boolean>(false);
 
   const confirmaVazio: {
     aberto: boolean,
@@ -236,17 +238,17 @@ function SearchAvisos() {
                   theme.vars.palette.danger.plainActiveBg : 
                   undefined
             }}>
-              <td onClick={() => router.push('/avisos/detalhes/' + avisos.id)}>{avisos.titulo}</td>
+              <td onClick={() => setOpenAtualizaAviso(true)}>{avisos.titulo}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!avisos.status ? (
-                    <Tooltip title="Ativar Unidade" arrow placement="top">
+                    <Tooltip title="Ativar Aviso" arrow placement="top">
                       <IconButton size="sm" color="success" onClick={() => confirmaAtivaAviso(avisos.id ? avisos.id : '')}>
                         <Check />
                       </IconButton>
                     </Tooltip>                    
                   ) : (
-                    <Tooltip title="Desativar" arrow placement="top">
+                    <Tooltip title="Desativar Aviso" arrow placement="top">
                       <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaAviso(avisos.id ? avisos.id : '')}>
                         <Cancel />
                       </IconButton>
@@ -254,6 +256,7 @@ function SearchAvisos() {
                   )}
                 </div>
               </td>
+              <FormAtualizaAviso open={openAtualizaAviso} openFuncao={setOpenAtualizaAviso} aviso={avisos} />
             </tr>
           )) : <tr><td colSpan={2}>Nenhum aviso encontrado</td></tr>}
         </tbody>
