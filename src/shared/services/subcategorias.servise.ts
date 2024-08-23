@@ -15,7 +15,7 @@ export interface ISubCategoria {
     id: string;
     nome: string;
     categoria_id: string;
-    categoria?: ICategoria[];
+    categoria?: ICategoria;
     ordens?: IOrdem[];
     status: boolean;
 }
@@ -112,7 +112,7 @@ async function criar({ nome, categoria_id, status }: { nome: string, categoria_i
     return novoTipo;
 }
 
-async function atualizar({ id, nome, status }: { id: string, nome: string, status: string }): Promise<ISubCategoria> {
+async function atualizar({ id, nome, categoria_id, status }: { id: string, nome: string, categoria_id: string, status: string }): Promise<ISubCategoria> {
     const session = await getServerSession(authOptions);
     const atualizado = await fetch(`${baseURL}subcategorias/atualizar/${id}`, {
         method: "PATCH",
@@ -122,6 +122,7 @@ async function atualizar({ id, nome, status }: { id: string, nome: string, statu
         },
         body: JSON.stringify({
             nome,
+            categoria_id,
             status: status === 'true'
         })
     }).then((response) => {

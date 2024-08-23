@@ -1,9 +1,9 @@
 'use client'
 
 import Content from '@/components/Content';
-import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
+import { FormEvent, Fragment, Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import * as tipoServices from '@/shared/services/tipo.services';
-import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, FormControl, FormLabel, IconButton, Input, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
+import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, DialogContent, DialogTitle, FormControl, FormLabel, IconButton, Input, Modal, ModalDialog, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
 import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertsContext } from '@/providers/alertsProvider';
@@ -30,6 +30,11 @@ function SearchTipos() {
   const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
+  const [nome, setNome] = useState('');
+  const [dados, setDados] = useState<ITipo[]>([]);
+  const [statusForm, setStatusForm] = useState('true');
+  const [id, setId] = useState('');
+
   const [open, setOpen] = useState(false);
 
   const confirmaVazio: {
@@ -63,6 +68,13 @@ function SearchTipos() {
     },
     [searchParams]
   );
+
+  useEffect(() => {
+    tipoServices.buscarTudo()
+      .then((res: IPaginadoTipo) => {
+        setDados(res.data)
+      })
+  }, []);
 
 
 
@@ -260,12 +272,17 @@ function SearchTipos() {
                 theme.vars.palette.danger.plainActiveBg :
                 undefined
             }}>
-              <td onClick={() => { router.push('/tipos?id=' + tipo.id); setOpen(true) }}>{tipo.nome}</td>
+              <td onClick={() => {
+                setOpen(true)
+                setNome(tipo.nome)
+                setId(tipo.id)
+                setStatus(tipo.status ? 'true' : 'false')
+              }}>{tipo.nome}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!tipo.status ? (
                     <Tooltip title="Ativar Unidade" arrow placement="top">
-                      <IconButton size="sm" color="success" onClick={() => { confirmaAtivaTipo(tipo.id); setOpen(true) }}>
+                      <IconButton size="sm" color="success" onClick={() => { confirmaAtivaTipo(tipo.id);}}>
                         <Check />
                       </IconButton>
                     </Tooltip>
@@ -293,14 +310,45 @@ function SearchTipos() {
         labelRowsPerPage="Registros por página"
         labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
       /> : null}
-      <FormCategoria
-        titulo='Tipo'
-        titulo_select=''
-        tipo='tipo'
-        criar={criar}
-        atualizar={atualizar}
-        open={open}
-      />
+      <Fragment>
+        <IconButton onClick={() => setOpen(true)} color='primary' variant='soft' size='lg' sx={{
+          position: 'fixed',
+          bottom: '2rem',
+          right: '2rem',
+        }}><Add /></IconButton>
+        <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); }}>
+          <ModalDialog>
+            <DialogTitle>{id === '' ? 'Criar' : 'Atualizar'} Tipo</DialogTitle>
+            <DialogContent>Preencha todos os campos para criar uma nova categoria.</DialogContent>
+            <form
+              onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                if (id === '') {
+                  criar(nome, statusForm);
+                } else {
+                  atualizar(id, nome, statusForm);
+                }
+                setOpen(false);
+              }}
+            >
+              <Stack spacing={2}>
+                <FormControl>
+                  <FormLabel>Nome</FormLabel>
+                  <Input value={nome} onChange={(e) => setNome(e.target.value)} autoFocus required />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Status</FormLabel>
+                  <Select value={statusForm} onChange={(_, v) => setStatusForm(v as string)} required>
+                    <Option value="true">Ativo</Option>
+                    <Option value="false">Inativo</Option>
+                  </Select>
+                </FormControl>
+                <Button type="submit" disabled={nome.length < 1 ? true : false}>{id === '' ? 'Criar' : 'Atualizar'}</Button>
+              </Stack>
+            </form>
+          </ModalDialog>
+        </Modal>
+      </Fragment>
     </Content>
   );
 }

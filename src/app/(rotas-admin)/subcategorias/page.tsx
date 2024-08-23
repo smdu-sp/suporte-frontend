@@ -1,10 +1,10 @@
 'use client'
 
 import Content from '@/components/Content';
-import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
-import * as tipoServices from '@/shared/services/tipo.services';
+import { FormEvent, Fragment, Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import * as subCategoriaServices from '@/shared/services/subcategorias.servise';
-import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, FormControl, FormLabel, IconButton, Input, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
+import * as categoriaServices from '@/shared/services/categoria.services';
+import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, DialogContent, DialogTitle, FormControl, FormLabel, IconButton, Input, Modal, ModalDialog, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
 import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertsContext } from '@/providers/alertsProvider';
@@ -13,6 +13,7 @@ import { OverridableStringUnion } from '@mui/types';
 import { IPaginadoUnidade, IUnidade } from '@/shared/services/unidade.services';
 import { IPaginadoTipo, ITipo } from '@/shared/services/tipo.services';
 import FormCategoria from '@/components/FormCategoria';
+import { ICategoria, IPaginadoCategoria } from '@/shared/services/categoria.services';
 
 export default function Tipos() {
   return (
@@ -25,14 +26,18 @@ export default function Tipos() {
 function SearchSubcategorias() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [tipos, setTipos] = useState<subCategoriaServices.ISubCategoria[]>([]);
+  const [subcategorias, setSubcategorias] = useState<subCategoriaServices.ISubCategoria[]>([]);
   const [pagina, setPagina] = useState(searchParams.get('pagina') ? Number(searchParams.get('pagina')) : 1);
   const [limite, setLimite] = useState(searchParams.get('limite') ? Number(searchParams.get('limite')) : 10);
   const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
   const [open, setOpen] = useState(false);
-
+  const [nome, setNome] = useState('');
+  const [dados, setDados] = useState<ICategoria[]>([]);
+  const [statusForm, setStatusForm] = useState('true');
+  const [id, setId] = useState('');
+  const [idCategoria, setIdCategoria] = useState('');
 
   const confirmaVazio: {
     aberto: boolean,
@@ -57,6 +62,7 @@ function SearchSubcategorias() {
     buscaSubcategorias();
   }, [status, pagina, limite]);
 
+
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -66,13 +72,20 @@ function SearchSubcategorias() {
     [searchParams]
   );
 
+  useEffect(() => {
+    categoriaServices.buscarTudo()
+      .then((response: IPaginadoCategoria) => {
+        setDados(response.data);
+      })
+  }, []);
+
   const buscaSubcategorias = async () => {
     subCategoriaServices.buscarTudo(status, pagina, limite, busca)
       .then((response: subCategoriaServices.IPaginadoSubCategoria) => {
         setTotal(response.total);
         setPagina(response.pagina);
         setLimite(response.limite);
-        setTipos(response.data);
+        setSubcategorias(response.data);
       });
   }
 
@@ -123,9 +136,9 @@ function SearchSubcategorias() {
       buscaSubcategorias();
     };
   }
-  const atualizar = async (id: string, nome: string, status: string) => {
+  const atualizar = async (id: string, nome: string, categoria_id: string, status: string) => {
     const alterado: ITipo = await subCategoriaServices.atualizar({
-      id, nome, status
+      id, nome, categoria_id, status
     });
     if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
     if (alterado) {
@@ -135,7 +148,7 @@ function SearchSubcategorias() {
   }
 
   const ativaTipo = async (id: string) => {
-    var resposta = await tipoServices.ativar(id);
+    var resposta = await subCategoriaServices.ativar(id);
     if (resposta) {
       setAlert('Tipo ativado!', 'Esse tipo foi autorizado e será visível para seleção.', 'success', 3000, Check);
       buscaSubcategorias();
@@ -254,26 +267,38 @@ function SearchSubcategorias() {
           </tr>
         </thead>
         <tbody>
-          {tipos ? tipos.map((tipo) => (
-            <tr key={tipo.id} style={{
+          {subcategorias ? subcategorias.map((subcategoria) => (
+            <tr key={subcategoria.id} style={{
               cursor: 'pointer',
-              backgroundColor: !tipo.status ?
+              backgroundColor: !subcategoria.status ?
                 theme.vars.palette.danger.plainActiveBg :
                 undefined
             }}>
-              <td onClick={() => router.push('/tipos/detalhes/' + tipo.id)}>{tipo.nome}</td>
-              <td onClick={() => router.push('/tipos/detalhes/' + tipo.id)}>{tipo.categoria?.[0]?.nome}</td>
+              <td onClick={() => {
+                setOpen(true)
+                setNome(subcategoria.nome)
+                setId(subcategoria.id)
+                setIdCategoria(subcategoria.categoria_id)
+                setStatus(subcategoria.status ? 'true' : 'false')
+              }}>{subcategoria.nome}</td>
+              <td onClick={() => {
+                setOpen(true)
+                setNome(subcategoria.nome)
+                setId(subcategoria.id)
+                setIdCategoria(subcategoria.categoria_id)
+                setStatus(subcategoria.status ? 'true' : 'false')
+              }}>{subcategoria.categoria?.nome}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                  {!tipo.status ? (
+                  {!subcategoria.status ? (
                     <Tooltip title="Ativar Unidade" arrow placement="top">
-                      <IconButton size="sm" color="success" onClick={() => confirmaAtivaTipo(tipo.id)}>
+                      <IconButton size="sm" color="success" onClick={() => confirmaAtivaTipo(subcategoria.id)}>
                         <Check />
                       </IconButton>
                     </Tooltip>
                   ) : (
                     <Tooltip title="Desativar" arrow placement="top">
-                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaTipo(tipo.id)}>
+                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaTipo(subcategoria.id)}>
                         <Cancel />
                       </IconButton>
                     </Tooltip>
@@ -295,14 +320,51 @@ function SearchSubcategorias() {
         labelRowsPerPage="Registros por página"
         labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
       /> : null}
-      <FormCategoria
-        titulo='Sub Categoria'
-        titulo_select='Categoria Referente'
-        tipo='sub'
-        criar={criar}
-        atualizar={atualizar}
-        open={open}
-      />
+      <Fragment>
+        <IconButton onClick={() => setOpen(true)} color='primary' variant='soft' size='lg' sx={{
+          position: 'fixed',
+          bottom: '2rem',
+          right: '2rem',
+        }}><Add /></IconButton>
+        <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); }}>
+          <ModalDialog>
+            <DialogTitle>{id === '' ? 'Criar' : 'Atualizar'} Sub Categoria</DialogTitle>
+            <DialogContent>Preencha todos os campos para criar uma nova categoria.</DialogContent>
+            <form
+              onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                if (id === '') {
+                  criar(nome, idCategoria, statusForm);
+                } else {
+                  atualizar(id, nome, idCategoria, statusForm);
+                }
+                setOpen(false);
+              }}
+            >
+              <Stack spacing={2}>
+                <FormControl>
+                  <FormLabel>Nome</FormLabel>
+                  <Input value={nome} onChange={(e) => setNome(e.target.value)} autoFocus required />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Categoria Referente</FormLabel>
+                  <Select value={idCategoria} onChange={(_, v) => setIdCategoria(v as string)} required>
+                    {dados.map((d) => <Option key={d.id} value={d.id}>{d.nome}</Option>)}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Status</FormLabel>
+                  <Select value={statusForm} onChange={(_, v) => setStatusForm(v as string)} required>
+                    <Option value="true">Ativo</Option>
+                    <Option value="false">Inativo</Option>
+                  </Select>
+                </FormControl>
+                <Button type="submit" disabled={nome.length < 1 ? true : false}>{id === '' ? 'Criar' : 'Atualizar'}</Button>
+              </Stack>
+            </form>
+          </ModalDialog>
+        </Modal>
+      </Fragment>
     </Content>
   );
 }

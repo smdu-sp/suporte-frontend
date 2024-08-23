@@ -26,12 +26,6 @@ interface Dados {
     atualizar?: any
 }
 
-interface ICriar {
-    nome: string,
-    id?: string,
-    status: boolean
-}
-
 export default function FormCategoria(props: Dados) {
     const [open, setOpen] = useState<boolean>(false);
     const [id, setId] = useState<string>('');
@@ -82,15 +76,6 @@ export default function FormCategoria(props: Dados) {
                     <form
                         onSubmit={(event: FormEvent<HTMLFormElement>) => {
                             event.preventDefault();
-                            if (idRef) {
-                                props.atualizar(nome, id, status);
-                            } else {
-                                if (props.tipo !== 'tipo') {
-                                    props.criar(nome, id, status);
-                                } else {
-                                    props.criar(nome, status);
-                                }
-                            }
                             setOpen(false);
                         }}
                     >

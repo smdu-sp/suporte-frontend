@@ -113,7 +113,7 @@ async function criar({ nome, tipo_id, status }: { nome: string, tipo_id: string,
     return novoTipo;
 }
 
-async function atualizar({ id, nome, status }: { id: string, nome: string, status: string }): Promise<ICategoria> {
+async function atualizar({ id, nome, tipo_id, status }: { id: string, nome: string, tipo_id: string, status: string }): Promise<ICategoria> {
     const session = await getServerSession(authOptions);
     const atualizado = await fetch(`${baseURL}categorias/atualizar/${id}`, {
         method: "PATCH",
@@ -123,6 +123,7 @@ async function atualizar({ id, nome, status }: { id: string, nome: string, statu
         },
         body: JSON.stringify({
             nome,
+            tipo_id,
             status: status === 'true'
         })
     }).then((response) => {

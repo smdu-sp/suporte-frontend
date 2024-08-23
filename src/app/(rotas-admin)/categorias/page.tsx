@@ -1,10 +1,10 @@
 'use client'
 
 import Content from '@/components/Content';
-import { Suspense, useCallback, useContext, useEffect, useState } from 'react';
+import { FormEvent, Fragment, Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import * as categoriaServices from '@/shared/services/categoria.services';
 import * as tipoServices from '@/shared/services/tipo.services';
-import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, FormControl, FormLabel, IconButton, Input, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
+import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, DialogContent, DialogTitle, FormControl, FormLabel, IconButton, Input, Modal, ModalDialog, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
 import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertsContext } from '@/providers/alertsProvider';
@@ -32,6 +32,11 @@ function SearchCategorias() {
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
   const [open, setOpen] = useState(false);
+  const [nome, setNome] = useState('');
+  const [dados, setDados] = useState<ITipo[]>([]);
+  const [statusForm, setStatusForm] = useState('true');
+  const [id, setId] = useState('');
+  const [idTipo, setIdTipo] = useState('');
 
   const confirmaVazio: {
     aberto: boolean,
@@ -120,7 +125,10 @@ function SearchCategorias() {
   }
 
   useEffect(() => {
-    console.log(buscaTipo("ad1c3cb4-56b4-4d18-a268-72c8048f7bd6"));
+    tipoServices.buscarTudo()
+      .then((res) => {
+        setDados(res.data)
+      })
   }, []);
 
   const criar = async (nome: string, tipo_id: string, status: string) => {
@@ -133,9 +141,9 @@ function SearchCategorias() {
       buscaTipos();
     };
   }
-  const atualizar = async (id: string, nome: string, status: string) => {
+  const atualizar = async (id: string, nome: string, tipo_id: string, status: string) => {
     const alterado: ITipo = await categoriaServices.atualizar({
-      id, nome, status
+      id, nome, tipo_id, status
     });
     if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
     if (alterado) {
@@ -271,8 +279,23 @@ function SearchCategorias() {
                 theme.vars.palette.danger.plainActiveBg :
                 undefined
             }}>
-              <td onClick={() => router.push('/tipos/detalhes/' + categoria.id)}>{categoria.nome}</td>
-              <td>{categoria.tipo?.nome}</td>
+              <td onClick={() => {
+                setOpen(true)
+                setNome(categoria.nome)
+                setId(categoria.id)
+                setIdTipo(categoria.tipo_id)
+                setStatus(categoria.status ? 'true' : 'false')
+              }}
+              >{categoria.nome}</td>
+              <td
+                onClick={() => {
+                  setOpen(true)
+                  setNome(categoria.nome)
+                  setId(categoria.id)
+                  setIdTipo(categoria.tipo_id)
+                  setStatus(categoria.status ? 'true' : 'false')
+                }}
+              >{categoria.tipo?.nome}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!categoria.status ? (
@@ -305,14 +328,51 @@ function SearchCategorias() {
         labelRowsPerPage="Registros por página"
         labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
       /> : null}
-      <FormCategoria
-        titulo='Categoria'
-        titulo_select='Tipo Referente'
-        tipo='cat'
-        criar={criar}
-        atualizar={atualizar}
-        open={open}
-      />
+      <Fragment>
+        <IconButton onClick={() => setOpen(true)} color='primary' variant='soft' size='lg' sx={{
+          position: 'fixed',
+          bottom: '2rem',
+          right: '2rem',
+        }}><Add /></IconButton>
+        <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); }}>
+          <ModalDialog>
+            <DialogTitle>{id === '' ? 'Criar' : 'Atualizar'} Categoria</DialogTitle>
+            <DialogContent>Preencha todos os campos para criar uma nova categoria.</DialogContent>
+            <form
+              onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                if (id === '') {
+                  criar(nome, idTipo, statusForm);
+                } else {
+                  atualizar(id, nome, idTipo, statusForm);
+                }
+                setOpen(false);
+              }}
+            >
+              <Stack spacing={2}>
+                <FormControl>
+                  <FormLabel>Nome</FormLabel>
+                  <Input value={nome} onChange={(e) => setNome(e.target.value)} autoFocus required />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Tipo Referente</FormLabel>
+                  <Select value={idTipo} onChange={(_, v) => setIdTipo(v as string)} required>
+                    {dados.map((d) => <Option key={d.id} value={d.id}>{d.nome}</Option>)}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Status</FormLabel>
+                  <Select value={statusForm} onChange={(_, v) => setStatusForm(v as string)} required>
+                    <Option value="true">Ativo</Option>
+                    <Option value="false">Inativo</Option>
+                  </Select>
+                </FormControl>
+                <Button type="submit" disabled={nome.length < 1 ? true : false}>{id === '' ? 'Criar' : 'Atualizar'}</Button>
+              </Stack>
+            </form>
+          </ModalDialog>
+        </Modal>
+      </Fragment>
     </Content>
   );
 }
