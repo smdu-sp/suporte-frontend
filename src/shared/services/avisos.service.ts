@@ -19,68 +19,102 @@ async function Logout() {
 
 async function buscarTudo(status: string = 'true', pagina: number = 1, limite: number = 10, busca: string = ''): Promise<IPaginadoAviso> {
     const session = await getServerSession(authOptions);
-    const res = await fetch(`${process.env.API_URL}avisos?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
+    const response = await fetch(`${process.env.API_URL}avisos?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${session?.access_token}`
         }
     });
-    if (res.status !== 200) console.log('erro');
-    const avisos: IPaginadoAviso = await res.json();
-    return avisos
+    if (response.status === 401) Logout();
+    if (response.status !== 200) throw new Error('Erro buscando avisos.');
+    const avisos: IPaginadoAviso = await response.json();
+    return avisos;
 }
 
-async function ativar(id: string): Promise<IAviso> {
+async function criarAviso(aviso: IAviso): Promise<IAviso | null> {
     const session = await getServerSession(authOptions);
-    const ativado = await fetch(`${process.env.API_URL}avisos/ativa/${id}`, {
+    aviso.status = true;
+    aviso.tipo_id = 'a49c681d-a99a-432f-a924-3d55b5842407';
+    const response: Response = await fetch(`${process.env.API_URL}avisos/criar`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session?.access_token}`
+        },
+        body: JSON.stringify({ ...aviso }),
+    });
+    if (response.status === 401) Logout();
+    if (response.status !== 201) return null;
+    const avisos: IAviso = await response.json();
+    return avisos;
+}
+
+async function atualizarAviso(aviso: IAviso, id: string): Promise<IAviso | null> {
+    const session = await getServerSession(authOptions);
+    const response: Response = await fetch(`${process.env.API_URL}avisos/atualizar/${id}`, {
+        method: 'PATCH',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session?.access_token}`
+        },
+        body: JSON.stringify({ ...aviso }),
+    });
+    if (response.status === 401) Logout();
+    if (response.status !== 200) return null;
+    const avisos: IAviso = await response.json();
+    return avisos;
+}
+
+async function ativar(id: string): Promise<IAviso | null> {
+    const session = await getServerSession(authOptions);
+    const response: Response = await fetch(`${process.env.API_URL}avisos/ativa/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${session?.access_token}`
         }
-    }).then((response) => {
-        if (response.status === 401) Logout();
-        if (response.status !== 200) return;
-        return response.json();
     });
+    if (response.status === 401) Logout();
+    if (response.status !== 200) return null;
+    const ativado: IAviso = await response.json();
     return ativado;
 }
 
-async function desativar(id: string): Promise<{ autorizado: boolean }> {
+async function desativar(id: string): Promise<IAviso | null> {
     const session = await getServerSession(authOptions);
-    const desativado = await fetch(`${process.env.API_URL}avisos/inativa/${id}`, {
+    const response: Response = await fetch(`${process.env.API_URL}avisos/inativa/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${session?.access_token}`
         }
-    }).then((response) => {
-        if (response.status === 401) Logout();
-        if (response.status !== 200) return;
-        return response.json();
     });
+    if (response.status === 401) Logout();
+    if (response.status !== 200) return null;
+    const desativado: IAviso = await response.json();
     return desativado;
 }
 
-async function remover(id: string): Promise<{ autorizado: boolean }> {
+async function remover(id: string): Promise<IAviso> {
     const session = await getServerSession(authOptions);
-    const desativado = await fetch(`${process.env.API_URL}avisos/remover/${id}`, {
+    const response: Response = await fetch(`${process.env.API_URL}avisos/remover/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${session?.access_token}`
         }
-    }).then((response) => {
-        if (response.status === 401) Logout();
-        if (response.status !== 200) return;
-        return response.json();
     });
-    return desativado;
+    if (response.status === 401) Logout();
+    if (response.status !== 200) throw new Error('Erro ao deletar aviso.');
+    const removido: IAviso = await response.json();
+    return removido;
 }
 
 export {
     buscarTudo,
+    criarAviso,
+    atualizarAviso,
     ativar,
     desativar,
     remover
