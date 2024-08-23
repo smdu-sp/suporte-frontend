@@ -5,6 +5,6 @@ export default interface IAviso {
     mensagem: string;
     cor: string;
     rota: string;
-    status: boolean;
-    tipo_id: string;
+    status?: boolean;
+    tipo_id?: string; // tipo sendo opicional apenas para ambiente de teste. 
 }

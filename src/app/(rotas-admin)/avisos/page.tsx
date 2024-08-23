@@ -272,7 +272,7 @@ function SearchAvisos() {
         labelRowsPerPage="Registros por página"
         labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
       /> : null}
-      {<FormNovoAviso open={openNovoAviso} openFuncao={setOpenNovoAviso} />}
+      <FormNovoAviso open={openNovoAviso} openFuncao={setOpenNovoAviso} />
       <IconButton onClick={() => setOpenNovoAviso(true)} color='primary' variant='soft' size='lg' sx={{
         position: 'fixed',
         bottom: '2rem',
