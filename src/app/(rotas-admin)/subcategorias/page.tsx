@@ -349,7 +349,7 @@ function SearchSubcategorias() {
                 <FormControl>
                   <FormLabel>Categoria Referente</FormLabel>
                   <Select value={idCategoria} onChange={(_, v) => setIdCategoria(v as string)} required>
-                    {dados.map((d) => <Option key={d.id} value={d.id}>{d.nome}</Option>)}
+                    {dados && dados.length > 0 ? dados.map((d) => <Option key={d.id} value={d.id}>{d.nome}</Option>) : null}
                   </Select>
                 </FormControl>
                 <FormControl>
