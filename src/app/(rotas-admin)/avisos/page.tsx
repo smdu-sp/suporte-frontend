@@ -31,7 +31,7 @@ function SearchAvisos() {
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
   const [openNovoAviso, setOpenNovoAviso] = useState<boolean>(false);
-  const [openAtualizaAviso, setOpenAtualizaAviso] = useState<boolean>(false);
+  const [openAtualizaAviso, setOpenAtualizaAviso] = useState<string | null | undefined>(null);
 
   const confirmaVazio: {
     aberto: boolean,
@@ -231,14 +231,14 @@ function SearchAvisos() {
           </tr>
         </thead>
         <tbody>
-          {avisos ? avisos.map((aviso) => (
+          {avisos ? avisos.map((aviso: IAviso) => (
             <tr key={aviso.id} style={{
               cursor: 'pointer',
               backgroundColor: !aviso.status ?
                   theme.vars.palette.danger.plainActiveBg : 
                   undefined
             }}>
-              <td onClick={() => setOpenAtualizaAviso(true)}>{aviso.titulo}</td>
+              <td onClick={() => setOpenAtualizaAviso(aviso.id)}>{aviso.titulo}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!aviso.status ? (
@@ -256,7 +256,7 @@ function SearchAvisos() {
                   )}
                 </div>
               </td>
-              <FormAtualizaAviso open={openAtualizaAviso} openFuncao={setOpenAtualizaAviso} aviso={aviso} />
+              <FormAtualizaAviso open={openAtualizaAviso === aviso.id} openFuncao={setOpenAtualizaAviso} aviso={aviso} />
             </tr>
           )) : <tr><td colSpan={2}>Nenhum aviso encontrado</td></tr>}
         </tbody>

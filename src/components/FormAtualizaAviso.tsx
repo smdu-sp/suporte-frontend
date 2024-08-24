@@ -15,12 +15,12 @@ import { KeyboardArrowDown } from '@mui/icons-material';
 import IAviso from '@/shared/interfaces/IAviso';
 import * as service from '@/shared/services/avisos.service';
 import { AlertsContext } from '@/providers/alertsProvider';
+import { Check, Warning } from '@mui/icons-material';
 
 // Constante tipo apenas para testes. Remover antes de subir em homologação e prod.
 const tipo: string = 'a49c681d-a99a-432f-a924-3d55b5842407';
 
 export default function FormAtualizaAviso({ open, openFuncao, aviso }: {  open: boolean, openFuncao: Function, aviso: IAviso }) {
-  // debugar prop de aviso, renderizando uma apenas no form de atualização
   const [ titulo, setTitulo ] = React.useState<string>();
   const [ mensagem, setMensagem ] = React.useState<string>();
   const [ cor, setCor ] = React.useState<string>();
@@ -47,10 +47,12 @@ export default function FormAtualizaAviso({ open, openFuncao, aviso }: {  open: 
         tipo_id: tipo
       }, aviso.id);
       if (!response) throw new Error('Erro ao atualizar o aviso.');
+      setAlert('Aviso atualizado!', 'Esse aviso foi atualizado com sucesso.', 'success', 3000, Check);
+      openFuncao(null);
       return response;
     } catch(e) {
       console.log(e);
-      // adicionar handler de erros
+      setAlert('Tente novamente!', 'Não foi possível atualizar o aviso.', 'warning', 3000, Warning);
       return null;
     }
   };
@@ -61,16 +63,18 @@ export default function FormAtualizaAviso({ open, openFuncao, aviso }: {  open: 
       if (!aviso.id) throw new Error('ID do aviso não encontrado.');
       const aviso_deletado: IAviso = await service.remover(aviso.id);
       if (!aviso_deletado) throw new Error('Erro ao deletar o aviso');
+      setAlert('Aviso deletado!', 'Esse aviso foi deletado com sucesso.', 'success', 3000, Check);
       return aviso_deletado;
     } catch (error) {
       console.log(e);
+      setAlert('Tente novamente!', 'Não foi possível deletar o aviso.', 'warning', 3000, Warning);
       return null;
     }
   }
 
   return (
     <React.Fragment>
-      <Modal open={open} onClose={() => openFuncao(false)}>
+      <Modal open={open} onClose={() => openFuncao(null)}>
         <ModalDialog size='lg' sx={{ width: '500px' }}>
           <DialogTitle>Atualizar Aviso</DialogTitle>
           <DialogContent>Atualize as informações do aviso.</DialogContent>
