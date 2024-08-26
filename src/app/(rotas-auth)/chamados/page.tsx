@@ -48,20 +48,18 @@ function SearchChamados() {
   const [prioridade, setPrioridade] = useState(1);
   const [tecnicos, setTecnicos] = useState<IUsuario[]>([]);
   const [usuario, setUsuario] = useState<IUsuario>();
+  const [testee, setTeste] = useState(false);
 
-  const socket = io(process.env.API_URL as string);
+
+  const socket = io('http://localhost:3000');
 
   useEffect(() => {
     socket.on('servicos', (data: boolean) => {
       if (data) {
-        console.log(data);
+        buscaOrdens()
       }
     })
   }, [])
-
-  const teste = () => {
-    socket.emit('servicos', true)
-  }
 
   const confirmaVazio: {
     aberto: boolean,
@@ -254,6 +252,7 @@ function SearchChamados() {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         sx={{ maxWidth: 360 }}
       >
+        
         <div>
           <Typography level="title-lg">{confirma.titulo}</Typography>
           <Typography sx={{ mt: 1, mb: 2 }} level="title-md">{confirma.pergunta}</Typography>

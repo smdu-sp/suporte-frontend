@@ -23,6 +23,7 @@ import { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent
 import { useSearchParams } from 'next/navigation';
 import ModalAviso from "@/components/ModalAviso";
 import { buscarTudo, IPaginadoAviso } from "@/shared/services/avisos.service";
+import { io } from "socket.io-client";
 
 export default function ChamadoDetalhes(props: { params: { id: string } }) {
 
@@ -194,6 +195,8 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
       })
   }
 
+  const socket = io('http://localhost:3000');
+
   function handleSubmit() {
       if (!id) {
           let erros = 0;
@@ -234,7 +237,10 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                   subcategoria_id
               }).then((ordem: IOrdem) => {
                   if (!ordem) setAlert('Erro', 'Erro ao criar chamado!', 'danger', 3000, Cancel);
-                  if (ordem) router.push('/chamados?criado=1');
+                  if (ordem) {
+                    router.push('/chamados?criado=1')
+                    socket.emit('servicos', true)
+                  };
               });
       } else {
           ordemServices.atualizar(id, {
