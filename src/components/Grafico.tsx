@@ -2,8 +2,7 @@
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
-import { Option, Select, useTheme } from '@mui/joy';
-import { useEffect, useState } from 'react';
+import { useTheme } from '@mui/joy';
 
 const chartSetting = {
     yAxis: [

@@ -15,7 +15,6 @@ import { AlertsContext } from "@/providers/alertsProvider";
 
 export default function UsuarioDetalhes() {
     const [usuario, setUsuario] = useState<IUsuario>();
-    const [permissao, setPermissao] = useState('');
     const [unidades, setUnidades] = useState<IUnidade[]>([]);
     const [unidade_id, setUnidade_id] = useState('');
     const router = useRouter();
@@ -44,7 +43,6 @@ export default function UsuarioDetalhes() {
         usuarioServices.validaUsuario()
             .then((response: IUsuario) => {
                 setUsuario(response);
-                setPermissao(response.permissao);
                 setUnidade_id(response.unidade_id);
             });
 
@@ -62,8 +60,7 @@ export default function UsuarioDetalhes() {
             ]}
             titulo={usuario ? usuario.nome : 'Meu Perfil'}
             tags={
-                usuario ? <div style={{ display: 'flex', gap: '0.2rem' }}>     
-                  <Chip color={permissoes[usuario?.permissao].color} size='lg'>{permissoes[usuario?.permissao].label}</Chip>
+                usuario ? <div style={{ display: 'flex', gap: '0.2rem' }}>
                 </div> : null
             }
             pagina=""
@@ -80,18 +77,6 @@ export default function UsuarioDetalhes() {
             >
                 <Card sx={{ width: '100%' }}>
                     <Stack spacing={2} >
-                        <Stack>
-                            <FormControl>
-                                <FormLabel>Permissao</FormLabel>
-                                <Select value={permissao ? permissao : 'USR'} disabled>
-                                    <Option value="DEV">Desenvolvedor</Option>
-                                    <Option value="ADM">Administrador</Option>
-                                    <Option value="TEC">Técnico</Option>
-                                    <Option value="USR">Usuário</Option>
-                                </Select>
-                            </FormControl>
-                        </Stack>
-                        <Divider />
                         <Stack>
                             <FormControl>
                                 <FormLabel>Unidade</FormLabel>

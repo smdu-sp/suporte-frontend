@@ -12,6 +12,5 @@ export default async function RotasAdmin({children}:{children: React.ReactNode})
     await signOut({ redirect: false });
     redirect('/login');
   }
-  if (!['DEV', 'ADM'].includes(usuario.permissao)) redirect('/chamados');
   return <>{children}</>;
 }

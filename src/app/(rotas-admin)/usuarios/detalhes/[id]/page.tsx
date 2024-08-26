@@ -15,7 +15,6 @@ import { AlertsContext } from "@/providers/alertsProvider";
 
 export default function UsuarioDetalhes(props: any) {
     const [usuario, setUsuario] = useState<IUsuario>();
-    const [permissao, setPermissao] = useState('USR');
     const [unidades, setUnidades] = useState<IUnidade[]>([]);
     const [unidade_id, setUnidade_id] = useState('');
     const [nome, setNome] = useState('');
@@ -26,19 +25,11 @@ export default function UsuarioDetalhes(props: any) {
     const router = useRouter();
     const { setAlert } = useContext(AlertsContext);
 
-    const permissoes: Record<string, { label: string, value: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }> = {
-      'DEV': { label: 'Desenvolvedor', value: 'DEV', color: 'primary' },
-      'TEC': { label: 'Técnico', value: 'TEC', color: 'neutral' },
-      'ADM': { label: 'Administrador', value: 'ADM', color: 'success' },
-      'USR': { label: 'Usuário', value: 'USR', color: 'warning' },
-    }
-
     useEffect(() => {
         if (id) {
             usuarioServices.buscarPorId(id)
                 .then((response: IUsuario) => {
                     setUsuario(response);
-                    setPermissao(response.permissao);
                     setUnidade_id(response.unidade_id);
                     setEmail(response.email);
                 });
@@ -52,10 +43,8 @@ export default function UsuarioDetalhes(props: any) {
 
     const submitData = () => {
         if (usuario){
-            usuarioServices.atualizar(usuario.id, {
-                unidade_id,
-                permissao
-            }).then((response) => {
+            usuarioServices.atualizar(usuario.id, { unidade_id })
+            .then((response) => {
                 if (response.id) {
                     setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);              
                 }
@@ -63,7 +52,7 @@ export default function UsuarioDetalhes(props: any) {
         } else {
             if (novoUsuario){
                 usuarioServices.criar({
-                    nome, login, email, unidade_id, permissao
+                    nome, login, email, unidade_id
                 }).then((response) => {
                     if (response.id) {
                         setAlert('Usuário criado!', 'Dados inseridos com sucesso!', 'success', 3000, Check);
@@ -96,7 +85,6 @@ export default function UsuarioDetalhes(props: any) {
         setLogin('');
         setEmail('');
         setUnidade_id('');
-        setPermissao('USR');
     }
     
 
@@ -108,9 +96,7 @@ export default function UsuarioDetalhes(props: any) {
             ]}
             titulo={id ? usuario?.nome : 'Novo'}
             tags={
-                usuario ? <div style={{ display: 'flex', gap: '0.2rem' }}>     
-                  <Chip color={permissoes[usuario?.permissao].color} size='lg'>{permissoes[usuario?.permissao].label}</Chip>
-                </div> : null
+                usuario ? <div style={{ display: 'flex', gap: '0.2rem' }}></div> : null
             }
             pagina="usuarios"
         >
@@ -157,19 +143,6 @@ export default function UsuarioDetalhes(props: any) {
                         </Stack>
                         <Divider />
                         </> : null}
-                        <Stack>
-                            <FormControl>
-                                <FormLabel>Permissao</FormLabel>
-                                <Select value={permissao ? permissao : 'USR'} onChange={(_, value) => value && setPermissao(value)}
-                                    startDecorator={<Badge />}>
-                                    <Option value="DEV">Desenvolvedor</Option>
-                                    <Option value="ADM">Administrador</Option>
-                                    <Option value="TEC">Técnico</Option>
-                                    <Option value="USR">Usuário</Option>
-                                </Select>
-                            </FormControl>
-                        </Stack>
-                        <Divider />
                         <Stack>
                             <FormControl>
                                 <FormLabel>Unidade</FormLabel>

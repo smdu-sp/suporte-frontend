@@ -12,6 +12,7 @@ export default async function RotasTecnico({children}:{children: React.ReactNode
     await signOut({ redirect: false });
     redirect('/login');
   }
-  if (['USR'].includes(usuario.permissao)) redirect('/chamados');
+  //permissao
+  // if (['USR'].includes(usuario.permissao)) redirect('/chamados');
   return <>{children}</>;
 }

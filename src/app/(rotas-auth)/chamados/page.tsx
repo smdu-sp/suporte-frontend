@@ -119,7 +119,7 @@ function SearchChamados() {
       .then((response: IUsuario[]) => {
         if (response && response.length > 0) {
           setUsuarios(response);
-          setTecnicos(response.filter((usuario: IUsuario) => usuario.permissao === 'TEC'));
+          //setTecnicos(response.filter((usuario: IUsuario) => usuario.permissao === 'TEC'));
         }
       })
     usuarioServices.validaUsuario()
@@ -211,7 +211,8 @@ function SearchChamados() {
       <ModalDialog>
         <DialogTitle>Iniciar chamado</DialogTitle>
         <Stack spacing={2}>
-          {['DEV', 'ADM'].includes(logado?.permissao || '') ? (
+          {/* permissao adm */}
+          {/* {['DEV', 'ADM'].includes(logado?.permissao || '') ? (
             <FormControl>
               <FormLabel>Técnico</FormLabel>
               <Select value={tecnico_id} onChange={(_, value) => setTecnico_id(value || '')}>
@@ -219,7 +220,7 @@ function SearchChamados() {
                   <Option key={tecnico.id} value={tecnico.id}>{tecnico.nome}</Option>
                 ))}
               </Select>
-            </FormControl>) : null}
+            </FormControl>) : null} */}
           <FormControl>
             <FormLabel>Prioridade</FormLabel>
             <Select value={prioridade} onChange={(_, value) => setPrioridade(Number(value))}>
@@ -230,7 +231,8 @@ function SearchChamados() {
             </Select>
           </FormControl>
           <Button color="success" onClick={() => atribuirChamado()}>
-            {['DEV', 'ADM'].includes(logado?.permissao || '') ? 'Atribuir' : 'Assumir'} chamado
+            {/* permissao adm */}
+            {/* {['DEV', 'ADM'].includes(logado?.permissao || '') ? 'Atribuir' : 'Assumir'} chamado */}
           </Button>
         </Stack>
       </ModalDialog>
@@ -303,24 +305,7 @@ function SearchChamados() {
             <Option value={0}>Todos</Option>
           </Select>
         </FormControl>
-        {/* <FormControl>
-          <FormLabel>Tipo</FormLabel>
-          <Select
-            size="sm"
-            value={tipo_id}
-            onChange={(_, newValue) => {
-              router.push(pathname + '?' + createQueryString('tipo', String(newValue || newValue === 0 ? newValue : 1)));
-              setTipo(newValue || newValue === 0 ? newValue : 1);
-            }}
-            placeholder="Tipo de chamado"
-          >
-            <Option value={0}>Todos</Option>
-            <Option value={1}>Elétrica</Option>
-            <Option value={2}>Hidráulica</Option>
-            <Option value={3}>Telefonia</Option>
-            <Option value={4}>Outros</Option>
-          </Select>
-        </FormControl> */}
+        {/* permissao usuario
         {!logado || logado?.permissao === 'USR' ? null : (<>
           <FormControl sx={{ flex: 1 }} size="sm">
             <FormLabel>Unidade: </FormLabel>
@@ -374,14 +359,16 @@ function SearchChamados() {
               }}
               noOptionsText="Nenhuma unidade encontrada"
             />
-          </FormControl></>)}
+          </FormControl></>
+        )} */}
       </Box>
       <Table hoverRow sx={{ tableLayout: 'auto' }}>
         <thead>
           <tr>
             <th>#</th>
             <th>Status</th>
-            {['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || '') && <th>Prioridade</th>}
+            {/* permissao usuario 
+            {['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || '') && <th>Prioridade</th>} */}
             <th>Data</th>
             <th>Técnico</th>
             <th>Solicitante</th>
@@ -398,7 +385,8 @@ function SearchChamados() {
               <tr key={ordem.id} style={{ cursor: 'pointer' }}>
                 <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.id ? ordem.id : '-'}</td>
                 <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.status ? statusChip[ordem.status].label : '-'}</td>
-                {['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || '') && <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip variant='solid' color={prioridades[ordem.prioridade].color} title={prioridades[ordem.prioridade].label}>{ordem.id ? prioridades[ordem.prioridade].label : '-'}</Chip></td>}
+                {/* permissao usuario
+                {['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || '') && <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip variant='solid' color={prioridades[ordem.prioridade].color} title={prioridades[ordem.prioridade].label}>{ordem.id ? prioridades[ordem.prioridade].label : '-'}</Chip></td>} */}
                 <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{new Date(ordem.data_solicitacao).toLocaleDateString('pt-BR')} - {new Date(ordem.data_solicitacao).toLocaleTimeString('pt-BR')}</td>
                 <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.servicos[0]?.tecnico ? abreviaNome(ordem.servicos[0]?.tecnico?.nome) : '-'}</td>
                 <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.solicitante ? abreviaNome(ordem.solicitante.nome) : '-'}</td>
@@ -422,6 +410,7 @@ function SearchChamados() {
                 }}>{ordem.tipo?.categorias?.[0].subcategorias?.[0].nome}</Chip>
                 </td>
                 <td>
+                  {/* permissao
                   <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                     {['DEV', 'ADM', 'TEC'].includes(logado ? logado.permissao : '') && ordem.status === 1 ?
                       <Tooltip title={logado?.permissao === "TEC" ? "Assumir Chamado" : "Atribuir Chamado"} arrow placement="top">
@@ -434,7 +423,7 @@ function SearchChamados() {
                         </IconButton>
                       </Tooltip> :
                       null}
-                  </div>
+                  </div> */}
                 </td>
               </tr>
             </Tooltip>

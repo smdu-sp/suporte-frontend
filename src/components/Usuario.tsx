@@ -43,7 +43,6 @@ export default function Usuario() {
             <Typography level="body-xs">{usuario.email}</Typography>
             <Box sx={{ display: 'flex', gap: 0.5 }}>
                 {usuario.unidade ? <Chip color='neutral' variant='outlined' size='sm'>{usuario.unidade?.sigla}</Chip> : null}
-                {usuario.permissao ? <Chip color={permissoes[usuario.permissao].color} size='sm'>{permissoes[usuario.permissao].label}</Chip> : null}
             </Box>
         </CardContent>
       </Card>
@@ -66,12 +65,7 @@ export default function Usuario() {
           <Box sx={{ display: 'flex', gap: 0.5 }}>
             <Typography level="body-xs">
               <Skeleton>
-                Permissao
-              </Skeleton>
-            </Typography>
-            <Typography level="body-xs">
-              <Skeleton>
-                Permissao
+                Unidade
               </Skeleton>
             </Typography>
           </Box>

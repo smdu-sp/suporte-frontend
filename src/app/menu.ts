@@ -21,15 +21,9 @@ export interface IMenu {
 export const menu: IMenu = {
     tecOptions: [
         {
-            title: 'Página Inicial',
+            title: 'Dashboard',
             href: '/',
             name: '/',
-            icon: Home,
-        },
-        {
-            title: 'Dashboard',
-            href: '/dashboard',
-            name: 'Dashboard',
             icon: LineAxisIcon,
         },
     ],
