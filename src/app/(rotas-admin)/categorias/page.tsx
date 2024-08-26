@@ -350,7 +350,7 @@ function SearchCategorias() {
                 <FormControl>
                   <FormLabel>Tipo Referente</FormLabel>
                   <Select value={idTipo} onChange={(_, v) => setIdTipo(v as string)} required>
-                    {dados.map((d) => <Option key={d.id} value={d.id}>{d.nome}</Option>)}
+                    {dados && dados.length > 0 ? dados.map((d) => <Option key={d.id} value={d.id}>{d.nome}</Option>) : null}
                   </Select>
                 </FormControl>
                 <FormControl>

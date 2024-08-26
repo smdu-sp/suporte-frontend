@@ -31,7 +31,7 @@ function SearchAvisos() {
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
   const [openNovoAviso, setOpenNovoAviso] = useState<boolean>(false);
-  const [openAtualizaAviso, setOpenAtualizaAviso] = useState<boolean>(false);
+  const [openAtualizaAviso, setOpenAtualizaAviso] = useState<string | null | undefined>(null);
 
   const confirmaVazio: {
     aberto: boolean,
@@ -231,32 +231,32 @@ function SearchAvisos() {
           </tr>
         </thead>
         <tbody>
-          {avisos ? avisos.map((avisos) => (
-            <tr key={avisos.id} style={{
+          {avisos ? avisos.map((aviso: IAviso) => (
+            <tr key={aviso.id} style={{
               cursor: 'pointer',
-              backgroundColor: !avisos.status ?
+              backgroundColor: !aviso.status ?
                   theme.vars.palette.danger.plainActiveBg : 
                   undefined
             }}>
-              <td onClick={() => setOpenAtualizaAviso(true)}>{avisos.titulo}</td>
+              <td onClick={() => setOpenAtualizaAviso(aviso.id)}>{aviso.titulo}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                  {!avisos.status ? (
+                  {!aviso.status ? (
                     <Tooltip title="Ativar Aviso" arrow placement="top">
-                      <IconButton size="sm" color="success" onClick={() => confirmaAtivaAviso(avisos.id ? avisos.id : '')}>
+                      <IconButton size="sm" color="success" onClick={() => confirmaAtivaAviso(aviso.id ? aviso.id : '')}>
                         <Check />
                       </IconButton>
                     </Tooltip>                    
                   ) : (
                     <Tooltip title="Desativar Aviso" arrow placement="top">
-                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaAviso(avisos.id ? avisos.id : '')}>
+                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaAviso(aviso.id ? aviso.id : '')}>
                         <Cancel />
                       </IconButton>
                     </Tooltip>
                   )}
                 </div>
               </td>
-              <FormAtualizaAviso open={openAtualizaAviso} openFuncao={setOpenAtualizaAviso} aviso={avisos} />
+              <FormAtualizaAviso open={openAtualizaAviso === aviso.id} openFuncao={setOpenAtualizaAviso} aviso={aviso} />
             </tr>
           )) : <tr><td colSpan={2}>Nenhum aviso encontrado</td></tr>}
         </tbody>

@@ -14,6 +14,7 @@ import { Option, Select, selectClasses, Textarea } from '@mui/joy';
 import { KeyboardArrowDown } from '@mui/icons-material';
 import IAviso from '@/shared/interfaces/IAviso';
 import * as service from '@/shared/services/avisos.service';
+import { AlertsContext } from '@/providers/alertsProvider';
 
 // Constante tipo apenas para testes. Remover antes de subir em homologação e prod.
 const tipo: string = 'a49c681d-a99a-432f-a924-3d55b5842407';
@@ -23,23 +24,24 @@ export default function FormNovoAviso({ open, openFuncao }: {  open: boolean, op
   const [ mensagem, setMensagem ] = React.useState<string>();
   const [ cor, setCor ] = React.useState<string>();
   const [ rota, setRota ] = React.useState<string>();
-
+  const { setAlert } = React.useContext(AlertsContext);
+  
   const handleSubmit = async (e: React.FormEvent): Promise<IAviso | null> => {
     e.preventDefault();
     try {
       if (!titulo || !mensagem || !cor || !rota) throw new Error('Campos vazios no formulário. Preencha todos os campos.');
-      const aviso: IAviso = {
+      const response: IAviso | null = await service.criarAviso({
         titulo: titulo,
         mensagem: mensagem,
         cor: cor,
         rota: rota,
         tipo_id: tipo
-      };
-      const response: IAviso | null = await service.criarAviso(aviso);
+      });
       if (!response) throw new Error('Erro ao cadastrar o aviso.');
       return response;
     } catch(e) {
       console.log(e);
+      // adicionar handler de erros
       return null;
     }
   };
