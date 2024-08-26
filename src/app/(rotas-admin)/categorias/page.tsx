@@ -117,13 +117,6 @@ function SearchCategorias() {
     });
   }
 
-  const buscaTipo = async (id: string) => {
-    await tipoServices.buscarPorId(id)
-      .then((response: ITipo) => {
-        return (response.nome)
-      })
-  }
-
   useEffect(() => {
     tipoServices.buscarTudo()
       .then((res) => {

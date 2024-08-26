@@ -16,6 +16,7 @@ import * as usuarioServices from '@/shared/services/usuario.services';
 import * as servicoServices from '@/shared/services/servico.services';
 import { IUsuario } from '@/shared/services/usuario.services';
 import { IServico } from '@/shared/services/servico.services';
+import io from 'socket.io-client';
 
 export default function Chamados() {
   return (
@@ -47,6 +48,20 @@ function SearchChamados() {
   const [prioridade, setPrioridade] = useState(1);
   const [tecnicos, setTecnicos] = useState<IUsuario[]>([]);
   const [usuario, setUsuario] = useState<IUsuario>();
+
+  const socket = io(process.env.API_URL as string);
+
+  useEffect(() => {
+    socket.on('servicos', (data: boolean) => {
+      if (data) {
+        console.log(data);
+      }
+    })
+  }, [])
+
+  const teste = () => {
+    socket.emit('servicos', true)
+  }
 
   const confirmaVazio: {
     aberto: boolean,
