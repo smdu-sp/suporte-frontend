@@ -1,7 +1,7 @@
 'use client'
 
 import { useContext, useEffect, useState } from "react";
-import { Autocomplete, AutocompleteOption, Box, Button, Card, CardActions, CardOverflow, Chip, ChipPropsColorOverrides, ColorPaletteProp, Divider, FormControl, FormLabel, Input, Option, Select, Stack } from "@mui/joy";
+import { Autocomplete, AutocompleteOption, Avatar, Badge, Box, Button, Card, CardActions, CardOverflow, Chip, ChipPropsColorOverrides, ColorPaletteProp, Divider, FormControl, FormLabel, IconButton, Input, Option, Select, Stack } from "@mui/joy";
 import { Business, Check, EmailRounded } from "@mui/icons-material";
 import { useRouter } from 'next/navigation';
 import { OverridableStringUnion } from '@mui/types';
@@ -12,28 +12,29 @@ import { IUsuario } from "@/shared/services/usuario.services";
 import * as usuarioServices from "@/shared/services/usuario.services";
 import * as unidadeServices from "@/shared/services/unidade.services";
 import { AlertsContext } from "@/providers/alertsProvider";
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function UsuarioDetalhes() {
     const [usuario, setUsuario] = useState<IUsuario>();
     const [unidades, setUnidades] = useState<IUnidade[]>([]);
     const [unidade_id, setUnidade_id] = useState('');
     const router = useRouter();
-    const { setAlert } = useContext(AlertsContext);  
+    const { setAlert } = useContext(AlertsContext);
 
     const permissoes: Record<string, { label: string, value: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }> = {
-      'DEV': { label: 'Desenvolvedor', value: 'DEV', color: 'primary' },
-      'TEC': { label: 'Técnico', value: 'TEC', color: 'neutral' },
-      'ADM': { label: 'Administrador', value: 'ADM', color: 'success' },
-      'USR': { label: 'Usuário', value: 'USR', color: 'warning' },
+        'DEV': { label: 'Desenvolvedor', value: 'DEV', color: 'primary' },
+        'TEC': { label: 'Técnico', value: 'TEC', color: 'neutral' },
+        'ADM': { label: 'Administrador', value: 'ADM', color: 'success' },
+        'USR': { label: 'Usuário', value: 'USR', color: 'warning' },
     }
 
     const submitData = () => {
-        if (usuario){
+        if (usuario) {
             usuarioServices.atualizar(usuario.id, {
                 unidade_id,
             }).then((response) => {
                 if (response.id) {
-                    setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);              
+                    setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);
                 }
             })
         }
@@ -51,7 +52,7 @@ export default function UsuarioDetalhes() {
                 setUnidades(response);
             })
     }, []);
-    
+
 
     return (
         <Content
@@ -70,11 +71,45 @@ export default function UsuarioDetalhes() {
                     display: 'flex',
                     mx: 'auto',
                     width: '90%',
+                    flexDirection: 'column',
                     maxWidth: 800,
                     px: { xs: 2, md: 6 },
                     py: { xs: 2, md: 3 },
                 }}
             >
+                <Box sx={{ width: '100%', display: 'flex', height: '150px', mb: 2, justifyContent: 'center', alignItems: 'center' }}>
+                    <Box sx={{ position: 'relative', }}>
+                        <Avatar
+                            sx={{ width: 100, height: 100 }}
+                            color="neutral"
+                            variant="soft"
+                        >
+                        </Avatar>
+                        <Input
+                            type="file"
+                            sx={{
+                                display: 'none',
+                            }}
+                            id="file-upload"
+                        />
+                        <label htmlFor="file-upload">
+                            <IconButton
+                                component="span"
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: -20,
+                                    zIndex: 1,
+                                    '&:hover': {
+                                        backgroundColor: 'transparent',
+                                    }
+                                }}
+                            >
+                                <EditIcon />
+                            </IconButton>
+                        </label>
+                    </Box>
+                </Box>
                 <Card sx={{ width: '100%' }}>
                     <Stack spacing={2} >
                         <Stack>
@@ -85,16 +120,16 @@ export default function UsuarioDetalhes() {
                                     options={unidades}
                                     getOptionLabel={(option) => option && option.sigla}
                                     renderOption={(props, option) => (
-                                      <AutocompleteOption {...props} key={option.id} value={option.id}>
-                                        {option.sigla}
-                                      </AutocompleteOption>
+                                        <AutocompleteOption {...props} key={option.id} value={option.id}>
+                                            {option.sigla}
+                                        </AutocompleteOption>
                                     )}
                                     placeholder="Unidade"
                                     value={unidade_id && unidade_id !== '' ? unidades.find((unidade: IUnidade) => unidade.id === unidade_id) : null}
-                                    onChange={(_, value) => value  && setUnidade_id(value?.id)}
+                                    onChange={(_, value) => value && setUnidade_id(value?.id)}
                                     filterOptions={(options, { inputValue }) => {
                                         if (unidades) return (options as IUnidade[]).filter((option) => (
-                                            (option).nome.toLowerCase().includes(inputValue.toLowerCase()) || 
+                                            (option).nome.toLowerCase().includes(inputValue.toLowerCase()) ||
                                             (option).sigla.toLowerCase().includes(inputValue.toLowerCase())
                                         ));
                                         return [];
@@ -121,16 +156,16 @@ export default function UsuarioDetalhes() {
                     </Stack>
                     <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
                         <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-                        <Button size="sm" variant="outlined" color="neutral" onClick={() => router.back()}>
-                            Cancelar
-                        </Button>
-                        <Button size="sm" variant="solid" onClick={submitData}>
-                            Salvar
-                        </Button>
+                            <Button size="sm" variant="outlined" color="neutral" onClick={() => router.back()}>
+                                Cancelar
+                            </Button>
+                            <Button size="sm" variant="solid" onClick={submitData}>
+                                Salvar
+                            </Button>
                         </CardActions>
                     </CardOverflow>
                 </Card>
-            </Box>            
+            </Box>
         </Content>
     );
 }
