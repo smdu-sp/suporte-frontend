@@ -46,6 +46,7 @@ export default function FormNovoAviso(
       });
       if (!response) throw new Error('Erro ao cadastrar o aviso.');
       setAlert('Aviso criado.', 'Esse aviso foi criado com sucesso.', 'success', 3000, Check);
+      limpaCamposInput();
       refreshFuncao();
       return response;
     } catch(e) {
@@ -53,6 +54,14 @@ export default function FormNovoAviso(
       setAlert('Tente novamente!', 'Não foi possível atualizar o aviso.', 'warning', 3000, Warning);
       return null;
     }
+  };
+
+  const limpaCamposInput = (): void => {
+    setTitulo('');
+    setMensagem('');
+    setCor('');
+    setRota('');
+    return
   };
 
   return (
