@@ -11,15 +11,22 @@ import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import Stack from '@mui/joy/Stack';
 import { Option, Select, selectClasses, Textarea } from '@mui/joy';
-import { KeyboardArrowDown } from '@mui/icons-material';
+import { Check, KeyboardArrowDown, Warning } from '@mui/icons-material';
 import IAviso from '@/shared/interfaces/IAviso';
 import * as service from '@/shared/services/avisos.service';
 import { AlertsContext } from '@/providers/alertsProvider';
 
 // Constante tipo apenas para testes. Remover antes de subir em homologação e prod.
-const tipo: string = 'a49c681d-a99a-432f-a924-3d55b5842407';
+const tipo: string = '93ebf577-6f2f-4ce3-ace4-340b8f711cbb';
 
-export default function FormNovoAviso({ open, openFuncao }: {  open: boolean, openFuncao: Function }) {
+export default function FormNovoAviso(
+  { open, openFuncao, refreshFuncao }: 
+  {
+    open: boolean, 
+    openFuncao: Function, 
+    refreshFuncao: Function 
+  }
+) {
   const [ titulo, setTitulo ] = React.useState<string>();
   const [ mensagem, setMensagem ] = React.useState<string>();
   const [ cor, setCor ] = React.useState<string>();
@@ -38,10 +45,12 @@ export default function FormNovoAviso({ open, openFuncao }: {  open: boolean, op
         tipo_id: tipo
       });
       if (!response) throw new Error('Erro ao cadastrar o aviso.');
+      setAlert('Aviso criado.', 'Esse aviso foi criado com sucesso.', 'success', 3000, Check);
+      refreshFuncao();
       return response;
     } catch(e) {
       console.log(e);
-      // adicionar handler de erros
+      setAlert('Tente novamente!', 'Não foi possível atualizar o aviso.', 'warning', 3000, Warning);
       return null;
     }
   };
@@ -52,7 +61,10 @@ export default function FormNovoAviso({ open, openFuncao }: {  open: boolean, op
         <ModalDialog size='lg' sx={{ width: '500px' }}>
           <DialogTitle>Novo Aviso</DialogTitle>
           <DialogContent>Preencha as informações do aviso.</DialogContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+            handleSubmit(e);
+            openFuncao(false);
+          }}>
             <Stack spacing={2}>
               <FormControl>
                 <FormLabel>Titulo</FormLabel>
@@ -89,7 +101,9 @@ export default function FormNovoAviso({ open, openFuncao }: {  open: boolean, op
                 <FormLabel>Rota</FormLabel>
                 <Input value={rota} onChange={(e) => setRota(e.target.value)} required />
               </FormControl>
-              <Button type='submit'>Salvar</Button>
+              <Button type='submit' disabled={!titulo?.length || !mensagem?.length || !cor?.length || !rota?.length ? true : false}>
+                Salvar
+              </Button>
             </Stack>
           </form>
         </ModalDialog>

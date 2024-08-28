@@ -77,12 +77,10 @@ function SearchAvisos() {
   
   const desativaAviso = async (id: string) => {
     var resposta = await avisoService.desativar(id);
-    if (resposta){
-      setAlert('Aviso desativado!', 'Esse aviso foi desativado e não será exibido para seleção.', 'success', 3000, Check);
-        avisoService.desativar(id);
-    } else {
+    if (!resposta) 
       setAlert('Tente novamente!', 'Não foi possível desativar o aviso.', 'warning', 3000, Warning);
-    }
+    setAlert('Aviso desativado!', 'Esse aviso foi desativado e não será exibido.', 'success', 3000, Check);
+    buscaAvisos();
     setConfirma(confirmaVazio);
   }
 
@@ -114,12 +112,10 @@ function SearchAvisos() {
 
   const ativaAviso = async (id: string) => {
     var resposta = await avisoService.ativar(id);
-    if (resposta){
-      setAlert('Aviso ativado!', 'Esse aviso foi autorizado e será visível para seleção.', 'success', 3000, Check);
-        avisoService.buscarTudo();
-    } else {
+    if (!resposta)
       setAlert('Tente novamente!', 'Não foi possível ativar Aviso.', 'warning', 3000, Warning);
-    }
+    setAlert('Aviso ativado!', 'Esse aviso foi ativado e será visível nas rotas associadas.', 'success', 3000, Check);
+    buscaAvisos();
     setConfirma(confirmaVazio);
   }
 
@@ -145,7 +141,7 @@ function SearchAvisos() {
   return (
     <Content
         breadcrumbs={[
-            { label: 'Avisos', href: '/avisos' }
+          { label: 'Avisos', href: '/avisos' }
         ]}
         titulo='Avisos'
         pagina='avisos'
@@ -256,7 +252,7 @@ function SearchAvisos() {
                   )}
                 </div>
               </td>
-              <FormAtualizaAviso open={openAtualizaAviso === aviso.id} openFuncao={setOpenAtualizaAviso} aviso={aviso} />
+              <FormAtualizaAviso open={openAtualizaAviso === aviso.id} openFuncao={setOpenAtualizaAviso} aviso={aviso} refreshFuncao={buscaAvisos} />
             </tr>
           )) : <tr><td colSpan={2}>Nenhum aviso encontrado</td></tr>}
         </tbody>
@@ -272,7 +268,7 @@ function SearchAvisos() {
         labelRowsPerPage="Registros por página"
         labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
       /> : null}
-      <FormNovoAviso open={openNovoAviso} openFuncao={setOpenNovoAviso} />
+      <FormNovoAviso open={openNovoAviso} openFuncao={setOpenNovoAviso} refreshFuncao={buscaAvisos} />
       <IconButton onClick={() => setOpenNovoAviso(true)} color='primary' variant='soft' size='lg' sx={{
         position: 'fixed',
         bottom: '2rem',
