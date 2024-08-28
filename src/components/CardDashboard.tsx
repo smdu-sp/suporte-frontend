@@ -10,12 +10,12 @@ export default function CardDashboard(props: IProps) {
         <Sheet sx={{
             boxShadow: 1,
             borderRadius: 14,
-            minWidth: props.minWidth ? props.minWidth : 'auto',
+            minWidth: '50%',
             border: 'solid 2px ',
             WebkitBoxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 10px',
             borderColor: 'divider',
             p: 2,
-            m: 0
+            mx: 0,
         }}>
             <Typography sx={{ fontWeight: 600, letterSpacing: 0.2, p: 0 }}>{props.titulo}</Typography>
             <Typography sx={{ fontSize: 34, fontWeight: 'bold', p: 0 }}>

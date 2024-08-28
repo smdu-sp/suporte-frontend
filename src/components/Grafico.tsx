@@ -46,7 +46,7 @@ export default function TickPlacementBars() {
         },
         {
             seoul: 319,
-            nome: 'Guilherme Filho',
+            nome: 'Guilherme',
         },
         {
             seoul: 362,
