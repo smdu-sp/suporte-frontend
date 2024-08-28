@@ -45,8 +45,10 @@ export default function FormAtualizaAviso(
   const handleUpdate = async (e: React.FormEvent): Promise<IAviso | null> => {
     e.preventDefault();
     try {
-      if (!titulo || !mensagem || !cor || !rota) throw new Error('Campos vazios no formulário. Preencha todos os campos.');
-      if (!aviso.id) throw new Error('ID do aviso não encontrado.');
+      if (!titulo || !mensagem || !cor || !rota) 
+        throw new Error('Campos vazios no formulário. Preencha todos os campos.');
+      if (!aviso.id) 
+        throw new Error('ID do aviso não encontrado.');
       const response: IAviso | null = await service.atualizarAviso({
         titulo: titulo,
         mensagem: mensagem,
@@ -54,13 +56,13 @@ export default function FormAtualizaAviso(
         rota: rota,
         tipo_id: tipo
       }, aviso.id);
-      if (!response) throw new Error('Erro ao atualizar o aviso.');
+      if (!response) 
+        throw new Error('Erro ao atualizar o aviso.');
       setAlert('Aviso atualizado!', 'Esse aviso foi atualizado com sucesso.', 'success', 3000, Check);
       openFuncao(false);
       refreshFuncao();
       return response;
     } catch(e) {
-      console.log(e);
       setAlert('Tente novamente!', 'Não foi possível atualizar o aviso.', 'warning', 3000, Warning);
       return null;
     }
@@ -69,14 +71,15 @@ export default function FormAtualizaAviso(
   const handleDelete = async (e: React.FormEvent): Promise<IAviso | null> => {
     e.preventDefault();
     try {
-      if (!aviso.id) throw new Error('ID do aviso não encontrado.');
+      if (!aviso.id) 
+        throw new Error('ID do aviso não encontrado.');
       const aviso_deletado: IAviso = await service.remover(aviso.id);
-      if (!aviso_deletado) throw new Error('Erro ao deletar o aviso');
+      if (!aviso_deletado) 
+        throw new Error('Erro ao deletar o aviso');
       setAlert('Aviso deletado!', 'Esse aviso foi deletado com sucesso.', 'success', 3000, Check);
       refreshFuncao();
       return aviso_deletado;
     } catch (error) {
-      console.log(e);
       setAlert('Tente novamente!', 'Não foi possível deletar o aviso.', 'warning', 3000, Warning);
       return null;
     }
