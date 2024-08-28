@@ -56,7 +56,13 @@ export default function Usuario() {
     </Card>
     : <Card sx={{ maxWidth: 250 }}>
       <CardContent sx={{ alignItems: 'center', textAlign: 'center' }}>
-        <Avatar>
+        <Avatar
+          variant="solid"
+          sx={{
+            width: 50,
+            height: 50,
+          }}
+        >
         </Avatar>
         <Typography
           level="title-lg"
