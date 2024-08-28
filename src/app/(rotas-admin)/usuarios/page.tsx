@@ -30,7 +30,6 @@ function SearchUsuarios() {
   const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
   const [status, setStatus] = useState(searchParams.get('status') ? Number(searchParams.get('status')) : 1);
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
-  const [permissao, setPermissao] = useState('');
   const [unidade_id, setUnidade_id] = useState('');
   const [unidades, setUnidades] = useState<IUnidade[]>([]);
   const [usuario, setUsuario] = useState<IUsuario>({} as IUsuario);
@@ -64,7 +63,7 @@ function SearchUsuarios() {
             setUsuario(response);
         })
     buscaUsuarios();
-  }, [ status, pagina, limite, permissao, unidade_id ]);
+  }, [ status, pagina, limite, unidade_id ]);
   
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -76,7 +75,7 @@ function SearchUsuarios() {
   );
 
   const buscaUsuarios = async () => {
-    usuarioServices.buscarTudo(status, pagina, limite, busca, permissao, unidade_id)
+    usuarioServices.buscarTudo(status, pagina, limite, busca, unidade_id)
       .then((response: IPaginadoUsuario) => {
         setTotal(response.total);
         setPagina(response.pagina);
@@ -89,7 +88,6 @@ function SearchUsuarios() {
     setBusca('');
     setStatus(1);
     setUnidade_id('');
-    setPermissao('');
     setPagina(1);
     setLimite(10);
     router.push(pathname);
@@ -211,7 +209,7 @@ function SearchUsuarios() {
       >
         <IconButton size='sm' onClick={buscaUsuarios}><Refresh /></IconButton>
         <IconButton size='sm' onClick={limpaFitros}><Clear /></IconButton>
-        {usuario.permissao === 'DEV' ? (<FormControl size="sm">
+        {usuario.dev ? (<FormControl size="sm">
           <FormLabel>Status: </FormLabel>
           <Select
             size="sm"
@@ -226,23 +224,6 @@ function SearchUsuarios() {
             <Option value={4}>Todos</Option>
           </Select>
         </FormControl>) : null}
-        <FormControl size="sm">
-          <FormLabel>Permissão: </FormLabel>
-          <Select
-            size="sm"
-            value={permissao}
-            onChange={(_, newValue) => {
-              router.push(pathname + '?' + createQueryString('permissao', newValue! || ''));
-              setPermissao(newValue! || '');
-            }}
-          >
-            <Option value=''>Todos</Option>
-            <Option value='USR'>Usuário</Option>
-            <Option value='TEC'>Técnicos</Option>
-            <Option value='ADM'>Administrador</Option>
-            <Option value='DEV'>Desenvolvedor</Option>
-          </Select>
-        </FormControl>
         <FormControl sx={{ flex: 1 }} size="sm">
           <FormLabel>Unidade: </FormLabel>
           <Autocomplete
@@ -291,7 +272,6 @@ function SearchUsuarios() {
             <th>E-mail</th>
             <th>Usuário</th>
             <th>Unidade</th>
-            <th></th>
             <th style={{ textAlign: 'right' }}></th>
           </tr>
         </thead>
@@ -312,14 +292,6 @@ function SearchUsuarios() {
                 setUnidade_id(usuario.unidade_id);
                 router.push(pathname + '?' + createQueryString('unidade_id', usuario.unidade_id));
               }} variant='outlined' color='neutral' title={usuario.unidade.nome}>{usuario.unidade.sigla}</Chip>}</td>
-              <td onClick={() => router.push('/usuarios/detalhes/' + usuario.id)}>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>         
-                  <Chip onClick={() => {
-                    setPermissao(usuario.permissao);
-                    router.push(pathname + '?' + createQueryString('permissao', usuario.permissao));
-                  }} color={permissoes[usuario.permissao].color}>{permissoes[usuario.permissao].label}</Chip>
-                </div>
-              </td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {usuario.status !== 1 ? (

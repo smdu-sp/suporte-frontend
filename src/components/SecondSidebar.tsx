@@ -10,18 +10,11 @@ import { useRouter } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
 
 const RenderMenu = (menu: IMenu, pagina?: string) => {
-
-  const [permissao, setPermissao] = useState('USR');
-  useEffect(() => {
-    usuarioServices.validaUsuario()
-      .then((response: IUsuario) => {
-        setPermissao(response.permissao);
-      });
-  }, [])
+  //permissao
   return (
       <List
         size="sm"
-        variant={['DEV', 'ADM'].includes(permissao) ? "outlined" : undefined}
+        variant="outlined"
         sx={{
           '--ListItem-radius': '6px',
           gap: 0.5,
@@ -30,7 +23,7 @@ const RenderMenu = (menu: IMenu, pagina?: string) => {
         }}
       >        
         <ListSubheader sx={{ lineHeight: 2, borderRadius: 2, backgroundColor: 'transparent' }}>Menu</ListSubheader>
-        {!['USR'].includes(permissao) ? menu.tecOptions.map((page) => (
+        {menu.tecOptions.map((page) => (
           <ListItem sx={{width: '100%'}} key={page.name}>
             <ListItemButton component={Link} underline="none" selected={pagina===page.name} href={page.href}>
               <ListItemDecorator>
@@ -39,7 +32,7 @@ const RenderMenu = (menu: IMenu, pagina?: string) => {
               <ListItemContent>{page.title}</ListItemContent>
             </ListItemButton>
           </ListItem>
-        )) : null}
+        ))}
         {menu.userOptions.map((page) => (
           <ListItem sx={{width: '100%'}} key={page.name}>
             <ListItemButton component={Link} underline="none" selected={pagina===page.name} href={page.href}>
@@ -50,9 +43,9 @@ const RenderMenu = (menu: IMenu, pagina?: string) => {
             </ListItemButton>
           </ListItem>
         ))}
-        {['DEV', 'ADM'].includes(permissao) ? <ListDivider inset={'gutter'} /> : null}
-        {['DEV', 'ADM'].includes(permissao) ? <ListSubheader sx={{ lineHeight: 2, borderRadius: 2, backgroundColor: 'transparent' }}>Administração</ListSubheader> : null}
-        {['DEV', 'ADM'].includes(permissao) ? menu.adminOptions.map((page) => (
+        <ListDivider inset={'gutter'} />
+        <ListSubheader sx={{ lineHeight: 2, borderRadius: 2, backgroundColor: 'transparent' }}>Administração</ListSubheader>
+        {menu.adminOptions.map((page) => (
           <ListItem sx={{width: '100%'}} key={page.name}>
             <ListItemButton component={Link} underline="none" selected={pagina===page.name} href={page.href}>
               <ListItemDecorator>
@@ -61,8 +54,7 @@ const RenderMenu = (menu: IMenu, pagina?: string) => {
               <ListItemContent>{page.title}</ListItemContent>
             </ListItemButton>
           </ListItem>
-          
-        )) : null}
+        ))}
       </List>
   );
 }

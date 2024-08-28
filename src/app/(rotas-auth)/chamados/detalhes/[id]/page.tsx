@@ -372,6 +372,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                 </TimelineSeparator>
                                 <TimelineContent sx={{ flexGrow: 1 }}>
                                     <Card>
+                                        {/* permissao
                                         {(servico.status === 2 && (usuario?.permissao !== 'USR' && usuario?.id !== ordem?.solicitante_id)) ? <Typography level='title-md'>Aguardando avaliação</Typography> :
                                             <Stack spacing={2}>
                                                 <Stack direction="row" spacing={2}>
@@ -420,7 +421,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                                         </CardActions>
                                                     </CardOverflow>
                                                     : null}
-                                            </Stack>}
+                                            </Stack>} */}
                                     </Card>
                                 </TimelineContent>
                             </TimelineItem>
@@ -524,7 +525,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                                                 setServicoAtualDescricao(event.target.value);
                                                             setServicoAtualSalvar(event.target.value === servico.descricao);
                                                         }}
-                                                        disabled={servico.status > 1 || !['TEC'].includes(usuario?.permissao || '')}
+                                                        // permissao disabled={servico.status > 1 || !['TEC'].includes(usuario?.permissao || '')}
                                                     />
                                                 </FormControl>
                                             </Stack></> : null}
@@ -534,6 +535,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                             <Stack spacing={2}>
                                                 <FormLabel>Materiais utilizados</FormLabel>
                                                 <List component={Card} variant="outlined" sx={{ borderRadius: 8, p: 1 }}>
+                                                    {/* permissao
                                                     {servico.materiais.map((material: IMaterial, index: number) => (
                                                         <ListItem key={material.id}
                                                             endAction={
@@ -547,11 +549,13 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                                         >
                                                             <ListItemButton sx={{ borderRadius: 8 }}>{material.nome} ({material.quantidade}{material.medida})</ListItemButton>
                                                         </ListItem>
-                                                    ))}
+                                                    ))} */}
                                                 </List>
                                             </Stack>
                                         </CardOverflow>
                                         : null}
+                                    {/*
+                                        permissao 
                                     {(servico.status === 1 || servico.status === 5) && ['TEC'].includes(usuario?.permissao || '') ?
                                         <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 2 }}>
                                             <Stack spacing={2}>
@@ -580,7 +584,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                                         </>}
                                                 </Box> : null}
                                             </Stack>
-                                        </CardOverflow> : null}
+                                        </CardOverflow> : null} */}
                                     {servico.status === 1 && servico.tecnico_id === usuario?.id ?
                                         <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
                                             <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
@@ -611,7 +615,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                     </TimelineSeparator>
                     <TimelineContent>
                         <Card sx={{ width: '100%' }}>
-                            {ordem && usuario?.permissao !== 'USR' ?
+                            {/* permissao {ordem && usuario?.permissao !== 'USR' ?
                                 <><Stack direction="row" spacing={2}>
                                     <FormControl sx={{ flexGrow: 1 }}>
                                         <FormLabel>Prioridade</FormLabel>
@@ -622,7 +626,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                             <Option value={4}>Urgente</Option>
                                         </Select>
                                     </FormControl>
-                                </Stack><Divider /></> : null}
+                                </Stack><Divider /></> : null} */}
                             {ordem && ordem.solicitante ? <>
                                 <Stack direction="row" spacing={2}>
                                     <FormControl sx={{ flexGrow: 1 }}>
@@ -779,7 +783,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                     <FormHelperText sx={{ color: 'danger.500' }}>{observacoesError}</FormHelperText>
                                 </FormControl>
                             </Stack>
-                            {!ordem || (['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || 'USR') && [1, 2, 5].includes(ordem?.status || 1)) ?
+                            {/* permissao {!ordem || (['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || 'USR') && [1, 2, 5].includes(ordem?.status || 1)) ?
                                 <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
                                     <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
                                         {!ordem ? <Button size="sm" variant="outlined" color="neutral" onClick={() => router.back()}>
@@ -789,7 +793,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                             Salvar
                                         </Button>
                                     </CardActions>
-                                </CardOverflow> : null}
+                                </CardOverflow> : null} */}
                         </Card>
                     </TimelineContent>
                 </TimelineItem>

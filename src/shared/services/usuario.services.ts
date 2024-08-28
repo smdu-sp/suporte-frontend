@@ -15,7 +15,7 @@ export interface IUsuario {
     nome: string;
     email: string;
     login: string;
-    permissao: string;
+    dev: boolean;
     status: number;
     unidade_id: string;
     unidade?: IUnidade;
@@ -28,13 +28,13 @@ export interface ICreateUsuario {
     nome: string;
     email: string;
     login: string;
-    permissao: string;
+    dev?: boolean;
     unidade_id?: string;
 }
 
 export interface IUpdateUsuario {
     id?: string;
-    permissao?: string;
+    dev?: boolean;
     status?: number;
     unidade_id?: string;
 }
@@ -63,9 +63,9 @@ async function listaCompleta(): Promise<IUsuario[]> {
     return usuarios;
 }
 
-async function buscarTudo(status: number = 1, pagina: number = 1, limite: number = 10, busca: string = '', permissao: string = '', unidade_id: string = ''): Promise<IPaginadoUsuario> {
+async function buscarTudo(status: number = 1, pagina: number = 1, limite: number = 10, busca: string = '', unidade_id: string = ''): Promise<IPaginadoUsuario> {
     const session = await getServerSession(authOptions);
-    const usuarios = await fetch(`${baseURL}usuarios/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}&permissao=${permissao}&unidade_id=${unidade_id}`, {
+    const usuarios = await fetch(`${baseURL}usuarios/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}&unidade_id=${unidade_id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

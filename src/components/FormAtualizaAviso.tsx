@@ -18,9 +18,17 @@ import { AlertsContext } from '@/providers/alertsProvider';
 import { Check, Warning } from '@mui/icons-material';
 
 // Constante tipo apenas para testes. Remover antes de subir em homologação e prod.
-const tipo: string = 'a49c681d-a99a-432f-a924-3d55b5842407';
+const tipo: string = '93ebf577-6f2f-4ce3-ace4-340b8f711cbb';
 
-export default function FormAtualizaAviso({ open, openFuncao, aviso }: {  open: boolean, openFuncao: Function, aviso: IAviso }) {
+export default function FormAtualizaAviso(
+  { open, openFuncao, aviso, refreshFuncao }: 
+  {  
+    open: boolean, 
+    openFuncao: Function, 
+    aviso: IAviso, 
+    refreshFuncao: Function 
+  }
+) {
   const [ titulo, setTitulo ] = React.useState<string>();
   const [ mensagem, setMensagem ] = React.useState<string>();
   const [ cor, setCor ] = React.useState<string>();
@@ -48,7 +56,8 @@ export default function FormAtualizaAviso({ open, openFuncao, aviso }: {  open: 
       }, aviso.id);
       if (!response) throw new Error('Erro ao atualizar o aviso.');
       setAlert('Aviso atualizado!', 'Esse aviso foi atualizado com sucesso.', 'success', 3000, Check);
-      openFuncao(null);
+      openFuncao(false);
+      refreshFuncao();
       return response;
     } catch(e) {
       console.log(e);
@@ -64,6 +73,7 @@ export default function FormAtualizaAviso({ open, openFuncao, aviso }: {  open: 
       const aviso_deletado: IAviso = await service.remover(aviso.id);
       if (!aviso_deletado) throw new Error('Erro ao deletar o aviso');
       setAlert('Aviso deletado!', 'Esse aviso foi deletado com sucesso.', 'success', 3000, Check);
+      refreshFuncao();
       return aviso_deletado;
     } catch (error) {
       console.log(e);
@@ -78,11 +88,14 @@ export default function FormAtualizaAviso({ open, openFuncao, aviso }: {  open: 
         <ModalDialog size='lg' sx={{ width: '500px' }}>
           <DialogTitle>Atualizar Aviso</DialogTitle>
           <DialogContent>Atualize as informações do aviso.</DialogContent>
-          <form onSubmit={handleUpdate}>
+          <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+            handleUpdate(e);
+            openFuncao(false);
+          }}>
             <Stack spacing={2}>
               <FormControl>
                 <FormLabel>Titulo</FormLabel>
-                <Input value={titulo} autoFocus required onChange={(e) => setTitulo(e.target.value)}  />
+                <Input value={titulo} required onChange={(e) => setTitulo(e.target.value)}  />
               </FormControl>
               <FormControl>
                 <FormLabel>Mensagem</FormLabel>
@@ -90,33 +103,38 @@ export default function FormAtualizaAviso({ open, openFuncao, aviso }: {  open: 
               </FormControl>
               <FormControl>
                 <FormLabel>Cor</FormLabel>
-                    <Select
-                        value={cor}
-                        placeholder="Selecione uma cor..."
-                        indicator={<KeyboardArrowDown />}
-                        sx={{
-                            width: 240,
-                            [`& .${selectClasses.indicator}`]: {
-                            transition: '0.2s',
-                            [`&.${selectClasses.expanded}`]: {
-                                transform: 'rotate(-180deg)',
-                            },
-                            },
-                        }}
-                    >
-                        <Option value="PRIMARY" onClick={() => setCor('PRIMARY')}>Azul</Option>
-                        <Option value="NEUTRAL" onClick={() => setCor('NEUTRAL')}>Cinza</Option>
-                        <Option value="WARNING" onClick={() => setCor('WARNING')}>Laranja</Option>
-                        <Option value="DANGER" onClick={() => setCor('DANGER')}>Vermelho</Option>
-                        <Option value="SUCCESS" onClick={() => setCor('SUCCESS')}>Verde</Option>
-                    </Select>
+                  <Select
+                    value={cor}
+                    placeholder="Selecione uma cor..."
+                    indicator={<KeyboardArrowDown />}
+                    sx={{
+                      width: 240,
+                      [`& .${selectClasses.indicator}`]: {
+                      transition: '0.2s',
+                      [`&.${selectClasses.expanded}`]: {
+                          transform: 'rotate(-180deg)',
+                      },
+                      },
+                    }}
+                  >
+                    <Option value="PRIMARY" onClick={() => setCor('PRIMARY')}>Azul</Option>
+                    <Option value="NEUTRAL" onClick={() => setCor('NEUTRAL')}>Cinza</Option>
+                    <Option value="WARNING" onClick={() => setCor('WARNING')}>Laranja</Option>
+                    <Option value="DANGER" onClick={() => setCor('DANGER')}>Vermelho</Option>
+                    <Option value="SUCCESS" onClick={() => setCor('SUCCESS')}>Verde</Option>
+                  </Select>
               </FormControl>
               <FormControl>
                 <FormLabel>Rota</FormLabel>
                 <Input value={rota} required onChange={(e) => setRota(e.target.value)} />
               </FormControl>
-              <Button type="submit">Salvar</Button>
-              <Button onClick={handleDelete} color='danger' variant='soft'>Deletar</Button>
+              <Button type="submit" disabled={!titulo?.length || !mensagem?.length || !cor?.length || !rota?.length ? true : false}>
+                Salvar
+              </Button>
+              <Button onClick={(e) => {
+                handleDelete(e);
+                openFuncao(false);
+              }} color='danger' variant='soft'>Deletar</Button>
             </Stack>
           </form>
         </ModalDialog>

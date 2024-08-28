@@ -3,6 +3,6 @@ export interface UsuarioToken {
     nome: string;
     login: string;
     email: string;
-    permissao: string;
+    dev: boolean;
     status: number;
 }
