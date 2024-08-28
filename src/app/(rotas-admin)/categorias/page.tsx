@@ -127,7 +127,12 @@ function SearchCategorias() {
   const criar = async (nome: string, tipo_id: string, status: string) => {
     const criado: ITipo = await categoriaServices.criar(
       { nome, tipo_id, status }
-    );
+    ).then((r: ITipo) => {
+      setNome('');
+      setIdTipo('');
+      setStatusForm('true');
+      return r
+    });
     if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
     if (criado) {
       setAlert('Tipo criado', 'Tipo registrado com sucesso.', 'success', 3000, Check)
@@ -137,6 +142,11 @@ function SearchCategorias() {
   const atualizar = async (id: string, nome: string, tipo_id: string, status: string) => {
     const alterado: ITipo = await categoriaServices.atualizar({
       id, nome, tipo_id, status
+    }).then((r: ITipo) => {
+      setNome('');
+      setIdTipo('');
+      setStatusForm('true');
+      return r
     });
     if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
     if (alterado) {

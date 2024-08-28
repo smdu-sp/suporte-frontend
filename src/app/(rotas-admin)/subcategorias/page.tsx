@@ -3,6 +3,7 @@
 import Content from '@/components/Content';
 import { FormEvent, Fragment, Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import * as subCategoriaServices from '@/shared/services/subcategorias.servise';
+import {ISubCategoria} from '@/shared/services/subcategorias.servise';
 import * as categoriaServices from '@/shared/services/categoria.services';
 import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, DialogContent, DialogTitle, FormControl, FormLabel, IconButton, Input, Modal, ModalDialog, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
 import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
@@ -127,9 +128,14 @@ function SearchSubcategorias() {
   }
 
   const criar = async (nome: string, categoria_id: string, status: string) => {
-    const criado: subCategoriaServices.ISubCategoria = await subCategoriaServices.criar(
+    const criado: ISubCategoria = await subCategoriaServices.criar(
       { nome, categoria_id, status }
-    );
+    ).then((r: ISubCategoria) => {
+      setNome('');
+      setIdCategoria('');
+      setStatusForm('true');
+      return r
+    });
     if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
     if (criado) {
       setAlert('Tipo criado', 'Tipo registrado com sucesso.', 'success', 3000, Check)
@@ -139,6 +145,11 @@ function SearchSubcategorias() {
   const atualizar = async (id: string, nome: string, categoria_id: string, status: string) => {
     const alterado: ITipo = await subCategoriaServices.atualizar({
       id, nome, categoria_id, status
+    }).then((r: ISubCategoria) => {
+      setNome('');
+      setIdCategoria('');
+      setStatusForm('true');
+      return r
     });
     if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
     if (alterado) {
