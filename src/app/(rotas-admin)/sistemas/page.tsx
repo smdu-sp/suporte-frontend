@@ -91,10 +91,10 @@ function SearchTipos() {
   const desativaTipo = async (id: string) => {
     var resposta = await tipoServices.desativar(id);
     if (resposta) {
-      setAlert('Tipo desativado!', 'Esse tipo foi desativado e não será exibido para seleção.', 'success', 3000, Check);
+      setAlert('Sistema desativado!', 'Esse sistema foi desativado e não será exibido para seleção.', 'success', 3000, Check);
       buscaTipos();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível desativar o tipo.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível desativar o sistema.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
@@ -103,9 +103,9 @@ function SearchTipos() {
     const criado: ITipo = await tipoServices.criar(
       { nome, status }
     );
-    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
+    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o sistema.', 'warning', 3000, Warning);
     if (criado) {
-      setAlert('Tipo criado', 'Tipo registrado com sucesso.', 'success', 3000, Check)
+      setAlert('Sistema criado', 'Sistema registrado com sucesso.', 'success', 3000, Check)
       buscaTipos();
     };
   }
@@ -113,9 +113,9 @@ function SearchTipos() {
     const alterado: ITipo = await tipoServices.atualizar({
       id, nome, status
     });
-    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
+    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o sistema.', 'warning', 3000, Warning);
     if (alterado) {
-      setAlert('Tipo alterado', 'Tipo alterado com sucesso.', 'success', 3000, Check)
+      setAlert('Sistema alterado', 'Sistema alterado com sucesso.', 'success', 3000, Check)
       buscaTipos();
     };
   }
@@ -140,8 +140,8 @@ function SearchTipos() {
     setConfirma({
       aberto: true,
       confirmaOperacao: () => desativaTipo(id),
-      titulo: 'Desativar tipo',
-      pergunta: 'Deseja desativar este tipo?',
+      titulo: 'Desativar sistema',
+      pergunta: 'Deseja desativar este sistema?',
       color: 'warning'
     });
   }
@@ -149,10 +149,10 @@ function SearchTipos() {
   const ativaTipo = async (id: string) => {
     var resposta = await tipoServices.ativar(id);
     if (resposta) {
-      setAlert('Tipo ativado!', 'Esse tipo foi autorizado e será visível para seleção.', 'success', 3000, Check);
+      setAlert('Sistema ativado!', 'Esse sistema foi autorizado e será visível para seleção.', 'success', 3000, Check);
       buscaTipos();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível ativar tipo.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível ativar sistema.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
@@ -161,8 +161,8 @@ function SearchTipos() {
     setConfirma({
       aberto: true,
       confirmaOperacao: () => ativaTipo(id),
-      titulo: 'Ativar tipo',
-      pergunta: 'Deseja ativar este tipo?',
+      titulo: 'Ativar sistema',
+      pergunta: 'Deseja ativar este sistema?',
       color: 'primary'
     });
   }
@@ -179,10 +179,10 @@ function SearchTipos() {
   return (
     <Content
       breadcrumbs={[
-        { label: 'Tipos', href: '/tipos' }
+        { label: 'Sistemas', href: '/sistemas' }
       ]}
-      titulo='Tipos'
-      pagina='tipos'
+      titulo='Sistemas'
+      pagina='sistemas'
     >
       <Snackbar
         variant="solid"

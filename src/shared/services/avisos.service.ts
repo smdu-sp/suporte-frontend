@@ -35,7 +35,7 @@ async function buscarTudo(status: string = 'true', pagina: number = 1, limite: n
 async function criarAviso(aviso: IAviso): Promise<IAviso | null> {
     const session = await getServerSession(authOptions);
     aviso.status = true;
-    aviso.tipo_id = '93ebf577-6f2f-4ce3-ace4-340b8f711cbb';
+    aviso.sistema_id = 'cc9da6a7-9fef-4c70-8d4f-8fc465cf211f';
     const response: Response = await fetch(`${process.env.API_URL}avisos/criar`, {
         method: 'POST',
         headers: {

@@ -55,9 +55,9 @@ export const menu: IMenu = {
             icon: TurnedInIcon,
         },
         {
-            title: 'Tipos',
-            href: '/tipos',
-            name: 'tipos',
+            title: 'Sistemas',
+            href: '/sistema',
+            name: 'sistema',
             icon: BookIcon,
         },
         {

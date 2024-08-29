@@ -54,7 +54,7 @@ export default function FormAtualizaAviso(
         mensagem: mensagem,
         cor: cor,
         rota: rota,
-        tipo_id: tipo
+        sistema_id: tipo
       }, aviso.id);
       if (!response) 
         throw new Error('Erro ao atualizar o aviso.');

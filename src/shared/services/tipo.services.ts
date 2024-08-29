@@ -29,7 +29,7 @@ const baseURL = process.env.API_URL || 'http://localhost:3000/';
 
 async function listaCompleta(): Promise<ITipo[]> {
     const session = await getServerSession(authOptions);
-    const tipos = await fetch(`${baseURL}tipos/lista-completa`, {
+    const tipos = await fetch(`${baseURL}sistemas/lista-completa`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -44,7 +44,7 @@ async function listaCompleta(): Promise<ITipo[]> {
 
 async function buscarTudo(status: string = 'true', pagina: number = 1, limite: number = 10, busca: string = ''): Promise<IPaginadoTipo> {
     const session = await getServerSession(authOptions);
-    const tipos = await fetch(`${baseURL}tipos/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
+    const tipos = await fetch(`${baseURL}sistemas/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -59,7 +59,7 @@ async function buscarTudo(status: string = 'true', pagina: number = 1, limite: n
 
 async function buscarPorId(id: string): Promise<ITipo> {
     const session = await getServerSession(authOptions);
-    const tipo = await fetch(`${baseURL}tipos/buscar-por-id/${id}`, {
+    const tipo = await fetch(`${baseURL}sistemas/buscar-por-id/${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -74,7 +74,7 @@ async function buscarPorId(id: string): Promise<ITipo> {
 
 async function desativar(id: string): Promise<{ autorizado: boolean }> {
     const session = await getServerSession(authOptions);
-    const desativado = await fetch(`${baseURL}tipos/desativar/${id}`, {
+    const desativado = await fetch(`${baseURL}sistemas/desativar/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -90,7 +90,7 @@ async function desativar(id: string): Promise<{ autorizado: boolean }> {
 
 async function criar({ nome, status }: { nome: string, status: string }): Promise<ITipo> {
     const session = await getServerSession(authOptions);
-    const novoTipo = await fetch(`${baseURL}tipos/criar`, {
+    const novoTipo = await fetch(`${baseURL}sistemas/criar`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -110,7 +110,7 @@ async function criar({ nome, status }: { nome: string, status: string }): Promis
 
 async function atualizar({ id, nome, status }: { id: string, nome: string, status: string }): Promise<ITipo> {
     const session = await getServerSession(authOptions);
-    const atualizado = await fetch(`${baseURL}tipos/atualizar/${id}`, {
+    const atualizado = await fetch(`${baseURL}sistemas/atualizar/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -130,7 +130,7 @@ async function atualizar({ id, nome, status }: { id: string, nome: string, statu
 
 async function ativar(id: string): Promise<ITipo> {
     const session = await getServerSession(authOptions);
-    const ativado = await fetch(`${baseURL}tipos/atualizar/${id}`, {
+    const ativado = await fetch(`${baseURL}sistemas/atualizar/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",

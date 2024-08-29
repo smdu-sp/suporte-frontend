@@ -17,7 +17,7 @@ import * as service from '@/shared/services/avisos.service';
 import { AlertsContext } from '@/providers/alertsProvider';
 
 // Constante tipo apenas para testes. Remover antes de subir em homologação e prod.
-const tipo: string = '93ebf577-6f2f-4ce3-ace4-340b8f711cbb';
+const tipo: string = 'cc9da6a7-9fef-4c70-8d4f-8fc465cf211f';
 
 export default function FormNovoAviso(
   { open, openFuncao, refreshFuncao }: 
@@ -42,7 +42,7 @@ export default function FormNovoAviso(
         mensagem: mensagem,
         cor: cor,
         rota: rota,
-        tipo_id: tipo
+        sistema_id: tipo
       });
       if (!response) throw new Error('Erro ao cadastrar o aviso.');
       setAlert('Aviso criado.', 'Esse aviso foi criado com sucesso.', 'success', 3000, Check);
