@@ -190,10 +190,10 @@ function SearchTipos() {
   return (
     <Content
       breadcrumbs={[
-        { label: 'Sistema', href: '/tipos' }
+        { label: 'Sistemas', href: '/sistemas' }
       ]}
-      titulo='Tipos'
-      pagina='tipos'
+      titulo='Sistema'
+      pagina='sistemas'
     >
       <Snackbar
         variant="solid"

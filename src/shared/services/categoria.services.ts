@@ -153,7 +153,7 @@ async function ativar(id: string): Promise<ICategoria> {
 
 async function buscar_por_tipo(id: string) {
     const session = await getServerSession(authOptions);
-    const tipo = await fetch(`${baseURL}categorias/buscar-por-tipo/${id}`, {
+    const tipo = await fetch(`${baseURL}categorias/buscar-por-sistema/${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
