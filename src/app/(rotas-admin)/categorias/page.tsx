@@ -3,7 +3,7 @@
 import Content from '@/components/Content';
 import { FormEvent, Fragment, Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import * as categoriaServices from '@/shared/services/categoria.services';
-import * as tipoServices from '@/shared/services/tipo.services';
+import * as sistemaServices from '@/shared/services/sistema.services';
 import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, DialogContent, DialogTitle, FormControl, FormLabel, IconButton, Input, Modal, ModalDialog, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
 import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -11,10 +11,9 @@ import { AlertsContext } from '@/providers/alertsProvider';
 import { TablePagination } from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
 import { IPaginadoCategoria, ICategoria } from '@/shared/services/categoria.services';
-import { ITipo } from '@/shared/services/tipo.services';
-import FormCategoria from '@/components/FormCategoria';
+import { ISistema } from '@/shared/services/sistema.services';
 
-export default function Tipos() {
+export default function Categorias() {
   return (
     <Suspense>
       <SearchCategorias />
@@ -25,7 +24,7 @@ export default function Tipos() {
 function SearchCategorias() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [tipos, setTipos] = useState<ICategoria[]>([]);
+  const [categorias, setCategorias] = useState<ICategoria[]>([]);
   const [pagina, setPagina] = useState(searchParams.get('pagina') ? Number(searchParams.get('pagina')) : 1);
   const [limite, setLimite] = useState(searchParams.get('limite') ? Number(searchParams.get('limite')) : 10);
   const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
@@ -33,10 +32,10 @@ function SearchCategorias() {
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
   const [open, setOpen] = useState(false);
   const [nome, setNome] = useState('');
-  const [dados, setDados] = useState<ITipo[]>([]);
+  const [dados, setDados] = useState<ISistema[]>([]);
   const [statusForm, setStatusForm] = useState('true');
   const [id, setId] = useState('');
-  const [idTipo, setIdTipo] = useState('');
+  const [idSistema, setIdSistema] = useState('');
 
   const confirmaVazio: {
     aberto: boolean,
@@ -58,7 +57,7 @@ function SearchCategorias() {
   const router = useRouter();
 
   useEffect(() => {
-    buscaTipos();
+    buscaCategorias();
   }, [status, pagina, limite]);
 
   const createQueryString = useCallback(
@@ -70,23 +69,23 @@ function SearchCategorias() {
     [searchParams]
   );
 
-  const buscaTipos = async () => {
+  const buscaCategorias = async () => {
     categoriaServices.buscarTudo(status, pagina, limite, busca)
       .then((response: IPaginadoCategoria) => {
         setTotal(response.total);
         setPagina(response.pagina);
         setLimite(response.limite);
-        setTipos(response.data);
+        setCategorias(response.data);
       });
   }
 
-  const desativaTipo = async (id: string) => {
+  const desativaCategoria = async (id: string) => {
     var resposta = await categoriaServices.desativar(id);
     if (resposta) {
-      setAlert('Tipo desativado!', 'Esse tipo foi desativado e não será exibido para seleção.', 'success', 3000, Check);
-      buscaTipos();
+      setAlert('Categoria desativada!', 'Essa categoria foi desativada e não será exibida para seleção.', 'success', 3000, Check);
+      buscaCategorias();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível desativar o tipo.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível desativar a categoria.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
@@ -107,71 +106,71 @@ function SearchCategorias() {
     setPagina(1);
   };
 
-  const confirmaDesativaTipo = async (id: string) => {
+  const confirmaDesativaCategoria = async (id: string) => {
     setConfirma({
       aberto: true,
-      confirmaOperacao: () => desativaTipo(id),
-      titulo: 'Desativar tipo',
-      pergunta: 'Deseja desativar este tipo?',
+      confirmaOperacao: () => desativaCategoria(id),
+      titulo: 'Desativar categoria',
+      pergunta: 'Deseja desativar esta categoria?',
       color: 'warning'
     });
   }
 
   useEffect(() => {
-    tipoServices.buscarTudo()
+    sistemaServices.buscarTudo()
       .then((res) => {
         setDados(res.data)
       })
   }, []);
 
-  const criar = async (nome: string, tipo_id: string, status: string) => {
-    const criado: ITipo = await categoriaServices.criar(
-      { nome, tipo_id, status }
-    ).then((r: ITipo) => {
+  const criar = async (nome: string, sistema_id: string, status: string) => {
+    const criado: ICategoria = await categoriaServices.criar(
+      { nome, sistema_id, status }
+    ).then((r: ICategoria) => {
       setNome('');
-      setIdTipo('');
+      setIdSistema('');
       setStatusForm('true');
       return r
     });
-    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
+    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar a categoria.', 'warning', 3000, Warning);
     if (criado) {
-      setAlert('Tipo criado', 'Tipo registrado com sucesso.', 'success', 3000, Check)
-      buscaTipos();
+      setAlert('Categoria criada', 'Categoria registrada com sucesso.', 'success', 3000, Check)
+      buscaCategorias();
     };
   }
-  const atualizar = async (id: string, nome: string, tipo_id: string, status: string) => {
-    const alterado: ITipo = await categoriaServices.atualizar({
-      id, nome, tipo_id, status
-    }).then((r: ITipo) => {
+  const atualizar = async (id: string, nome: string, sistema_id: string, status: string) => {
+    const alterado: ICategoria = await categoriaServices.atualizar({
+      id, nome, sistema_id, status
+    }).then((r: ICategoria) => {
       setNome('');
-      setIdTipo('');
+      setIdSistema('');
       setStatusForm('true');
       return r
     });
-    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
+    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar a categoria.', 'warning', 3000, Warning);
     if (alterado) {
-      setAlert('Tipo alterado', 'Tipo alterado com sucesso.', 'success', 3000, Check)
-      buscaTipos();
+      setAlert('Categoria alterada', 'Categoria alterada com sucesso.', 'success', 3000, Check)
+      buscaCategorias();
     };
   }
 
-  const ativaTipo = async (id: string) => {
+  const ativaCategoria = async (id: string) => {
     var resposta = await categoriaServices.ativar(id);
     if (resposta) {
-      setAlert('Tipo ativado!', 'Esse tipo foi autorizado e será visível para seleção.', 'success', 3000, Check);
-      buscaTipos();
+      setAlert('Categoria ativado!', 'Essa categoria foi autorizado e será visível para seleção.', 'success', 3000, Check);
+      buscaCategorias();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível ativar tipo.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível ativar essa categoria.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
 
-  const confirmaAtivaTipo = async (id: string) => {
+  const confirmaAtivaCategoria = async (id: string) => {
     setConfirma({
       aberto: true,
-      confirmaOperacao: () => ativaTipo(id),
-      titulo: 'Ativar tipo',
-      pergunta: 'Deseja ativar este tipo?',
+      confirmaOperacao: () => ativaCategoria(id),
+      titulo: 'Ativar categoria',
+      pergunta: 'Deseja ativar esta categoria?',
       color: 'primary'
     });
   }
@@ -182,7 +181,7 @@ function SearchCategorias() {
     setPagina(1);
     setLimite(10);
     router.push(pathname);
-    buscaTipos();
+    buscaCategorias();
   }
 
   return (
@@ -234,7 +233,7 @@ function SearchCategorias() {
           alignItems: 'end',
         }}
       >
-        <IconButton size='sm' onClick={buscaTipos}><Refresh /></IconButton>
+        <IconButton size='sm' onClick={buscaCategorias}><Refresh /></IconButton>
         <IconButton size='sm' onClick={limpaFitros}><Clear /></IconButton>
         <FormControl size="sm">
           <FormLabel>Status: </FormLabel>
@@ -260,7 +259,7 @@ function SearchCategorias() {
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
                 router.push(pathname + '?' + createQueryString('busca', busca));
-                buscaTipos();
+                buscaCategorias();
               }
             }}
           />
@@ -270,12 +269,12 @@ function SearchCategorias() {
         <thead>
           <tr>
             <th>Nome</th>
-            <th>Tipo Referente</th>
+            <th>Sistema Referente</th>
             <th style={{ textAlign: 'right' }}></th>
           </tr>
         </thead>
         <tbody>
-          {tipos ? tipos.map((categoria) => (
+          {categorias ? categorias.map((categoria) => (
             <tr key={categoria.id} style={{
               cursor: 'pointer',
               backgroundColor: !categoria.status ?
@@ -286,7 +285,7 @@ function SearchCategorias() {
                 setOpen(true)
                 setNome(categoria.nome)
                 setId(categoria.id)
-                setIdTipo(categoria.tipo_id)
+                setIdSistema(categoria.sistema_id)
                 setStatus(categoria.status ? 'true' : 'false')
               }}
               >{categoria.nome}</td>
@@ -295,21 +294,21 @@ function SearchCategorias() {
                   setOpen(true)
                   setNome(categoria.nome)
                   setId(categoria.id)
-                  setIdTipo(categoria.tipo_id)
+                  setIdSistema(categoria.sistema_id)
                   setStatus(categoria.status ? 'true' : 'false')
                 }}
-              >{categoria.tipo?.nome}</td>
+              >{categoria.sistema?.nome}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!categoria.status ? (
-                    <Tooltip title="Ativar Unidade" arrow placement="top">
-                      <IconButton size="sm" color="success" onClick={() => confirmaAtivaTipo(categoria.id)}>
+                    <Tooltip title="Ativar categoria" arrow placement="top">
+                      <IconButton size="sm" color="success" onClick={() => confirmaAtivaCategoria(categoria.id)}>
                         <Check />
                       </IconButton>
                     </Tooltip>
                   ) : (
                     <Tooltip title="Desativar" arrow placement="top">
-                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaTipo(categoria.id)}>
+                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaCategoria(categoria.id)}>
                         <Cancel />
                       </IconButton>
                     </Tooltip>
@@ -317,7 +316,7 @@ function SearchCategorias() {
                 </div>
               </td>
             </tr>
-          )) : <tr><td colSpan={2}>Nenhum tipo encontrado</td></tr>}
+          )) : <tr><td colSpan={2}>Nenhuma categoria encontrada</td></tr>}
         </tbody>
       </Table>
       {(total && total > 0) ? <TablePagination
@@ -345,9 +344,9 @@ function SearchCategorias() {
               onSubmit={(event: FormEvent<HTMLFormElement>) => {
                 event.preventDefault();
                 if (id === '') {
-                  criar(nome, idTipo, statusForm);
+                  criar(nome, idSistema, statusForm);
                 } else {
-                  atualizar(id, nome, idTipo, statusForm);
+                  atualizar(id, nome, idSistema, statusForm);
                 }
                 setOpen(false);
               }}
@@ -358,8 +357,8 @@ function SearchCategorias() {
                   <Input value={nome} onChange={(e) => setNome(e.target.value)} autoFocus required />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Tipo Referente</FormLabel>
-                  <Select value={idTipo} onChange={(_, v) => setIdTipo(v as string)} required>
+                  <FormLabel>Sistema Referente</FormLabel>
+                  <Select value={idSistema} onChange={(_, v) => setIdSistema(v as string)} required>
                     {dados && dados.length > 0 ? dados.map((d) => <Option key={d.id} value={d.id}>{d.nome}</Option>) : null}
                   </Select>
                 </FormControl>

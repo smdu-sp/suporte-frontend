@@ -6,7 +6,9 @@ import { signOut } from "next-auth/react";
 import { IUnidade } from "./unidade.services";
 import { IUsuario } from "./usuario.services";
 import { IServico } from "./servico.services";
-import { ITipo } from "./tipo.services";
+import { ISistema } from "./sistema.services";
+import { ICategoria } from "./categoria.services";
+import { ISubCategoria } from "./subcategorias.servise";
 
 async function Logout() {
     await signOut({ redirect: false });
@@ -23,8 +25,8 @@ export interface IOrdem {
     solicitante?: IUsuario;
     tratar_com?: string;
     data_solicitacao: Date;
-    tipo_id: string;
-    tipo?: ITipo;
+    sistema_id: string;
+    sistema?: ISistema;
     status: number;
     prioridade: number;
     observacoes: string;
@@ -32,7 +34,9 @@ export interface IOrdem {
     servicos: IServico[];
     suspensaoAtiva?: boolean;
     categoria_id: string;
+    categoria?: ICategoria;
     subcategoria_id: string;
+    subcategoria?: ISubCategoria;
 }
 
 export interface IPaginadoOrdem {
@@ -42,13 +46,13 @@ export interface IPaginadoOrdem {
     limite: number;
 }
 
-export interface IMotivoTipo {
+export interface IMotivoSistema {
     id: string,
     nome: string,
     categoria: {
         id: string,
         nome: string,
-        tipo: {
+        sistema: {
             id: string,
             nome: string
         }
@@ -62,10 +66,10 @@ async function buscarTudo(status: number = 1, pagina: number = 1, limite: number
     solicitante_id: string = '',
     andar: number = 0,
     sala: string = '',
-    tipo_id: string = ''
+    sistema_id: string = ''
 ): Promise<IPaginadoOrdem> {
     const session = await getServerSession(authOptions);
-    const url = `${baseURL}ordens/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&unidade_id=${unidade_id}&solicitante_id=${solicitante_id}&andar=${andar}&sala=${sala}&tipo=${tipo_id}`;
+    const url = `${baseURL}ordens/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&unidade_id=${unidade_id}&solicitante_id=${solicitante_id}&andar=${andar}&sala=${sala}&sistema=${sistema_id}`;
     const ordens = await fetch(`${url}`, {
         method: "GET",
         headers: {
@@ -94,7 +98,7 @@ async function buscarPorId(id: string): Promise<IOrdem> {
     return usuario;
 }
 
-async function criar(ordemDto: { unidade_id: string, andar: number, sala: string, tipo_id: string, observacoes: string, telefone: string, tratar_com?: string, categoria_id: string, subcategoria_id: string }): Promise<IOrdem> {
+async function criar(ordemDto: { unidade_id: string, andar: number, sala: string, sistema_id: string, observacoes: string, telefone: string, tratar_com?: string, categoria_id: string, subcategoria_id: string }): Promise<IOrdem> {
     const session = await getServerSession(authOptions);
     const novaUnidade = await fetch(`${baseURL}ordens/criar`, {
         method: "POST",
@@ -143,9 +147,9 @@ async function retornaPainel(): Promise<{ abertos: number, naoAtribuidos: number
     return painel;
 }
 
-async function buscaMotivos(id: string): Promise<IMotivoTipo> {
+async function buscaMotivos(id: string): Promise<IMotivoSistema> {
     const session = await getServerSession(authOptions);
-    const painel = await fetch(`${baseURL}tipos/motivo/${id}`, {
+    const painel = await fetch(`${baseURL}sistemas/motivo/${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

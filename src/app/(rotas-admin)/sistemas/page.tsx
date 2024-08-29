@@ -2,36 +2,34 @@
 
 import Content from '@/components/Content';
 import { FormEvent, Fragment, Suspense, useCallback, useContext, useEffect, useState } from 'react';
-import * as tipoServices from '@/shared/services/tipo.services';
+import * as sistemaServices from '@/shared/services/sistema.services';
 import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, DialogContent, DialogTitle, FormControl, FormLabel, IconButton, Input, Modal, ModalDialog, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
-import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
+import { Add, Cancel, Check, Clear, Refresh, Search, Warning } from '@mui/icons-material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertsContext } from '@/providers/alertsProvider';
 import { TablePagination } from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
-import { IPaginadoUnidade, IUnidade } from '@/shared/services/unidade.services';
-import { IPaginadoTipo, ITipo } from '@/shared/services/tipo.services';
-import FormCategoria from '@/components/FormCategoria';
+import { IPaginadoSistema, ISistema } from '@/shared/services/sistema.services';
 
-export default function Tipos() {
+export default function Sistemas() {
   return (
     <Suspense>
-      <SearchTipos />
+      <SearchSistemas />
     </Suspense>
   )
 }
 
-function SearchTipos() {
+function SearchSistemas() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [tipos, setTipos] = useState<ITipo[]>([]);
+  const [sistemas, setSistemas] = useState<ISistema[]>([]);
   const [pagina, setPagina] = useState(searchParams.get('pagina') ? Number(searchParams.get('pagina')) : 1);
   const [limite, setLimite] = useState(searchParams.get('limite') ? Number(searchParams.get('limite')) : 10);
   const [total, setTotal] = useState(searchParams.get('total') ? Number(searchParams.get('total')) : 1);
   const [status, setStatus] = useState<string>(searchParams.get('status') ? searchParams.get('status') + '' : 'true');
   const [busca, setBusca] = useState(searchParams.get('busca') || '');
   const [nome, setNome] = useState('');
-  const [dados, setDados] = useState<ITipo[]>([]);
+  const [dados, setDados] = useState<ISistema[]>([]);
   const [statusForm, setStatusForm] = useState('true');
   const [id, setId] = useState('');
 
@@ -57,7 +55,7 @@ function SearchTipos() {
   const router = useRouter();
 
   useEffect(() => {
-    buscaTipos();
+    buscaSistemas();
   }, [status, pagina, limite]);
 
   const createQueryString = useCallback(
@@ -70,29 +68,29 @@ function SearchTipos() {
   );
 
   useEffect(() => {
-    tipoServices.buscarTudo()
-      .then((res: IPaginadoTipo) => {
+    sistemaServices.buscarTudo()
+      .then((res: IPaginadoSistema) => {
         setDados(res.data)
       })
   }, []);
 
 
 
-  const buscaTipos = async () => {
-    tipoServices.buscarTudo(status, pagina, limite, busca)
-      .then((response: IPaginadoTipo) => {
+  const buscaSistemas = async () => {
+    sistemaServices.buscarTudo(status, pagina, limite, busca)
+      .then((response: IPaginadoSistema) => {
         setTotal(response.total);
         setPagina(response.pagina);
         setLimite(response.limite);
-        setTipos(response.data);
+        setSistemas(response.data);
       });
   }
 
-  const desativaTipo = async (id: string) => {
-    var resposta = await tipoServices.desativar(id);
+  const desativaSistema = async (id: string) => {
+    var resposta = await sistemaServices.desativar(id);
     if (resposta) {
       setAlert('Sistema desativado!', 'Esse sistema foi desativado e não será exibido para seleção.', 'success', 3000, Check);
-      buscaTipos();
+      buscaSistemas();
     } else {
       setAlert('Tente novamente!', 'Não foi possível desativar o sistema.', 'warning', 3000, Warning);
     }
@@ -100,23 +98,23 @@ function SearchTipos() {
   }
 
   const criar = async (nome: string, status: string) => {
-    const criado: ITipo = await tipoServices.criar(
+    const criado: ISistema = await sistemaServices.criar(
       { nome, status }
     );
     if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o sistema.', 'warning', 3000, Warning);
     if (criado) {
       setAlert('Sistema criado', 'Sistema registrado com sucesso.', 'success', 3000, Check)
-      buscaTipos();
+      buscaSistemas();
     };
   }
   const atualizar = async (id: string, nome: string, status: string) => {
-    const alterado: ITipo = await tipoServices.atualizar({
+    const alterado: ISistema = await sistemaServices.atualizar({
       id, nome, status
     });
     if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o sistema.', 'warning', 3000, Warning);
     if (alterado) {
       setAlert('Sistema alterado', 'Sistema alterado com sucesso.', 'success', 3000, Check)
-      buscaTipos();
+      buscaSistemas();
     };
   }
 
@@ -136,31 +134,31 @@ function SearchTipos() {
     setPagina(1);
   };
 
-  const confirmaDesativaTipo = async (id: string) => {
+  const confirmaDesativaSistema = async (id: string) => {
     setConfirma({
       aberto: true,
-      confirmaOperacao: () => desativaTipo(id),
+      confirmaOperacao: () => desativaSistema(id),
       titulo: 'Desativar sistema',
       pergunta: 'Deseja desativar este sistema?',
       color: 'warning'
     });
   }
 
-  const ativaTipo = async (id: string) => {
-    var resposta = await tipoServices.ativar(id);
+  const ativaSistema = async (id: string) => {
+    var resposta = await sistemaServices.ativar(id);
     if (resposta) {
       setAlert('Sistema ativado!', 'Esse sistema foi autorizado e será visível para seleção.', 'success', 3000, Check);
-      buscaTipos();
+      buscaSistemas();
     } else {
       setAlert('Tente novamente!', 'Não foi possível ativar sistema.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
 
-  const confirmaAtivaTipo = async (id: string) => {
+  const confirmaAtivaSistema = async (id: string) => {
     setConfirma({
       aberto: true,
-      confirmaOperacao: () => ativaTipo(id),
+      confirmaOperacao: () => ativaSistema(id),
       titulo: 'Ativar sistema',
       pergunta: 'Deseja ativar este sistema?',
       color: 'primary'
@@ -173,7 +171,7 @@ function SearchTipos() {
     setPagina(1);
     setLimite(10);
     router.push(pathname);
-    buscaTipos();
+    buscaSistemas();
   }
 
   return (
@@ -225,7 +223,7 @@ function SearchTipos() {
           alignItems: 'end',
         }}
       >
-        <IconButton size='sm' onClick={buscaTipos}><Refresh /></IconButton>
+        <IconButton size='sm' onClick={buscaSistemas}><Refresh /></IconButton>
         <IconButton size='sm' onClick={limpaFitros}><Clear /></IconButton>
         <FormControl size="sm">
           <FormLabel>Status: </FormLabel>
@@ -251,7 +249,7 @@ function SearchTipos() {
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
                 router.push(pathname + '?' + createQueryString('busca', busca));
-                buscaTipos();
+                buscaSistemas();
               }
             }}
           />
@@ -265,30 +263,30 @@ function SearchTipos() {
           </tr>
         </thead>
         <tbody>
-          {tipos ? tipos.map((tipo) => (
-            <tr key={tipo.id} style={{
+          {sistemas ? sistemas.map((sistema) => (
+            <tr key={sistema.id} style={{
               cursor: 'pointer',
-              backgroundColor: !tipo.status ?
+              backgroundColor: !sistema.status ?
                 theme.vars.palette.danger.plainActiveBg :
                 undefined
             }}>
               <td onClick={() => {
                 setOpen(true)
-                setNome(tipo.nome)
-                setId(tipo.id)
-                setStatus(tipo.status ? 'true' : 'false')
-              }}>{tipo.nome}</td>
+                setNome(sistema.nome)
+                setId(sistema.id)
+                setStatus(sistema.status ? 'true' : 'false')
+              }}>{sistema.nome}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                  {!tipo.status ? (
+                  {!sistema.status ? (
                     <Tooltip title="Ativar Unidade" arrow placement="top">
-                      <IconButton size="sm" color="success" onClick={() => { confirmaAtivaTipo(tipo.id);}}>
+                      <IconButton size="sm" color="success" onClick={() => { confirmaAtivaSistema(sistema.id);}}>
                         <Check />
                       </IconButton>
                     </Tooltip>
                   ) : (
                     <Tooltip title="Desativar" arrow placement="top">
-                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaTipo(tipo.id)}>
+                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaSistema(sistema.id)}>
                         <Cancel />
                       </IconButton>
                     </Tooltip>
@@ -296,7 +294,7 @@ function SearchTipos() {
                 </div>
               </td>
             </tr>
-          )) : <tr><td colSpan={2}>Nenhum tipo encontrado</td></tr>}
+          )) : <tr><td colSpan={2}>Nenhum sistema encontrado</td></tr>}
         </tbody>
       </Table>
       {(total && total > 0) ? <TablePagination
@@ -318,8 +316,8 @@ function SearchTipos() {
         }}><Add /></IconButton>
         <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); }}>
           <ModalDialog>
-            <DialogTitle>{id === '' ? 'Criar' : 'Atualizar'} Tipo</DialogTitle>
-            <DialogContent>Preencha todos os campos para criar uma nova categoria.</DialogContent>
+            <DialogTitle>{id === '' ? 'Criar' : 'Atualizar'} Sistema</DialogTitle>
+            <DialogContent>Preencha todos os campos para criar um novo sistema.</DialogContent>
             <form
               onSubmit={(event: FormEvent<HTMLFormElement>) => {
                 event.preventDefault();

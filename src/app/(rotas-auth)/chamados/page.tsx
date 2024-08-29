@@ -42,7 +42,7 @@ function SearchChamados() {
   const [usuarios, setUsuarios] = useState<IUsuario[]>([]);
   const [logado, setLogado] = useState<IUsuario>();
   const [atribuirChamadoModal, setAtribuirChamadoModal] = useState(false);
-  const [tipo_id, setTipo] = useState(searchParams.get('tipo') ? Number(searchParams.get('tipo')) : '');
+  const [sistema_id, setSistema] = useState(searchParams.get('sistema_id') ? searchParams.get('sistema_id') : '');
   const [ordem_id, setOrdem_id] = useState('');
   const [tecnico_id, setTecnico_id] = useState('');
   const [prioridade, setPrioridade] = useState(1);
@@ -74,14 +74,6 @@ function SearchChamados() {
     pergunta: '',
     color: 'primary'
   }
-
-  const tipos: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[] = [
-    { label: '', color: 'neutral' },
-    { label: 'Elétrica', color: 'primary' },
-    { label: 'Hidráulica', color: 'warning' },
-    { label: 'Telefonia', color: 'success' },
-    { label: 'Outros', color: 'neutral' },
-  ]
 
   const prioridades: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[] = [
     { label: '', color: 'neutral' },
@@ -137,7 +129,7 @@ function SearchChamados() {
 
   useEffect(() => {
     buscaOrdens();
-  }, [status, pagina, limite, unidade_id, solicitante_id, tipo_id]);
+  }, [status, pagina, limite, unidade_id, solicitante_id, sistema_id]);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -149,7 +141,7 @@ function SearchChamados() {
   );
 
   const buscaOrdens = async () => {
-    ordemServices.buscarTudo(status, pagina, limite, unidade_id, solicitante_id, 0, '', tipo_id.toString())
+    ordemServices.buscarTudo(status, pagina, limite, unidade_id, solicitante_id, 0, '', (sistema_id || '').toString())
       .then((response: IPaginadoOrdem) => {
         setOrdens(response.data);
         setTotal(response.total);
@@ -196,7 +188,7 @@ function SearchChamados() {
     setLimite(10);
     setUnidade_id('');
     setSolicitante_id('');
-    setTipo(0);
+    setSistema('');
     router.push(pathname);
     buscaOrdens();
   }
@@ -373,7 +365,7 @@ function SearchChamados() {
             <th>Técnico</th>
             <th>Solicitante</th>
             <th>Unidade</th>
-            <th>Tipo</th>
+            <th>Sistema</th>
             <th>Categoria</th>
             <th>Sub Categoria</th>
             <th style={{ textAlign: 'right' }}></th>
@@ -383,31 +375,25 @@ function SearchChamados() {
           {ordens && ordens.length > 0 ? ordens.map((ordem) => (
             <Tooltip key={ordem.id} title={ordem.observacoes} sx={{ maxWidth: '200px' }} arrow placement="bottom">
               <tr key={ordem.id} style={{ cursor: 'pointer' }}>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.id ? ordem.id : '-'}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.status ? statusChip[ordem.status].label : '-'}</td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.id ? ordem.id : '-'}</td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.status ? statusChip[ordem.status].label : '-'}</td>
                 {/* permissao usuario
                 {['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || '') && <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip variant='solid' color={prioridades[ordem.prioridade].color} title={prioridades[ordem.prioridade].label}>{ordem.id ? prioridades[ordem.prioridade].label : '-'}</Chip></td>} */}
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{new Date(ordem.data_solicitacao).toLocaleDateString('pt-BR')} - {new Date(ordem.data_solicitacao).toLocaleTimeString('pt-BR')}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.servicos[0]?.tecnico ? abreviaNome(ordem.servicos[0]?.tecnico?.nome) : '-'}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.solicitante ? abreviaNome(ordem.solicitante.nome) : '-'}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}>{ordem.unidade && <Chip onClick={() => {
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{new Date(ordem.data_solicitacao).toLocaleDateString('pt-BR')} - {new Date(ordem.data_solicitacao).toLocaleTimeString('pt-BR')}</td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.servicos[0]?.tecnico ? abreviaNome(ordem.servicos[0]?.tecnico?.nome) : '-'}</td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.solicitante ? abreviaNome(ordem.solicitante.nome) : '-'}</td>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}>{ordem.unidade && <Chip onClick={() => {
                   setUnidade_id(ordem.unidade_id);
                   router.push(pathname + '?' + createQueryString('unidade_id', ordem.unidade_id));
                 }} variant='outlined' color='neutral' title={ordem.unidade.nome}>{ordem.unidade.sigla}</Chip>}</td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip color='primary' onClick={() => {
-                  setTipo(ordem.tipo_id);
-                  router.push(pathname + '?' + createQueryString('tipo', String(ordem.tipo_id)));
-                }}>{ordem.tipo?.nome}</Chip>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}><Chip color='primary' onClick={() => {
+                  setSistema(ordem.sistema_id);
+                  router.push(pathname + '?' + createQueryString('sistema', String(ordem.sistema_id)));
+                }}>{ordem.sistema?.nome || '-'}</Chip>
                 </td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip color='success' onClick={() => {
-                  setTipo(ordem.tipo_id);
-                  router.push(pathname + '?' + createQueryString('tipo', String(ordem.tipo_id)));
-                }}>{ordem.tipo?.categorias?.[0].nome}</Chip>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}><Chip color='success'>{ordem.categoria?.nome || '-'}</Chip>
                 </td>
-                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id + `?id=${ordem.subcategoria_id}`)}><Chip color='warning' onClick={() => {
-                  setTipo(ordem.tipo_id);
-                  router.push(pathname + '?' + createQueryString('tipo', String(ordem.tipo_id)));
-                }}>{ordem.tipo?.categorias?.[0].subcategorias?.[0].nome}</Chip>
+                <td onClick={() => router.push('/chamados/detalhes/' + ordem.id)}><Chip color='warning'>{ordem.subcategoria?.nome || '-'}</Chip>
                 </td>
                 <td>
                   {/* permissao

@@ -31,7 +31,7 @@ const baseURL = process.env.API_URL || 'http://localhost:3000/';
 
 async function listaCompleta(): Promise<ISubCategoria[]> {
     const session = await getServerSession(authOptions);
-    const tipos = await fetch(`${baseURL}subcategorias/lista-completa`, {
+    const subcategorias = await fetch(`${baseURL}subcategorias/lista-completa`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -41,12 +41,12 @@ async function listaCompleta(): Promise<ISubCategoria[]> {
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipos;
+    return subcategorias;
 }
 
 async function buscarTudo(status: string = 'true', pagina: number = 1, limite: number = 10, busca: string = ''): Promise<IPaginadoSubCategoria> {
     const session = await getServerSession(authOptions);
-    const tipos = await fetch(`${baseURL}subcategorias/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
+    const subcategorias = await fetch(`${baseURL}subcategorias/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -56,13 +56,13 @@ async function buscarTudo(status: string = 'true', pagina: number = 1, limite: n
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipos;
+    return subcategorias;
 }
 
 async function buscarPorId(id: string) {
     console.log(id);
     const session = await getServerSession(authOptions);
-    const tipo = await fetch(`${baseURL}subcategorias/buscar-por-tipo/${id}`, {
+    const subcategoria = await fetch(`${baseURL}subcategorias/buscar-por-id/${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -72,7 +72,7 @@ async function buscarPorId(id: string) {
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipo;
+    return subcategoria;
 }
 
 async function desativar(id: string): Promise<{ autorizado: boolean }> {
@@ -93,7 +93,7 @@ async function desativar(id: string): Promise<{ autorizado: boolean }> {
 
 async function criar({ nome, categoria_id, status }: { nome: string, categoria_id: string, status: string }): Promise<ISubCategoria> {
     const session = await getServerSession(authOptions);
-    const novoTipo = await fetch(`${baseURL}subcategorias/criar`, {
+    const novaSubcategoria = await fetch(`${baseURL}subcategorias/criar`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -109,7 +109,7 @@ async function criar({ nome, categoria_id, status }: { nome: string, categoria_i
         if (response.status !== 201) return;
         return response.json();
     });
-    return novoTipo;
+    return novaSubcategoria;
 }
 
 async function atualizar({ id, nome, categoria_id, status }: { id: string, nome: string, categoria_id: string, status: string }): Promise<ISubCategoria> {
@@ -152,7 +152,7 @@ async function ativar(id: string): Promise<ISubCategoria> {
 
 async function buscar_por_categoria(id: string) {
     const session = await getServerSession(authOptions);
-    const tipo = await fetch(`${baseURL}subcategorias/buscar-por-categoria/${id}`, {
+    const subcategoria = await fetch(`${baseURL}subcategorias/buscar-por-categoria/${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -162,7 +162,7 @@ async function buscar_por_categoria(id: string) {
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipo;
+    return subcategoria;
 }
 
 export { 

@@ -4,7 +4,7 @@ import { authOptions } from "@/shared/auth/authOptions";
 import { getServerSession } from "next-auth";
 import { signOut } from "next-auth/react";
 import { IOrdem } from "./ordem.services";
-import { ITipo } from "./tipo.services";
+import { ISistema } from "./sistema.services";
 import { ISubCategoria } from "./subcategorias.servise";
 async function Logout() {
     await signOut({ redirect: false });
@@ -14,8 +14,8 @@ async function Logout() {
 export interface ICategoria {
     id: string;
     nome: string;
-    tipo_id: string;
-    tipo?: ITipo;
+    sistema_id: string;
+    sistema?: ISistema;
     subcategorias?: ISubCategoria[];
     ordens?: IOrdem[];
     status: boolean;
@@ -32,7 +32,7 @@ const baseURL = process.env.API_URL || 'http://localhost:3000/';
 
 async function listaCompleta(): Promise<ICategoria[]> {
     const session = await getServerSession(authOptions);
-    const tipos = await fetch(`${baseURL}categorias/lista-completa`, {
+    const categorias = await fetch(`${baseURL}categorias/lista-completa`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -42,12 +42,12 @@ async function listaCompleta(): Promise<ICategoria[]> {
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipos;
+    return categorias;
 }
 
 async function buscarTudo(status: string = 'true', pagina: number = 1, limite: number = 10, busca: string = ''): Promise<IPaginadoCategoria> {
     const session = await getServerSession(authOptions);
-    const tipos = await fetch(`${baseURL}categorias/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
+    const categorias = await fetch(`${baseURL}categorias/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -57,13 +57,13 @@ async function buscarTudo(status: string = 'true', pagina: number = 1, limite: n
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipos;
+    return categorias;
 }
 
 async function buscarPorId(id: string) {
     console.log(id);
     const session = await getServerSession(authOptions);
-    const tipo = await fetch(`${baseURL}categorias/buscar-por-id/${id}`, {
+    const categoria = await fetch(`${baseURL}categorias/buscar-por-id/${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -73,7 +73,7 @@ async function buscarPorId(id: string) {
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipo;
+    return categoria;
 }
 
 async function desativar(id: string): Promise<{ autorizado: boolean }> {
@@ -92,9 +92,9 @@ async function desativar(id: string): Promise<{ autorizado: boolean }> {
     return desativado;
 }
 
-async function criar({ nome, tipo_id, status }: { nome: string, tipo_id: string, status: string }): Promise<ICategoria> {
+async function criar({ nome, sistema_id, status }: { nome: string, sistema_id: string, status: string }): Promise<ICategoria> {
     const session = await getServerSession(authOptions);
-    const novoTipo = await fetch(`${baseURL}categorias/criar`, {
+    const novaCategoria = await fetch(`${baseURL}categorias/criar`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -102,7 +102,7 @@ async function criar({ nome, tipo_id, status }: { nome: string, tipo_id: string,
         },
         body: JSON.stringify({ 
             nome,
-            tipo_id,
+            sistema_id,
             status: status === 'true'
         })
     }).then((response) => {
@@ -110,10 +110,10 @@ async function criar({ nome, tipo_id, status }: { nome: string, tipo_id: string,
         if (response.status !== 201) return;
         return response.json();
     });
-    return novoTipo;
+    return novaCategoria;
 }
 
-async function atualizar({ id, nome, tipo_id, status }: { id: string, nome: string, tipo_id: string, status: string }): Promise<ICategoria> {
+async function atualizar({ id, nome, sistema_id, status }: { id: string, nome: string, sistema_id: string, status: string }): Promise<ICategoria> {
     const session = await getServerSession(authOptions);
     const atualizado = await fetch(`${baseURL}categorias/atualizar/${id}`, {
         method: "PATCH",
@@ -123,7 +123,7 @@ async function atualizar({ id, nome, tipo_id, status }: { id: string, nome: stri
         },
         body: JSON.stringify({
             nome,
-            tipo_id,
+            sistema_id,
             status: status === 'true'
         })
     }).then((response) => {
@@ -151,9 +151,9 @@ async function ativar(id: string): Promise<ICategoria> {
     return ativado;
 }
 
-async function buscar_por_tipo(id: string) {
+async function buscar_por_sistema(id: string) {
     const session = await getServerSession(authOptions);
-    const tipo = await fetch(`${baseURL}categorias/buscar-por-tipo/${id}`, {
+    const sistema = await fetch(`${baseURL}categorias/buscar-por-sistema/${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -163,7 +163,7 @@ async function buscar_por_tipo(id: string) {
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipo;
+    return sistema;
 }
 
 export { 
@@ -174,5 +174,5 @@ export {
     criar,
     desativar,
     listaCompleta,
-    buscar_por_tipo
+    buscar_por_sistema
 };

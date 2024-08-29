@@ -17,8 +17,8 @@ import * as service from '@/shared/services/avisos.service';
 import { AlertsContext } from '@/providers/alertsProvider';
 import { Check, Warning } from '@mui/icons-material';
 
-// Constante tipo apenas para testes. Remover antes de subir em homologação e prod.
-const tipo: string = '93ebf577-6f2f-4ce3-ace4-340b8f711cbb';
+// Constante sistema apenas para testes. Remover antes de subir em homologação e prod.
+const sistema: string = '93ebf577-6f2f-4ce3-ace4-340b8f711cbb';
 
 export default function FormAtualizaAviso(
   { open, openFuncao, aviso, refreshFuncao }: 
@@ -54,7 +54,7 @@ export default function FormAtualizaAviso(
         mensagem: mensagem,
         cor: cor,
         rota: rota,
-        sistema_id: tipo
+        sistema_id: sistema
       }, aviso.id);
       if (!response) 
         throw new Error('Erro ao atualizar o aviso.');

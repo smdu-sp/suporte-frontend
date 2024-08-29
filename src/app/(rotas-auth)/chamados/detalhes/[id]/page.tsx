@@ -11,7 +11,7 @@ import * as unidadeServices from "@/shared/services/unidade.services";
 import * as usuarioServices from "@/shared/services/usuario.services";
 import { IOrdem } from "@/shared/services/ordem.services";
 import { IUnidade } from "@/shared/services/unidade.services";
-import { IMotivoTipo } from "@/shared/services/ordem.services";
+import { IMotivoSistema } from "@/shared/services/ordem.services";
 import { AlertsContext } from "@/providers/alertsProvider";
 import { IMaterial, IServico, ISuspensao } from "@/shared/services/servico.services";
 import { IUsuario } from "@/shared/services/usuario.services";
@@ -41,7 +41,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
   const [unidade_id, setUnidade_id] = useState('');
   const [unidades, setUnidades] = useState<IUnidade[]>([]);
   const [andar, setAndar] = useState<number>(8);
-  const [tipo_id, setTipo] = useState('');
+  const [sistema, setSistema] = useState('');
   const [prioridade, setPrioridade] = useState<number>(1);
   const [sala, setSala] = useState('');
   const [observacoes, setObservacoes] = useState('');
@@ -51,7 +51,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
   const [observacoesError, setObservacoesError] = useState('');
   const [unidade_idError, setUnidade_idError] = useState('');
   const [andarError, setAndarError] = useState('');
-  const [tipoError, setTipoError] = useState('');
+  const [sistemaError, setSistemaError] = useState('');
   const [telefoneError, setTelefoneError] = useState('');
   const [servicos, setServicos] = useState<IServico[]>([]);
   const [usuario, setUsuario] = useState<IUsuario>();
@@ -67,7 +67,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
   const [quantidadeMaterial, setQuantidadeMaterial] = useState(0);
   const [medidaMaterial, setMedidaMaterial] = useState('un');
   const [adicionaMaterialServico, setAdicionaMaterialServico] = useState('');
-  const [motivos, setMotivos] = useState<IMotivoTipo[]>();
+  const [motivos, setMotivos] = useState<IMotivoSistema[]>();
   const [categoria_id, setCategoria_id] = useState('')
   const [subcategoria_id, setSubcategoria_id] = useState('')
   const [ avisoStatus, setAvisoStatus ] = useState<boolean>();
@@ -87,7 +87,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
               setOrdem(ordem);
               setUnidade_id(ordem.unidade_id);
               setAndar(ordem.andar);
-              setTipo(ordem.tipo_id.toString());
+              setSistema((ordem.sistema || '').toString());
               setTelefone(ordem.telefone);
               setSala(ordem.sala);
               setObservacoes(ordem.observacoes);
@@ -108,7 +108,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
       ordemServices.buscaMotivos(id)
           .then((response) => {
               setMotivos([response]);
-              setTipo(response.categoria.tipo.id)
+              setSistema(response.categoria.sistema.id)
               setCategoria_id(response.categoria.id)
               setSubcategoria_id(response.id)
           }).then(() => {
@@ -208,8 +208,8 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
               setAndarError('É obrigatório informar o andar');
               erros++;
           }
-          if (!tipo_id) {
-              setTipoError('É obrigatório informar o tipo');
+          if (!sistema) {
+              setSistemaError('É obrigatório informar o sistema');
               erros++;
           }
           if (telefone === '') {
@@ -229,7 +229,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                   unidade_id,
                   andar,
                   sala,
-                  tipo_id,
+                  sistema_id: sistema,
                   observacoes,
                   telefone,
                   tratar_com,
@@ -705,15 +705,15 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                             <Divider />
                             <Stack direction="row" spacing={2}>
                                 <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Tipo</FormLabel>
+                                    <FormLabel>Sistema</FormLabel>
                                     <Input
                                         size="sm"
                                         type="text"
                                         placeholder="Responsável que irá receber o técnico na unidade"
-                                        value={motivos?.[0]?.categoria?.tipo?.nome}
+                                        value={motivos?.[0]?.categoria?.sistema?.nome}
                                         disabled
                                     />
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{tipoError}</FormHelperText>
+                                    <FormHelperText sx={{ color: 'danger.500' }}>{sistemaError}</FormHelperText>
                                 </FormControl>
                                 <FormControl sx={{ flexGrow: 1 }}>
                                     <FormLabel>Categoria</FormLabel>
@@ -723,7 +723,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                         value={motivos?.[0]?.categoria?.nome}
                                         disabled
                                     />
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{tipoError}</FormHelperText>
+                                    <FormHelperText sx={{ color: 'danger.500' }}>{sistemaError}</FormHelperText>
                                 </FormControl>
                                 <FormControl sx={{ flexGrow: 1 }}>
                                     <FormLabel>Sub Categoria</FormLabel>
@@ -733,7 +733,7 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                         value={motivos?.[0]?.nome}
                                         disabled
                                     />
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{tipoError}</FormHelperText>
+                                    <FormHelperText sx={{ color: 'danger.500' }}>{sistemaError}</FormHelperText>
                                 </FormControl>
                             </Stack>
                             <Divider />

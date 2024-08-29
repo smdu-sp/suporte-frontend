@@ -6,5 +6,5 @@ export default interface IAviso {
     cor: string;
     rota: string;
     status?: boolean;
-    sistema_id?: string; // tipo sendo opicional apenas para ambiente de teste. 
+    sistema_id?: string; // sistema sendo opcional apenas para ambiente de teste. 
 }

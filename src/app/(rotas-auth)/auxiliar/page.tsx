@@ -1,17 +1,17 @@
 'use client'
 import Content from "@/components/Content";
-import { Avatar, Box, Button, Card, Chip, Input, Sheet, Textarea, Typography } from "@mui/joy";
+import { Avatar, Box, Button, Chip, Sheet, Textarea, Typography } from "@mui/joy";
 import CircleIcon from '@mui/icons-material/Circle';
 import Logo from '@/assets/sis-icon.png'
 import Msg from "@/components/Menssagem";
 import Image from "next/image";
-import react, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from "next/navigation";
 import * as usuarioServices from "@/shared/services/usuario.services";
 import { IUsuario } from "@/shared/services/usuario.services";
 import SendIcon from '@mui/icons-material/Send';
-import { IPaginadoTipo, ITipo } from '@/shared/services/tipo.services';
-import * as tipoServices from '@/shared/services/tipo.services';
+import { IPaginadoSistema, ISistema } from '@/shared/services/sistema.services';
+import * as sistemaServices from '@/shared/services/sistema.services';
 import * as categoriaServices from '@/shared/services/categoria.services';
 import { ICategoria } from '@/shared/services/categoria.services';
 import * as subcategoriasServices from '@/shared/services/subcategorias.servise';
@@ -29,10 +29,10 @@ export default function Auxiliar() {
     const [status, setStatus] = useState(0)
     const [nome, setNome] = useState('');
     const [textCampo, setTextCampo] = useState('');
-    const [tipos, setTipos] = useState<ITipo[]>([]);
+    const [sistemas, setSistemas] = useState<ISistema[]>([]);
     const [categoria, setCategoria] = useState<ICategoria[]>([]);
     const [subCategoria, setSubCategoria] = useState<ISubCategoria[]>([]);
-    const [idTipo, setIdTipo] = useState('');
+    const [idSistema, setIdSistema] = useState('');
     const [idCategoria, setIdCategoria] = useState('');
     const [idSubCategoria, setIdSubCategoria] = useState('');
 
@@ -48,9 +48,9 @@ export default function Auxiliar() {
                 });
         };
         fetchData();
-        tipoServices.buscarTudo()
-            .then((response: IPaginadoTipo) => {
-                setTipos(response.data);
+        sistemaServices.buscarTudo()
+            .then((response: IPaginadoSistema) => {
+                setSistemas(response.data);
             })
     }, []);
 
@@ -77,7 +77,7 @@ export default function Auxiliar() {
     }
 
     const buscarCategoria = (id: string) => {
-        categoriaServices.buscar_por_tipo(id)
+        categoriaServices.buscar_por_sistema(id)
             .then((response) => {
                 setCategoria(response);
                 console.log(response);
@@ -178,20 +178,20 @@ export default function Auxiliar() {
                         >
                             <Box sx={{ display: 'flex', gap: 2 }}>
                                 {status === 0 ?
-                                    tipos && tipos.length > 0 && status === 0 ? tipos.map((tipos) => (
+                                    sistemas && sistemas.length > 0 && status === 0 ? sistemas.map((sistema) => (
                                         <Button
                                             sx={{ minWidth: '130px' }}
-                                            key={tipos.id}
+                                            key={sistema.id}
                                             onClick={() => {
-                                                setTexto(tipos.nome);
+                                                setTexto(sistema.nome);
                                                 setUser(nome);
                                                 setIndex(false);
                                                 setStatus(1);
-                                                buscarCategoria(tipos.id)
-                                                setIdTipo(tipos.id)
+                                                buscarCategoria(sistema.id)
+                                                setIdSistema(sistema.id)
                                             }}
                                         >
-                                            {tipos.nome}
+                                            {sistema.nome}
                                         </Button>
                                     )) : ''
                                     : null}

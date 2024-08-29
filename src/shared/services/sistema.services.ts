@@ -10,7 +10,7 @@ async function Logout() {
     window.location.href = '/login';
 }
 
-export interface ITipo {
+export interface ISistema {
     id: string;
     nome: string;
     categorias?: ICategoria[];
@@ -18,8 +18,8 @@ export interface ITipo {
     status: boolean;
 }
 
-export interface IPaginadoTipo {
-    data: ITipo[];
+export interface IPaginadoSistema {
+    data: ISistema[];
     total: number;
     pagina: number;
     limite: number;
@@ -27,9 +27,9 @@ export interface IPaginadoTipo {
 
 const baseURL = process.env.API_URL || 'http://localhost:3000/';
 
-async function listaCompleta(): Promise<ITipo[]> {
+async function listaCompleta(): Promise<ISistema[]> {
     const session = await getServerSession(authOptions);
-    const tipos = await fetch(`${baseURL}sistemas/lista-completa`, {
+    const sistemas = await fetch(`${baseURL}sistemas/lista-completa`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -39,12 +39,12 @@ async function listaCompleta(): Promise<ITipo[]> {
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipos;
+    return sistemas;
 }
 
-async function buscarTudo(status: string = 'true', pagina: number = 1, limite: number = 10, busca: string = ''): Promise<IPaginadoTipo> {
+async function buscarTudo(status: string = 'true', pagina: number = 1, limite: number = 10, busca: string = ''): Promise<IPaginadoSistema> {
     const session = await getServerSession(authOptions);
-    const tipos = await fetch(`${baseURL}sistemas/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
+    const sistemas = await fetch(`${baseURL}sistemas/buscar-tudo?status=${status}&pagina=${pagina}&limite=${limite}&busca=${busca}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -54,12 +54,12 @@ async function buscarTudo(status: string = 'true', pagina: number = 1, limite: n
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipos;
+    return sistemas;
 }
 
-async function buscarPorId(id: string): Promise<ITipo> {
+async function buscarPorId(id: string): Promise<ISistema> {
     const session = await getServerSession(authOptions);
-    const tipo = await fetch(`${baseURL}sistemas/buscar-por-id/${id}`, {
+    const sistema = await fetch(`${baseURL}sistemas/buscar-por-id/${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -69,7 +69,7 @@ async function buscarPorId(id: string): Promise<ITipo> {
         if (response.status === 401) Logout();
         return response.json();
     })
-    return tipo;
+    return sistema;
 }
 
 async function desativar(id: string): Promise<{ autorizado: boolean }> {
@@ -88,9 +88,9 @@ async function desativar(id: string): Promise<{ autorizado: boolean }> {
     return desativado;
 }
 
-async function criar({ nome, status }: { nome: string, status: string }): Promise<ITipo> {
+async function criar({ nome, status }: { nome: string, status: string }): Promise<ISistema> {
     const session = await getServerSession(authOptions);
-    const novoTipo = await fetch(`${baseURL}sistemas/criar`, {
+    const novoSistema = await fetch(`${baseURL}sistemas/criar`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -105,10 +105,10 @@ async function criar({ nome, status }: { nome: string, status: string }): Promis
         if (response.status !== 201) return;
         return response.json();
     });
-    return novoTipo;
+    return novoSistema;
 }
 
-async function atualizar({ id, nome, status }: { id: string, nome: string, status: string }): Promise<ITipo> {
+async function atualizar({ id, nome, status }: { id: string, nome: string, status: string }): Promise<ISistema> {
     const session = await getServerSession(authOptions);
     const atualizado = await fetch(`${baseURL}sistemas/atualizar/${id}`, {
         method: "PATCH",
@@ -128,7 +128,7 @@ async function atualizar({ id, nome, status }: { id: string, nome: string, statu
     return atualizado;
 }
 
-async function ativar(id: string): Promise<ITipo> {
+async function ativar(id: string): Promise<ISistema> {
     const session = await getServerSession(authOptions);
     const ativado = await fetch(`${baseURL}sistemas/atualizar/${id}`, {
         method: "PATCH",

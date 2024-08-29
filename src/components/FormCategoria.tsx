@@ -11,16 +11,16 @@ import Stack from '@mui/joy/Stack';
 import Add from '@mui/icons-material/Add';
 import { IconButton, Option, Select } from '@mui/joy';
 import { useState, FormEvent, Fragment, useEffect } from 'react';
-import * as tipoServices from '@/shared/services/tipo.services';
+import * as sistemaServices from '@/shared/services/sistema.services';
 import * as categoriaServices from '@/shared/services/categoria.services';
-import { ITipo } from '@/shared/services/tipo.services';
-import { IPaginadoTipo } from '@/shared/services/tipo.services';
+import { ISistema } from '@/shared/services/sistema.services';
+import { IPaginadoSistema } from '@/shared/services/sistema.services';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Dados {
     titulo: string,
     titulo_select: string,
-    tipo: string,
+    sistema: string,
     criar?: any,
     open: boolean,
     atualizar?: any
@@ -29,7 +29,7 @@ interface Dados {
 export default function FormCategoria(props: Dados) {
     const [open, setOpen] = useState<boolean>(false);
     const [id, setId] = useState<string>('');
-    const [dados, setDados] = useState<ITipo[]>([]);
+    const [dados, setDados] = useState<ISistema[]>([]);
     const [nome, setNome] = useState('');
     const [status, setStatus] = useState('true')
 
@@ -40,8 +40,8 @@ export default function FormCategoria(props: Dados) {
         setOpen(props.open);
         console.log(idRef);
         if (idRef) {
-            tipoServices.buscarPorId(idRef)
-                .then((res: ITipo) => {
+            sistemaServices.buscarPorId(idRef)
+                .then((res: ISistema) => {
                     setNome(res.nome)
                     setStatus(res.status ? 'true' : 'false')
                 })
@@ -49,14 +49,14 @@ export default function FormCategoria(props: Dados) {
     }, [idRef]);
 
     useEffect(() => {
-        if (props.tipo === 'cat') {
-            tipoServices.buscarTudo()
-                .then((res: IPaginadoTipo) => {
+        if (props.sistema === 'cat') {
+            sistemaServices.buscarTudo()
+                .then((res: IPaginadoSistema) => {
                     setDados(res.data)
                 })
         } else {
             categoriaServices.buscarTudo()
-                .then((res: IPaginadoTipo) => {
+                .then((res: IPaginadoSistema) => {
                     setDados(res.data)
                 })
         }
@@ -84,7 +84,7 @@ export default function FormCategoria(props: Dados) {
                                 <FormLabel>Nome</FormLabel>
                                 <Input value={nome} onChange={(e) => setNome(e.target.value)} autoFocus required />
                             </FormControl>
-                            {props.tipo !== 'tipo' &&
+                            {props.sistema !== 'sistema' &&
                                 <FormControl>
                                     <FormLabel>{props.titulo_select}</FormLabel>
                                     <Select onChange={(_, v) => setId(v as string)} required>

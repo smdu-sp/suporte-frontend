@@ -6,17 +6,15 @@ import * as subCategoriaServices from '@/shared/services/subcategorias.servise';
 import {ISubCategoria} from '@/shared/services/subcategorias.servise';
 import * as categoriaServices from '@/shared/services/categoria.services';
 import { Box, Button, ChipPropsColorOverrides, ColorPaletteProp, DialogContent, DialogTitle, FormControl, FormLabel, IconButton, Input, Modal, ModalDialog, Option, Select, Snackbar, Stack, Table, Tooltip, Typography, useTheme } from '@mui/joy';
-import { Add, Cancel, Check, Clear, Edit, Refresh, Search, Warning } from '@mui/icons-material';
+import { Add, Cancel, Check, Clear, Refresh, Search, Warning } from '@mui/icons-material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertsContext } from '@/providers/alertsProvider';
 import { TablePagination } from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
-import { IPaginadoUnidade, IUnidade } from '@/shared/services/unidade.services';
-import { IPaginadoTipo, ITipo } from '@/shared/services/tipo.services';
-import FormCategoria from '@/components/FormCategoria';
+import { ISistema } from '@/shared/services/sistema.services';
 import { ICategoria, IPaginadoCategoria } from '@/shared/services/categoria.services';
 
-export default function Tipos() {
+export default function Subcategorias() {
   return (
     <Suspense>
       <SearchSubcategorias />
@@ -90,13 +88,13 @@ function SearchSubcategorias() {
       });
   }
 
-  const desativaTipo = async (id: string) => {
+  const desativaSubcategoria = async (id: string) => {
     var resposta = await subCategoriaServices.desativar(id);
     if (resposta) {
-      setAlert('Tipo desativado!', 'Esse tipo foi desativado e não será exibido para seleção.', 'success', 3000, Check);
+      setAlert('Subcategoria desativada!', 'Essa subcategoria foi desativada e não será exibida para seleção.', 'success', 3000, Check);
       buscaSubcategorias();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível desativar o tipo.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível desativar a subcategoria.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
@@ -117,12 +115,12 @@ function SearchSubcategorias() {
     setPagina(1);
   };
 
-  const confirmaDesativaTipo = async (id: string) => {
+  const confirmadesativaSubcategoria = async (id: string) => {
     setConfirma({
       aberto: true,
-      confirmaOperacao: () => desativaTipo(id),
-      titulo: 'Desativar tipo',
-      pergunta: 'Deseja desativar este tipo?',
+      confirmaOperacao: () => desativaSubcategoria(id),
+      titulo: 'Desativar subcategoria',
+      pergunta: 'Deseja desativar esta subcategoria?',
       color: 'warning'
     });
   }
@@ -136,14 +134,14 @@ function SearchSubcategorias() {
       setStatusForm('true');
       return r
     });
-    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
+    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar a subcategoria.', 'warning', 3000, Warning);
     if (criado) {
-      setAlert('Tipo criado', 'Tipo registrado com sucesso.', 'success', 3000, Check)
+      setAlert('Subcategoria criado', 'Subcategoria registrada com sucesso.', 'success', 3000, Check)
       buscaSubcategorias();
     };
   }
   const atualizar = async (id: string, nome: string, categoria_id: string, status: string) => {
-    const alterado: ITipo = await subCategoriaServices.atualizar({
+    const alterado: ISistema = await subCategoriaServices.atualizar({
       id, nome, categoria_id, status
     }).then((r: ISubCategoria) => {
       setNome('');
@@ -151,30 +149,30 @@ function SearchSubcategorias() {
       setStatusForm('true');
       return r
     });
-    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
+    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar a subcategoria.', 'warning', 3000, Warning);
     if (alterado) {
-      setAlert('Tipo alterado', 'Tipo alterado com sucesso.', 'success', 3000, Check)
+      setAlert('Subcategoria alterada', 'Subcategoria alterada com sucesso.', 'success', 3000, Check)
       buscaSubcategorias();
     };
   }
 
-  const ativaTipo = async (id: string) => {
+  const ativaSubcategoria = async (id: string) => {
     var resposta = await subCategoriaServices.ativar(id);
     if (resposta) {
-      setAlert('Tipo ativado!', 'Esse tipo foi autorizado e será visível para seleção.', 'success', 3000, Check);
+      setAlert('Subcategoria ativada!', 'Essa subcategoria foi autorizado e será visível para seleção.', 'success', 3000, Check);
       buscaSubcategorias();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível ativar tipo.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível ativar a subcategoria.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
 
-  const confirmaAtivaTipo = async (id: string) => {
+  const confirmaativaSubcategoria = async (id: string) => {
     setConfirma({
       aberto: true,
-      confirmaOperacao: () => ativaTipo(id),
-      titulo: 'Ativar tipo',
-      pergunta: 'Deseja ativar este tipo?',
+      confirmaOperacao: () => ativaSubcategoria(id),
+      titulo: 'Ativar subcategoria',
+      pergunta: 'Deseja ativar esta subcategoria?',
       color: 'primary'
     });
   }
@@ -303,13 +301,13 @@ function SearchSubcategorias() {
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!subcategoria.status ? (
                     <Tooltip title="Ativar Unidade" arrow placement="top">
-                      <IconButton size="sm" color="success" onClick={() => confirmaAtivaTipo(subcategoria.id)}>
+                      <IconButton size="sm" color="success" onClick={() => confirmaativaSubcategoria(subcategoria.id)}>
                         <Check />
                       </IconButton>
                     </Tooltip>
                   ) : (
                     <Tooltip title="Desativar" arrow placement="top">
-                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmaDesativaTipo(subcategoria.id)}>
+                      <IconButton title="Desativar" size="sm" color="danger" onClick={() => confirmadesativaSubcategoria(subcategoria.id)}>
                         <Cancel />
                       </IconButton>
                     </Tooltip>
@@ -317,7 +315,7 @@ function SearchSubcategorias() {
                 </div>
               </td>
             </tr>
-          )) : <tr><td colSpan={2}>Nenhum tipo encontrado</td></tr>}
+          )) : <tr><td colSpan={2}>Nenhuma subcategoria encontrada</td></tr>}
         </tbody>
       </Table>
       {(total && total > 0) ? <TablePagination

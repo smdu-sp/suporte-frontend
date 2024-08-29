@@ -16,8 +16,8 @@ import IAviso from '@/shared/interfaces/IAviso';
 import * as service from '@/shared/services/avisos.service';
 import { AlertsContext } from '@/providers/alertsProvider';
 
-// Constante tipo apenas para testes. Remover antes de subir em homologação e prod.
-const tipo: string = 'cc9da6a7-9fef-4c70-8d4f-8fc465cf211f';
+// Constante sistema apenas para testes. Remover antes de subir em homologação e prod.
+const sistema: string = 'cc9da6a7-9fef-4c70-8d4f-8fc465cf211f';
 
 export default function FormNovoAviso(
   { open, openFuncao, refreshFuncao }: 
@@ -42,7 +42,7 @@ export default function FormNovoAviso(
         mensagem: mensagem,
         cor: cor,
         rota: rota,
-        sistema_id: tipo
+        sistema_id: sistema
       });
       if (!response) throw new Error('Erro ao cadastrar o aviso.');
       setAlert('Aviso criado.', 'Esse aviso foi criado com sucesso.', 'success', 3000, Check);
