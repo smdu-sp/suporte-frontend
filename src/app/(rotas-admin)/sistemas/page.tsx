@@ -33,6 +33,7 @@ function SearchTipos() {
   const [nome, setNome] = useState('');
   const [dados, setDados] = useState<ITipo[]>([]);
   const [statusForm, setStatusForm] = useState('true');
+  const [padrao, setPadrao] = useState('true');
   const [id, setId] = useState('');
 
   const [open, setOpen] = useState(false);
@@ -91,31 +92,41 @@ function SearchTipos() {
   const desativaTipo = async (id: string) => {
     var resposta = await tipoServices.desativar(id);
     if (resposta) {
-      setAlert('Sistema desativado!', 'Esse sistema foi desativado e não será exibido para seleção.', 'success', 3000, Check);
+      setAlert('Tipo desativado!', 'Esse tipo foi desativado e não será exibido para seleção.', 'success', 3000, Check);
       buscaTipos();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível desativar o sistema.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível desativar o tipo.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
 
   const criar = async (nome: string, status: string) => {
     const criado: ITipo = await tipoServices.criar(
-      { nome, status }
-    );
-    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o sistema.', 'warning', 3000, Warning);
+      { nome, padrao, status }
+    ).then((r: ITipo) => {
+      setNome('');
+      setPadrao('false');
+      setStatusForm('true');
+      return r
+    });
+    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
     if (criado) {
-      setAlert('Sistema criado', 'Sistema registrado com sucesso.', 'success', 3000, Check)
+      setAlert('Tipo criado', 'Tipo registrado com sucesso.', 'success', 3000, Check)
       buscaTipos();
     };
   }
-  const atualizar = async (id: string, nome: string, status: string) => {
+  const atualizar = async (id: string, nome: string, padrao: boolean, status: string) => {
     const alterado: ITipo = await tipoServices.atualizar({
-      id, nome, status
+      id, nome, padrao, status
+    }).then((r: ITipo) => {
+      setNome('');
+      setPadrao('false');
+      setStatusForm('true');
+      return r
     });
-    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o sistema.', 'warning', 3000, Warning);
+    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
     if (alterado) {
-      setAlert('Sistema alterado', 'Sistema alterado com sucesso.', 'success', 3000, Check)
+      setAlert('Tipo alterado', 'Tipo alterado com sucesso.', 'success', 3000, Check)
       buscaTipos();
     };
   }
@@ -140,8 +151,8 @@ function SearchTipos() {
     setConfirma({
       aberto: true,
       confirmaOperacao: () => desativaTipo(id),
-      titulo: 'Desativar sistema',
-      pergunta: 'Deseja desativar este sistema?',
+      titulo: 'Desativar tipo',
+      pergunta: 'Deseja desativar este tipo?',
       color: 'warning'
     });
   }
@@ -149,10 +160,10 @@ function SearchTipos() {
   const ativaTipo = async (id: string) => {
     var resposta = await tipoServices.ativar(id);
     if (resposta) {
-      setAlert('Sistema ativado!', 'Esse sistema foi autorizado e será visível para seleção.', 'success', 3000, Check);
+      setAlert('Tipo ativado!', 'Esse tipo foi autorizado e será visível para seleção.', 'success', 3000, Check);
       buscaTipos();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível ativar sistema.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível ativar tipo.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
@@ -161,8 +172,8 @@ function SearchTipos() {
     setConfirma({
       aberto: true,
       confirmaOperacao: () => ativaTipo(id),
-      titulo: 'Ativar sistema',
-      pergunta: 'Deseja ativar este sistema?',
+      titulo: 'Ativar tipo',
+      pergunta: 'Deseja ativar este tipo?',
       color: 'primary'
     });
   }
@@ -179,10 +190,10 @@ function SearchTipos() {
   return (
     <Content
       breadcrumbs={[
-        { label: 'Sistemas', href: '/sistemas' }
+        { label: 'Sistema', href: '/tipos' }
       ]}
-      titulo='Sistemas'
-      pagina='sistemas'
+      titulo='Tipos'
+      pagina='tipos'
     >
       <Snackbar
         variant="solid"
@@ -261,6 +272,7 @@ function SearchTipos() {
         <thead>
           <tr>
             <th>Nome</th>
+            <th>Padrão</th>
             <th style={{ textAlign: 'right' }}></th>
           </tr>
         </thead>
@@ -276,8 +288,16 @@ function SearchTipos() {
                 setOpen(true)
                 setNome(tipo.nome)
                 setId(tipo.id)
+                setPadrao(tipo.padrao ? 'false' : 'true')
                 setStatus(tipo.status ? 'true' : 'false')
               }}>{tipo.nome}</td>
+              <td onClick={() => {
+                setOpen(true)
+                setNome(tipo.nome)
+                setId(tipo.id)
+                setPadrao(tipo.padrao ? 'false' : 'true')
+                setStatus(tipo.status ? 'true' : 'false')
+              }}>{tipo.padrao ? 'Sim' : 'Não'}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!tipo.status ? (
@@ -316,7 +336,7 @@ function SearchTipos() {
           bottom: '2rem',
           right: '2rem',
         }}><Add /></IconButton>
-        <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); }}>
+        <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); setPadrao('false'); setStatusForm('true'); }}>
           <ModalDialog>
             <DialogTitle>{id === '' ? 'Criar' : 'Atualizar'} Tipo</DialogTitle>
             <DialogContent>Preencha todos os campos para criar uma nova categoria.</DialogContent>
@@ -326,7 +346,7 @@ function SearchTipos() {
                 if (id === '') {
                   criar(nome, statusForm);
                 } else {
-                  atualizar(id, nome, statusForm);
+                  atualizar(id, nome, padrao === 'false' ? true : false, statusForm);
                 }
                 setOpen(false);
               }}
@@ -335,6 +355,13 @@ function SearchTipos() {
                 <FormControl>
                   <FormLabel>Nome</FormLabel>
                   <Input value={nome} onChange={(e) => setNome(e.target.value)} autoFocus required />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Padrão</FormLabel>
+                  <Select value={padrao} onChange={(_, v) => setPadrao(v as string)} required>
+                    <Option value="true">Não</Option>
+                    <Option value="false">Sim</Option>
+                  </Select>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Status</FormLabel>
