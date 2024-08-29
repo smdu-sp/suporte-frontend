@@ -92,7 +92,7 @@ async function desativar(id: string): Promise<{ autorizado: boolean }> {
     return desativado;
 }
 
-async function criar({ nome, tipo_id, status }: { nome: string, tipo_id: string, status: string }): Promise<ICategoria> {
+async function criar({ nome, sistema_id, status }: { nome: string, sistema_id: string, status: string }): Promise<ICategoria> {
     const session = await getServerSession(authOptions);
     const novoTipo = await fetch(`${baseURL}categorias/criar`, {
         method: "POST",
@@ -102,7 +102,7 @@ async function criar({ nome, tipo_id, status }: { nome: string, tipo_id: string,
         },
         body: JSON.stringify({ 
             nome,
-            tipo_id,
+            sistema_id,
             status: status === 'true'
         })
     }).then((response) => {
@@ -113,7 +113,7 @@ async function criar({ nome, tipo_id, status }: { nome: string, tipo_id: string,
     return novoTipo;
 }
 
-async function atualizar({ id, nome, tipo_id, status }: { id: string, nome: string, tipo_id: string, status: string }): Promise<ICategoria> {
+async function atualizar({ id, nome, sistema_id, status }: { id: string, nome: string, sistema_id: string, status: string }): Promise<ICategoria> {
     const session = await getServerSession(authOptions);
     const atualizado = await fetch(`${baseURL}categorias/atualizar/${id}`, {
         method: "PATCH",
@@ -123,7 +123,7 @@ async function atualizar({ id, nome, tipo_id, status }: { id: string, nome: stri
         },
         body: JSON.stringify({
             nome,
-            tipo_id,
+            sistema_id,
             status: status === 'true'
         })
     }).then((response) => {

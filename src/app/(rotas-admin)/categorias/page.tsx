@@ -12,7 +12,6 @@ import { TablePagination } from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
 import { IPaginadoCategoria, ICategoria } from '@/shared/services/categoria.services';
 import { ITipo } from '@/shared/services/tipo.services';
-import FormCategoria from '@/components/FormCategoria';
 
 export default function Tipos() {
   return (
@@ -124,9 +123,9 @@ function SearchCategorias() {
       })
   }, []);
 
-  const criar = async (nome: string, tipo_id: string, status: string) => {
+  const criar = async (nome: string, sistema_id: string, status: string) => {
     const criado: ITipo = await categoriaServices.criar(
-      { nome, tipo_id, status }
+      { nome, sistema_id, status }
     ).then((r: ITipo) => {
       setNome('');
       setIdTipo('');
@@ -139,9 +138,9 @@ function SearchCategorias() {
       buscaTipos();
     };
   }
-  const atualizar = async (id: string, nome: string, tipo_id: string, status: string) => {
+  const atualizar = async (id: string, nome: string, sistema_id: string, status: string) => {
     const alterado: ITipo = await categoriaServices.atualizar({
-      id, nome, tipo_id, status
+      id, nome, sistema_id, status
     }).then((r: ITipo) => {
       setNome('');
       setIdTipo('');
