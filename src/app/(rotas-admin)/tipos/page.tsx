@@ -103,7 +103,12 @@ function SearchTipos() {
   const criar = async (nome: string, status: string) => {
     const criado: ITipo = await tipoServices.criar(
       { nome, padrao, status }
-    );
+    ).then((r: ITipo) => {
+      setNome('');
+      setPadrao('false');
+      setStatusForm('true');
+      return r
+    });
     if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
     if (criado) {
       setAlert('Tipo criado', 'Tipo registrado com sucesso.', 'success', 3000, Check)
@@ -113,6 +118,11 @@ function SearchTipos() {
   const atualizar = async (id: string, nome: string, padrao: boolean, status: string) => {
     const alterado: ITipo = await tipoServices.atualizar({
       id, nome, padrao, status
+    }).then((r: ITipo) => {
+      setNome('');
+      setPadrao('false');
+      setStatusForm('true');
+      return r
     });
     if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
     if (alterado) {
@@ -326,7 +336,7 @@ function SearchTipos() {
           bottom: '2rem',
           right: '2rem',
         }}><Add /></IconButton>
-        <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); }}>
+        <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); setPadrao('false'); setStatusForm('true'); }}>
           <ModalDialog>
             <DialogTitle>{id === '' ? 'Criar' : 'Atualizar'} Tipo</DialogTitle>
             <DialogContent>Preencha todos os campos para criar uma nova categoria.</DialogContent>
