@@ -50,7 +50,6 @@ export default function FormNovoAviso(
       refreshFuncao();
       return response;
     } catch(e) {
-      console.log(e);
       setAlert('Tente novamente!', 'Não foi possível atualizar o aviso.', 'warning', 3000, Warning);
       return null;
     }

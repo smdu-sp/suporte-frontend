@@ -31,6 +31,7 @@ function SearchSistemas() {
   const [nome, setNome] = useState('');
   const [dados, setDados] = useState<ISistema[]>([]);
   const [statusForm, setStatusForm] = useState('true');
+  const [padrao, setPadrao] = useState('true');
   const [id, setId] = useState('');
 
   const [open, setOpen] = useState(false);
@@ -92,7 +93,7 @@ function SearchSistemas() {
       setAlert('Sistema desativado!', 'Esse sistema foi desativado e não será exibido para seleção.', 'success', 3000, Check);
       buscaSistemas();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível desativar o sistema.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível desativar o tipo.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
@@ -100,18 +101,28 @@ function SearchSistemas() {
   const criar = async (nome: string, status: string) => {
     const criado: ISistema = await sistemaServices.criar(
       { nome, status }
-    );
-    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o sistema.', 'warning', 3000, Warning);
+    ).then((r: ISistema) => {
+      setNome('');
+      setPadrao('false');
+      setStatusForm('true');
+      return r
+    });
+    if (!criado) setAlert('Tente novamente!', 'Não foi possível criar o tipo.', 'warning', 3000, Warning);
     if (criado) {
       setAlert('Sistema criado', 'Sistema registrado com sucesso.', 'success', 3000, Check)
       buscaSistemas();
     };
   }
-  const atualizar = async (id: string, nome: string, status: string) => {
+  const atualizar = async (id: string, nome: string, padrao: boolean, status: string) => {
     const alterado: ISistema = await sistemaServices.atualizar({
       id, nome, status
+    }).then((r: ISistema) => {
+      setNome('');
+      setPadrao('false');
+      setStatusForm('true');
+      return r
     });
-    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o sistema.', 'warning', 3000, Warning);
+    if (!alterado) setAlert('Tente novamente!', 'Não foi possível alterar o tipo.', 'warning', 3000, Warning);
     if (alterado) {
       setAlert('Sistema alterado', 'Sistema alterado com sucesso.', 'success', 3000, Check)
       buscaSistemas();
@@ -150,7 +161,7 @@ function SearchSistemas() {
       setAlert('Sistema ativado!', 'Esse sistema foi autorizado e será visível para seleção.', 'success', 3000, Check);
       buscaSistemas();
     } else {
-      setAlert('Tente novamente!', 'Não foi possível ativar sistema.', 'warning', 3000, Warning);
+      setAlert('Tente novamente!', 'Não foi possível ativar tipo.', 'warning', 3000, Warning);
     }
     setConfirma(confirmaVazio);
   }
@@ -179,7 +190,7 @@ function SearchSistemas() {
       breadcrumbs={[
         { label: 'Sistemas', href: '/sistemas' }
       ]}
-      titulo='Sistemas'
+      titulo='Sistema'
       pagina='sistemas'
     >
       <Snackbar
@@ -259,6 +270,7 @@ function SearchSistemas() {
         <thead>
           <tr>
             <th>Nome</th>
+            <th>Padrão</th>
             <th style={{ textAlign: 'right' }}></th>
           </tr>
         </thead>
@@ -276,6 +288,13 @@ function SearchSistemas() {
                 setId(sistema.id)
                 setStatus(sistema.status ? 'true' : 'false')
               }}>{sistema.nome}</td>
+              <td onClick={() => {
+                setOpen(true)
+                setNome(sistema.nome)
+                setId(sistema.id)
+                setPadrao(sistema.padrao ? 'false' : 'true')
+                setStatus(sistema.status ? 'true' : 'false')
+              }}>{tipo.padrao ? 'Sim' : 'Não'}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!sistema.status ? (
@@ -314,7 +333,7 @@ function SearchSistemas() {
           bottom: '2rem',
           right: '2rem',
         }}><Add /></IconButton>
-        <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); }}>
+        <Modal open={open} onClose={() => { setOpen(false); setId(''); setNome(''); setPadrao('false'); setStatusForm('true'); }}>
           <ModalDialog>
             <DialogTitle>{id === '' ? 'Criar' : 'Atualizar'} Sistema</DialogTitle>
             <DialogContent>Preencha todos os campos para criar um novo sistema.</DialogContent>
@@ -324,7 +343,7 @@ function SearchSistemas() {
                 if (id === '') {
                   criar(nome, statusForm);
                 } else {
-                  atualizar(id, nome, statusForm);
+                  atualizar(id, nome, padrao === 'false' ? true : false, statusForm);
                 }
                 setOpen(false);
               }}
@@ -333,6 +352,13 @@ function SearchSistemas() {
                 <FormControl>
                   <FormLabel>Nome</FormLabel>
                   <Input value={nome} onChange={(e) => setNome(e.target.value)} autoFocus required />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Padrão</FormLabel>
+                  <Select value={padrao} onChange={(_, v) => setPadrao(v as string)} required>
+                    <Option value="true">Não</Option>
+                    <Option value="false">Sim</Option>
+                  </Select>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Status</FormLabel>

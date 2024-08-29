@@ -4,6 +4,8 @@ import TurnedInIcon from '@mui/icons-material/TurnedIn';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import LabelImportantIcon from '@mui/icons-material/LabelImportant';
 import BookIcon from '@mui/icons-material/Book';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import ComputerIcon from '@mui/icons-material/Computer';
 export interface IMenuOption {
     title:  string;
     href:   string;
@@ -52,13 +54,13 @@ export const menu: IMenu = {
             title: 'Avisos',
             href: '/avisos',
             name: 'avisos',
-            icon: TurnedInIcon,
+            icon: NotificationsIcon,
         },
         {
             title: 'Sistemas',
-            href: '/sistema',
-            name: 'sistema',
-            icon: BookIcon,
+            href: '/sistemas',
+            name: 'sistemas',
+            icon: ComputerIcon,
         },
         {
             title: 'Categorias',

@@ -13,6 +13,7 @@ async function Logout() {
 export interface ISistema {
     id: string;
     nome: string;
+    padrao?: boolean;
     categorias?: ICategoria[];
     ordens?: IOrdem[];
     status: boolean;
@@ -88,7 +89,7 @@ async function desativar(id: string): Promise<{ autorizado: boolean }> {
     return desativado;
 }
 
-async function criar({ nome, status }: { nome: string, status: string }): Promise<ISistema> {
+async function criar({ nome, padrao, status }: { nome: string, padrao: string, status: string }): Promise<ISistema> {
     const session = await getServerSession(authOptions);
     const novoSistema = await fetch(`${baseURL}sistemas/criar`, {
         method: "POST",
@@ -98,6 +99,7 @@ async function criar({ nome, status }: { nome: string, status: string }): Promis
         },
         body: JSON.stringify({ 
             nome,
+            padrao: padrao === 'false',
             status: status === 'true'
         })
     }).then((response) => {
@@ -108,7 +110,7 @@ async function criar({ nome, status }: { nome: string, status: string }): Promis
     return novoSistema;
 }
 
-async function atualizar({ id, nome, status }: { id: string, nome: string, status: string }): Promise<ISistema> {
+async function atualizar({ id, nome, padrao, status }: { id: string, nome: string, padrao: boolean, status: string }): Promise<ISistema> {
     const session = await getServerSession(authOptions);
     const atualizado = await fetch(`${baseURL}sistemas/atualizar/${id}`, {
         method: "PATCH",
@@ -118,6 +120,7 @@ async function atualizar({ id, nome, status }: { id: string, nome: string, statu
         },
         body: JSON.stringify({
             nome,
+            padrao,
             status: status === 'true'
         })
     }).then((response) => {
