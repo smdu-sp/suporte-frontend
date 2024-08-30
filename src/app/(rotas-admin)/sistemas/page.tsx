@@ -100,7 +100,7 @@ function SearchSistemas() {
 
   const criar = async (nome: string, status: string) => {
     const criado: ISistema = await sistemaServices.criar(
-      { nome, status }
+      { nome, padrao, status }
     ).then((r: ISistema) => {
       setNome('');
       setPadrao('false');
@@ -115,7 +115,7 @@ function SearchSistemas() {
   }
   const atualizar = async (id: string, nome: string, padrao: boolean, status: string) => {
     const alterado: ISistema = await sistemaServices.atualizar({
-      id, nome, status
+      id, nome, padrao, status
     }).then((r: ISistema) => {
       setNome('');
       setPadrao('false');
@@ -294,7 +294,7 @@ function SearchSistemas() {
                 setId(sistema.id)
                 setPadrao(sistema.padrao ? 'false' : 'true')
                 setStatus(sistema.status ? 'true' : 'false')
-              }}>{tipo.padrao ? 'Sim' : 'Não'}</td>
+              }}>{sistema.padrao ? 'Sim' : 'Não'}</td>
               <td>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                   {!sistema.status ? (
