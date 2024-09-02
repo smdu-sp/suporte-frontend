@@ -6,6 +6,7 @@ import { Business, Check, EmailRounded } from "@mui/icons-material";
 import { useRouter } from 'next/navigation';
 import { OverridableStringUnion } from '@mui/types';
 
+import { useRef } from 'react';
 import Content from "@/components/Content";
 import { IUnidade } from "@/shared/services/unidade.services";
 import { IUsuario } from "@/shared/services/usuario.services";
@@ -13,6 +14,11 @@ import * as usuarioServices from "@/shared/services/usuario.services";
 import * as unidadeServices from "@/shared/services/unidade.services";
 import { AlertsContext } from "@/providers/alertsProvider";
 import EditIcon from '@mui/icons-material/Edit';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/shared/auth/authOptions";
+
+import * as pickFiles from "@/shared/services/pick.service";
+import { parse } from "path";
 
 export default function UsuarioDetalhes() {
     const [usuario, setUsuario] = useState<IUsuario>();
@@ -20,6 +26,8 @@ export default function UsuarioDetalhes() {
     const [unidade_id, setUnidade_id] = useState('');
     const router = useRouter();
     const { setAlert } = useContext(AlertsContext);
+    const [urlAvatar, setUrlAvatar] = useState('')
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const permissoes: Record<string, { label: string, value: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }> = {
         'DEV': { label: 'Desenvolvedor', value: 'DEV', color: 'primary' },
@@ -27,18 +35,63 @@ export default function UsuarioDetalhes() {
         'ADM': { label: 'Administrador', value: 'ADM', color: 'success' },
         'USR': { label: 'Usuário', value: 'USR', color: 'warning' },
     }
-
     const submitData = () => {
-        if (usuario) {
-            usuarioServices.atualizar(usuario.id, {
-                unidade_id,
-            }).then((response) => {
-                if (response.id) {
+        if (!selectedFile || !usuario) { return; }
+    
+        const formData = new FormData();
+        formData.append('foto', selectedFile); 
+    
+        usuarioServices.atualizar(usuario.id, formData)
+            .then((response) => {
+                if (response) {
                     setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);
+                    console.log(response);
                 }
             })
+    };
+
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            
+            setSelectedFile(event.target.files[0]);
+
+            const foto = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                if (reader.result) {
+                    setUrlAvatar(reader.result as string);
+                }
+            };
+            reader.readAsDataURL(foto);
         }
-    }
+    };
+
+    // useEffect(() => {
+    //     handleUpload()
+    // }, [selectedFile])
+
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            return;
+        }
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        const response = await fetch('http://localhost:3000/minio', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ao enviar imagem: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setUrlAvatar(data.url);
+    };
+
+
 
     useEffect(() => {
         usuarioServices.validaUsuario()
@@ -52,7 +105,6 @@ export default function UsuarioDetalhes() {
                 setUnidades(response);
             })
     }, []);
-
 
     return (
         <Content
@@ -83,31 +135,35 @@ export default function UsuarioDetalhes() {
                             sx={{ width: 100, height: 100 }}
                             color="neutral"
                             variant="soft"
+                            src={urlAvatar}
                         >
                         </Avatar>
-                        <Input
-                            type="file"
-                            sx={{
-                                display: 'none',
-                            }}
-                            id="file-upload"
-                        />
-                        <label htmlFor="file-upload">
-                            <IconButton
-                                component="span"
+                        <form action="">
+                            <Input
+                                type="file"
+                                onChange={handleFileChange}
                                 sx={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    right: -20,
-                                    zIndex: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'transparent',
-                                    }
+                                    display: 'none',
                                 }}
-                            >
-                                <EditIcon />
-                            </IconButton>
-                        </label>
+                                id="file-upload"
+                            />
+                            <label htmlFor="file-upload">
+                                <IconButton
+                                    component="span"
+                                    sx={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: -20,
+                                        zIndex: 1,
+                                        '&:hover': {
+                                            backgroundColor: 'transparent',
+                                        }
+                                    }}
+                                >
+                                    <EditIcon />
+                                </IconButton>
+                            </label>
+                        </form>
                     </Box>
                 </Box>
                 <Card sx={{ width: '100%' }}>

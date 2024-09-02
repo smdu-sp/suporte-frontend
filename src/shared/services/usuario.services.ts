@@ -22,6 +22,7 @@ export interface IUsuario {
     ultimoLogin: Date;
     criadoEm: Date;
     atualizadoEm: Date;
+    foto?: any;
 }
 
 export interface ICreateUsuario {
@@ -37,6 +38,7 @@ export interface IUpdateUsuario {
     dev?: boolean;
     status?: number;
     unidade_id?: string;
+    foto?: any;
 }
 
 export interface IPaginadoUsuario {
@@ -125,20 +127,24 @@ async function criar(data: ICreateUsuario): Promise<IUsuario> {
     return criado;
 }
 
-async function atualizar(id: string, data: IUpdateUsuario): Promise<IUsuario> {
+async function atualizar(id: string, data: FormData): Promise<IUsuario> {
     const session = await getServerSession(authOptions);
-    const autorizado = await fetch(`${baseURL}usuarios/atualizar/${id}`, {
+    const response = await fetch(`${baseURL}usuarios/atualizar/${id}`, {
         method: "PATCH",
+        body: data, 
         headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${session?.access_token}`
-        }, body: JSON.stringify(data)
-    }).then((response) => {
-        if (response.status === 401) Logout();
-        if (response.status !== 200) return;
-        return response.json();
-    })
-    return autorizado;
+        }
+    });
+
+    if (response.status === 401) {
+        Logout();
+    } else if (response.status !== 200) {
+        console.error('Failed to update user');
+        return Promise.reject('Failed to update user');
+    }
+
+    return response.json();
 }
 
 async function desativar(id: string): Promise<{ desativado: boolean }> {

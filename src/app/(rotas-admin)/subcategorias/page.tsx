@@ -13,7 +13,6 @@ import { TablePagination } from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
 import { ISistema } from '@/shared/services/sistema.services';
 import { ICategoria, IPaginadoCategoria } from '@/shared/services/categoria.services';
-
 export default function Subcategorias() {
   return (
     <Suspense>
