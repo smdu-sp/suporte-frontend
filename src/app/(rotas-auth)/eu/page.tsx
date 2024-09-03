@@ -19,6 +19,7 @@ import { authOptions } from "@/shared/auth/authOptions";
 
 import * as pickFiles from "@/shared/services/pick.service";
 import { parse } from "path";
+import { io } from "socket.io-client";
 
 export default function UsuarioDetalhes() {
     const [usuario, setUsuario] = useState<IUsuario>();
@@ -35,25 +36,25 @@ export default function UsuarioDetalhes() {
         'ADM': { label: 'Administrador', value: 'ADM', color: 'success' },
         'USR': { label: 'Usuário', value: 'USR', color: 'warning' },
     }
+
+    const socket = io('http://localhost:3000');
+
     const submitData = () => {
         if (!selectedFile || !usuario) { return; }
-    
+
         const formData = new FormData();
-        formData.append('foto', selectedFile); 
-    
-        usuarioServices.atualizar(usuario.id, formData)
+        formData.append('foto', selectedFile);
+
+        usuarioServices.atualizar(usuario.id, formData, { unidade_id: unidade_id })
             .then((response) => {
-                if (response) {
-                    setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);
-                    console.log(response);
-                }
+                setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);
+                socket.emit('avatar', true);
             })
     };
 
-
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            
+
             setSelectedFile(event.target.files[0]);
 
             const foto = event.target.files[0];
@@ -66,32 +67,6 @@ export default function UsuarioDetalhes() {
             reader.readAsDataURL(foto);
         }
     };
-
-    // useEffect(() => {
-    //     handleUpload()
-    // }, [selectedFile])
-
-    const handleUpload = async () => {
-        if (!selectedFile) {
-            return;
-        }
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-
-        const response = await fetch('http://localhost:3000/minio', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error(`Erro ao enviar imagem: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        setUrlAvatar(data.url);
-    };
-
-
 
     useEffect(() => {
         usuarioServices.validaUsuario()
@@ -135,7 +110,7 @@ export default function UsuarioDetalhes() {
                             sx={{ width: 100, height: 100 }}
                             color="neutral"
                             variant="soft"
-                            src={urlAvatar}
+                            src={urlAvatar ? urlAvatar : usuario?.avatar}
                         >
                         </Avatar>
                         <form action="">

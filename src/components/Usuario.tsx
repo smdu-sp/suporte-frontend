@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import * as usuarioServices from "@/shared/services/usuario.services";
 import { IUsuario } from "@/shared/services/usuario.services";
+import io from 'socket.io-client';
 
 export default function Usuario() {
   const router = useRouter();
@@ -15,11 +16,25 @@ export default function Usuario() {
     'USR': { label: 'Usuário', value: 'USR', color: 'warning' },
   }
 
-  useEffect(() => {
+  const socket = io('http://localhost:3000');
+
+  const validaUsuario = async () => {
     usuarioServices.validaUsuario()
       .then((response: IUsuario) => {
         setUsuario(response);
       });
+  }
+
+  useEffect(() => {
+    socket.on('avatar', (data: boolean) => {
+      if (data) {
+        validaUsuario()
+      }
+    })
+  }, []);
+
+  useEffect(() => {
+    validaUsuario()
   }, []);
   const [usuario, setUsuario] = useState<IUsuario>();
 
@@ -41,6 +56,7 @@ export default function Usuario() {
             width: 50,
             height: 50,
           }}
+          src={usuario.avatar}
         >
         </Avatar>
         <Typography

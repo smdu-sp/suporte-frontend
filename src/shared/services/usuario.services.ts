@@ -22,7 +22,7 @@ export interface IUsuario {
     ultimoLogin: Date;
     criadoEm: Date;
     atualizadoEm: Date;
-    foto?: any;
+    avatar?: any;
 }
 
 export interface ICreateUsuario {
@@ -127,25 +127,37 @@ async function criar(data: ICreateUsuario): Promise<IUsuario> {
     return criado;
 }
 
-async function atualizar(id: string, data: FormData): Promise<IUsuario> {
+async function atualizar(
+    id: string, 
+    formdata: FormData, 
+    data: IUpdateUsuario
+): Promise<IUsuario | void> {
     const session = await getServerSession(authOptions);
-    const response = await fetch(`${baseURL}usuarios/atualizar/${id}`, {
+    const userUpdateResponse = await fetch(`${baseURL}usuarios/atualizar/${id}`, {
         method: "PATCH",
-        body: data, 
+        body: JSON.stringify(data),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session?.access_token}`
+        }
+    });
+    if (userUpdateResponse.status === 401) {
+        Logout();
+        return;
+    }
+    if (userUpdateResponse.status !== 200) {
+        return;
+    }
+    await fetch(`${baseURL}usuarios/atualizar/${id}`, {
+        method: "PATCH",
+        body: formdata,
         headers: {
             "Authorization": `Bearer ${session?.access_token}`
         }
     });
-
-    if (response.status === 401) {
-        Logout();
-    } else if (response.status !== 200) {
-        console.error('Failed to update user');
-        return Promise.reject('Failed to update user');
-    }
-
-    return response.json();
+    return userUpdateResponse.json();
 }
+
 
 async function desativar(id: string): Promise<{ desativado: boolean }> {
     const session = await getServerSession(authOptions);
