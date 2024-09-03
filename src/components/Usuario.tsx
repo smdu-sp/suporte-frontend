@@ -53,8 +53,8 @@ export default function Usuario() {
         <Avatar
           variant="solid"
           sx={{
-            width: 50,
-            height: 50,
+            width: 70,
+            height: 70,
           }}
           src={usuario.avatar}
         >

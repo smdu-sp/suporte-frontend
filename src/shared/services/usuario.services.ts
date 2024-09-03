@@ -111,7 +111,7 @@ async function autorizar(id: string): Promise<{ autorizado: boolean }> {
     return autorizado;
 }
 
-async function criar(data: ICreateUsuario): Promise<IUsuario> {
+async function criar(data: ICreateUsuario, formdata?: FormData, ): Promise<IUsuario> {
     const session = await getServerSession(authOptions);
     const criado = await fetch(`${baseURL}usuarios/criar`, {
         method: "POST",
@@ -121,16 +121,24 @@ async function criar(data: ICreateUsuario): Promise<IUsuario> {
         }, body: JSON.stringify(data)
     }).then((response) => {
         if (response.status === 401) Logout();
-        // if (response.status !== 200) return;
         return response.json();
     })
+    if (formdata) {
+        await fetch(`${baseURL}usuarios/atualizar/${criado.id}`, {
+            method: "PATCH",
+            body: formdata,
+            headers: {
+                "Authorization": `Bearer ${session?.access_token}`
+            }
+        });
+    }
     return criado;
 }
 
 async function atualizar(
     id: string, 
-    formdata: FormData, 
-    data: IUpdateUsuario
+    formdata?: FormData, 
+    data?: IUpdateUsuario
 ): Promise<IUsuario | void> {
     const session = await getServerSession(authOptions);
     const userUpdateResponse = await fetch(`${baseURL}usuarios/atualizar/${id}`, {

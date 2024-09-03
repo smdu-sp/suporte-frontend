@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react";
 import { Autocomplete, AutocompleteOption, Avatar, Badge, Box, Button, Card, CardActions, CardOverflow, Chip, ChipPropsColorOverrides, ColorPaletteProp, Divider, FormControl, FormLabel, IconButton, Input, Option, Select, Stack } from "@mui/joy";
-import { Business, Check, EmailRounded } from "@mui/icons-material";
+import { Business, Check, EmailRounded, Warning } from "@mui/icons-material";
 import { useRouter } from 'next/navigation';
 import { OverridableStringUnion } from '@mui/types';
 
@@ -47,8 +47,15 @@ export default function UsuarioDetalhes() {
 
         usuarioServices.atualizar(usuario.id, formData, { unidade_id: unidade_id })
             .then((response) => {
-                setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);
-                socket.emit('avatar', true);
+                if (response) {
+                    console.log(response);
+                    setAlert('Usuário alterado!', 'Dados atualizados com sucesso!', 'success', 3000, Check);
+                    socket.emit('avatar', true);
+                } else {
+                    console.log(response);
+                    setAlert('Erro ao alterar!', 'Não foi possivel alterar as informações', 'danger', 3000, Warning);
+                }
+
             })
     };
 
@@ -107,7 +114,7 @@ export default function UsuarioDetalhes() {
                 <Box sx={{ width: '100%', display: 'flex', height: '150px', mb: 2, justifyContent: 'center', alignItems: 'center' }}>
                     <Box sx={{ position: 'relative', }}>
                         <Avatar
-                            sx={{ width: 100, height: 100 }}
+                            sx={{ width: 150, height: 150 }}
                             color="neutral"
                             variant="soft"
                             src={urlAvatar ? urlAvatar : usuario?.avatar}
