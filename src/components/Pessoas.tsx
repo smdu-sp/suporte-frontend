@@ -1,49 +1,23 @@
+'use client'
+
 import { Avatar, Box, Sheet, Typography } from "@mui/joy";
-import FaceSharpIcon from '@mui/icons-material/FaceSharp';
 import SsidChartSharpIcon from '@mui/icons-material/SsidChartSharp';
-interface PessoasProps {
-}
+import * as dashboardServices from '@/shared/services/dashboard.service';
+import { useEffect, useState } from "react";
+import { ITecnicos, IDashboardTecnicos } from "@/shared/services/dashboard.service";
 
-const pessoas = [
-    {
-        "nome": "José",
-        "email": "jose@prefeitura.sp.gov.br",
-        "nota": 5,
-        "leg": false
-    },
-    {
-        "nome": "Fernando",
-        "email": "fernando@prefeitura.sp.gov.br",
-        "nota": 3,
-        "leg": true
-    },
-    {
-        "nome": "Guilherme",
-        "email": "guilherme@prefeitura.sp.gov.br",
-        "nota": 5,
-        "leg": false
-    },
-    {
-        "nome": "Diego",
-        "email": "diego@prefeitura.sp.gov.br",
-        "nota": 4,
-        "leg": true
-    },
-    {
-        "nome": "Bruno",
-        "email": "bruno@prefeitura.sp.gov.br",
-        "nota": 2,
-        "leg": false
-    },
-    {
-        "nome": "Gustavo",
-        "email": "gustavo@prefeitura.sp.gov.br",
-        "nota": 4.5,
-        "leg": true
-    },
-]
+export default function Pessoas() {
 
-export default function Pessoas(p: PessoasProps) {
+    const [tecnicos, setTecnicos] = useState<IDashboardTecnicos[]>([]);
+    const buscasTecnicos = async () => {
+        await dashboardServices.buscaTecnicos().then((response: ITecnicos) => {
+            setTecnicos(response.tecnicos);
+        })
+    };
+    useEffect(() => {
+        buscasTecnicos();
+    }, []);
+
     return (
         <Box sx={{
             width: '100%',
@@ -76,9 +50,9 @@ export default function Pessoas(p: PessoasProps) {
                     }
                 }}
             >
-                {pessoas.map((pessoa) => (
+                {tecnicos.map((tecnicos) => (
                     <Sheet
-                        key={pessoa.email}
+                        key={tecnicos.usuario.id}
                         sx={{
                             width: '100%',
                             height: 70,
@@ -89,18 +63,20 @@ export default function Pessoas(p: PessoasProps) {
                             p: 3
                         }}
                     >
-                        <Box sx={{ display: 'flex', }} >
-                            <Avatar size="lg">
-                                <FaceSharpIcon sx={{ width: 30, height: 30 }} />
+                        <Box sx={{ display: 'flex', alignItems: 'center' }} >
+                            <Avatar
+                                variant="soft"
+                                src={tecnicos.usuario.avatar}
+                            >
                             </Avatar>
                             <Box sx={{ ml: 2, }} >
-                                <Typography level="body-lg" sx={{ fontWeight: 'bold' }}>{pessoa.nome}</Typography>
-                                <Typography>{pessoa.email}</Typography>
+                                <Typography level="body-lg" sx={{ fontWeight: 'bold' }}>{tecnicos.usuario.nome}</Typography>
+                                <Typography>{tecnicos.usuario.email}</Typography>
                             </Box>
                         </Box>
                         <Box sx={{ pr: 8 }} >
-                            <Typography level="h4" endDecorator={pessoa.nota}>
-                                <SsidChartSharpIcon color={pessoa.leg ? 'success' : 'error'} sx={{ transform: pessoa.leg ? 'rotate(0deg)' : 'scaleX(-1)' }} />
+                            <Typography level="h4" endDecorator={5}>
+                                <SsidChartSharpIcon color={tecnicos ? 'success' : 'error'} sx={{ transform: tecnicos ? 'rotate(0deg)' : 'scaleX(-1)' }} />
                             </Typography>
                         </Box>
                     </Sheet>
