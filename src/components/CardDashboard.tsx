@@ -2,7 +2,7 @@ import { Card, CardContent, Sheet, Typography } from "@mui/joy";
 interface IProps {
     minWidth?: string,
     titulo: string,
-    valor: number,
+    valor?: number,
     descricao: string,
 }
 export default function CardDashboard(props: IProps) {

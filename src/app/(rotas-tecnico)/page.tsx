@@ -10,12 +10,29 @@ import CardDashboard from "@/components/CardDashboard";
 import TickPlacementBars from "@/components/Grafico";
 import Pessoas from "@/components/Pessoas";
 import DatePickerComponent from "@/components/DatePicker";
-
+import { useEffect, useState } from "react";
+import * as dashboarsService from "@/shared/services/dashboard.service"
+import { IChamados, IAtribuidos } from "@/shared/services/dashboard.service";
 dayjs.locale("pt-br");
 
 export default function Dashboard() {
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs(Date.now()));
+  const [value, setValue] = useState<Dayjs | null>(dayjs(Date.now()));
   const { palette } = useTheme();
+  const [chamados, setChamados] = useState<IChamados>()
+  const [atribuidos, setAtribuidos] = useState<IAtribuidos>()
+  
+
+  useEffect(() => {
+    dashboarsService.buscaChamados().then((response) => {
+      setChamados(response)
+      console.log(response);
+    })
+    dashboarsService.buscaChamadosAtribuidos().then((response) => {
+      setAtribuidos(response)
+      console.log(response);
+    })
+  }, [])
+
   return (
     <Content
       breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }]}
@@ -63,13 +80,13 @@ export default function Dashboard() {
         >
           <CardDashboard
             titulo="Chamados"
-            descricao="Abertos hoje: 20"
-            valor={5}
+            descricao={chamados ? "Chamados abertos hoje: " + chamados.hoje.toString() : '' }
+            valor={chamados?.chamados}
           />
           <CardDashboard
             titulo="Chamados Atribuidos"
-            descricao="Encerrados hoje: 2"
-            valor={25}
+            descricao={atribuidos ? "Encerrados hoje: " + atribuidos.chamados.toString() : '' }
+            valor={atribuidos?.chamados}
           />
         </Stack>
         <Stack
