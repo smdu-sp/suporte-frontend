@@ -50,7 +50,7 @@ export default function Pessoas() {
                     }
                 }}
             >
-                {tecnicos.map((tecnicos) => (
+                {tecnicos && tecnicos.length > 0 ? tecnicos.map((tecnicos) => (
                     <Sheet
                         key={tecnicos.usuario.id}
                         sx={{
@@ -80,7 +80,7 @@ export default function Pessoas() {
                             </Typography>
                         </Box>
                     </Sheet>
-                ))}
+                )): null}
             </Box>
         </Box>
     )
