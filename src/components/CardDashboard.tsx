@@ -1,8 +1,8 @@
-import { Card, CardContent, Sheet, Typography } from "@mui/joy";
+import { Box, Card, CardContent, Sheet, Skeleton, Typography } from "@mui/joy";
 interface IProps {
     minWidth?: string,
     titulo: string,
-    valor?: number,
+    valor: number,
     descricao: string,
 }
 export default function CardDashboard(props: IProps) {
@@ -18,11 +18,11 @@ export default function CardDashboard(props: IProps) {
             mx: 0,
         }}>
             <Typography sx={{ fontWeight: 600, letterSpacing: 0.2, p: 0 }}>{props.titulo}</Typography>
-            <Typography sx={{ fontSize: 34, fontWeight: 'bold', p: 0 }}>
-                {props.valor}
+            <Typography level="h1" sx={{ fontSize: '40px', fontWeight: 'bold', p: 0, width: 60 }}>
+                <Skeleton animation="wave" variant="rectangular" loading={props.valor !== -1 ? false : true} >{props.valor}</Skeleton>
             </Typography>
-            <Typography color="neutral" sx={{ display: 'inline', fontSize: 14 }}>
-                {props.descricao}
+            <Typography level="h4" sx={{ fontSize: 14, fontWeight: 'bold', p: 0, width: 60, display: 'inline' }}>
+                <Skeleton animation="wave" variant="inline" loading={props.descricao !== "erro ao carregar" ? false : true} >{props.descricao}</Skeleton>
             </Typography>
         </Sheet>
     )

@@ -80,13 +80,13 @@ export default function Dashboard() {
         >
           <CardDashboard
             titulo="Chamados"
-            descricao={chamados ? "Chamados abertos hoje: " + chamados.hoje.toString() : '' }
-            valor={chamados?.chamados}
+            descricao={chamados ? "Chamados abertos hoje: " + chamados.hoje.toString() : 'erro ao carregar' }
+            valor={chamados ? chamados.chamados : -1 }
           />
           <CardDashboard
             titulo="Chamados Atribuidos"
-            descricao={atribuidos ? "Encerrados hoje: " + atribuidos.chamados.toString() : '' }
-            valor={atribuidos?.chamados}
+            descricao={atribuidos ? "Encerrados hoje: " + atribuidos.chamados.toString() : 'erro ao carregar' }
+            valor={atribuidos ? atribuidos.chamados : -1 }
           />
         </Stack>
         <Stack

@@ -27,352 +27,352 @@ import { io } from "socket.io-client";
 
 export default function ChamadoDetalhes(props: { params: { id: string } }) {
 
-  const searchParams = useSearchParams();
-  const idMotivo = searchParams.get('id');
-  const desc = searchParams.get('desc');
-  const router = useRouter();
-  const pathname = usePathname()
+    const searchParams = useSearchParams();
+    const idMotivo = searchParams.get('id');
+    const desc = searchParams.get('desc');
+    const router = useRouter();
+    const pathname = usePathname()
 
-  const nextSearchParams = new URLSearchParams(searchParams.toString())
+    const nextSearchParams = new URLSearchParams(searchParams.toString())
 
-  const { setAlert } = useContext(AlertsContext);
-  const { id } = props.params;
-  const [ordem, setOrdem] = useState<IOrdem>();
-  const [unidade_id, setUnidade_id] = useState('');
-  const [unidades, setUnidades] = useState<IUnidade[]>([]);
-  const [andar, setAndar] = useState<number>(8);
-  const [sistema, setSistema] = useState('');
-  const [prioridade, setPrioridade] = useState<number>(1);
-  const [sala, setSala] = useState('');
-  const [observacoes, setObservacoes] = useState('');
-  const [tratar_com, setTratar_com] = useState('');
-  const [telefone, setTelefone] = useState('');
-  const [salaError, setSalaError] = useState('');
-  const [observacoesError, setObservacoesError] = useState('');
-  const [unidade_idError, setUnidade_idError] = useState('');
-  const [andarError, setAndarError] = useState('');
-  const [sistemaError, setSistemaError] = useState('');
-  const [telefoneError, setTelefoneError] = useState('');
-  const [servicos, setServicos] = useState<IServico[]>([]);
-  const [usuario, setUsuario] = useState<IUsuario>();
-  const [servicoAtualStatus, setServicoAtualStatus] = useState(1);
-  const [servicoAtualObservacao, setServicoAtualObservacao] = useState('');
-  const [servicoAtualDescricao, setServicoAtualDescricao] = useState('');
-  const [servicoAtualSalvar, setServicoAtualSalvar] = useState(true);
-  const [adicionaMaterialModal, setAdicionaMaterialModal] = useState(false);
-  const [adicionaSuspensaoModal, setAdicionaSuspensaoModal] = useState(false);
-  const [motivoSuspensao, setMotivoSuspensao] = useState('');
-  const [servicoSuspensao, setServicoSuspensao] = useState('');
-  const [nomeMaterial, setNomeMaterial] = useState('');
-  const [quantidadeMaterial, setQuantidadeMaterial] = useState(0);
-  const [medidaMaterial, setMedidaMaterial] = useState('un');
-  const [adicionaMaterialServico, setAdicionaMaterialServico] = useState('');
-  const [motivos, setMotivos] = useState<IMotivoSistema[]>();
-  const [categoria_id, setCategoria_id] = useState('')
-  const [subcategoria_id, setSubcategoria_id] = useState('')
-  const [ avisoStatus, setAvisoStatus ] = useState<boolean>();
-  const [ avisos, setAvisos ] = useState<IPaginadoAviso>();
+    const { setAlert } = useContext(AlertsContext);
+    const { id } = props.params;
+    const [ordem, setOrdem] = useState<IOrdem>();
+    const [unidade_id, setUnidade_id] = useState('');
+    const [unidades, setUnidades] = useState<IUnidade[]>([]);
+    const [andar, setAndar] = useState<number>(8);
+    const [sistema, setSistema] = useState('');
+    const [prioridade, setPrioridade] = useState<number>(1);
+    const [sala, setSala] = useState('');
+    const [observacoes, setObservacoes] = useState('');
+    const [tratar_com, setTratar_com] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const [salaError, setSalaError] = useState('');
+    const [observacoesError, setObservacoesError] = useState('');
+    const [unidade_idError, setUnidade_idError] = useState('');
+    const [andarError, setAndarError] = useState('');
+    const [sistemaError, setSistemaError] = useState('');
+    const [telefoneError, setTelefoneError] = useState('');
+    const [servicos, setServicos] = useState<IServico[]>([]);
+    const [usuario, setUsuario] = useState<IUsuario>();
+    const [servicoAtualStatus, setServicoAtualStatus] = useState(1);
+    const [servicoAtualObservacao, setServicoAtualObservacao] = useState('');
+    const [servicoAtualDescricao, setServicoAtualDescricao] = useState('');
+    const [servicoAtualSalvar, setServicoAtualSalvar] = useState(true);
+    const [adicionaMaterialModal, setAdicionaMaterialModal] = useState(false);
+    const [adicionaSuspensaoModal, setAdicionaSuspensaoModal] = useState(false);
+    const [motivoSuspensao, setMotivoSuspensao] = useState('');
+    const [servicoSuspensao, setServicoSuspensao] = useState('');
+    const [nomeMaterial, setNomeMaterial] = useState('');
+    const [quantidadeMaterial, setQuantidadeMaterial] = useState(0);
+    const [medidaMaterial, setMedidaMaterial] = useState('un');
+    const [adicionaMaterialServico, setAdicionaMaterialServico] = useState('');
+    const [motivos, setMotivos] = useState<IMotivoSistema[]>();
+    const [categoria_id, setCategoria_id] = useState('')
+    const [subcategoria_id, setSubcategoria_id] = useState('')
+    const [avisoStatus, setAvisoStatus] = useState<boolean>();
+    const [avisos, setAvisos] = useState<IPaginadoAviso>();
 
-  const statusChip: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[] = [
-      { label: '', color: 'neutral' },
-      { label: 'Aberto', color: 'neutral' },
-      { label: 'Em andamento', color: 'primary' },
-      { label: 'Aguardando avaliação', color: 'warning' },
-      { label: 'Concluído', color: 'success' },
-  ]
+    const statusChip: { label: string, color: OverridableStringUnion<ColorPaletteProp, ChipPropsColorOverrides> | undefined }[] = [
+        { label: '', color: 'neutral' },
+        { label: 'Aberto', color: 'neutral' },
+        { label: 'Em andamento', color: 'primary' },
+        { label: 'Aguardando avaliação', color: 'warning' },
+        { label: 'Concluído', color: 'success' },
+    ]
 
-  function atualizaDados() {
-      if (id) ordemServices.buscarPorId(id)
-          .then((ordem: IOrdem) => {
-              setOrdem(ordem);
-              setUnidade_id(ordem.unidade_id);
-              setAndar(ordem.andar);
-              setSistema((ordem.sistema || '').toString());
-              setTelefone(ordem.telefone);
-              setSala(ordem.sala);
-              setObservacoes(ordem.observacoes);
-              setPrioridade(ordem.prioridade);
-              setServicos(ordem.servicos);
-              ordem.tratar_com && setTratar_com(ordem.tratar_com);
-          });
-      unidadeServices.listaCompleta()
-          .then((response: IUnidade[]) => {
-              setUnidades(response);
-          })
-      usuarioServices.validaUsuario().then((response: IUsuario) => {
-          setUsuario(response);
-      })
-  }
-
-  function buscaMotivos(id: string) {
-      ordemServices.buscaMotivos(id)
-          .then((response) => {
-              setMotivos([response]);
-              setSistema(response.categoria.sistema.id)
-              setCategoria_id(response.categoria.id)
-              setSubcategoria_id(response.id)
-          }).then(() => {
-              nextSearchParams.delete('desc');
-              nextSearchParams.delete('id');
-              router.replace(`${pathname}?${nextSearchParams}`)
-          })
-  }
-
-  useEffect(() => {
-      atualizaDados();
-  }, [id]);
-
-  useEffect(() => {
-      buscaMotivos(idMotivo ? idMotivo : '');
-      setObservacoes(desc ? desc : '');
-  }, [])
-
-  function handleFinalizar(servico_id: string) {
-      servicoServices.finalizarServico(servico_id).then((response: IServico) => {
-          if (response.status === 2) {
-              setAlert('Ordem finalizada com sucesso!', 'Sucesso', 'success', 3000, Check);
-              atualizaDados();
-          }
-      })
-  }
-
-  function handleAtualizar(servico_id: string) {
-      servicoServices.atualizar(servico_id, { descricao: servicoAtualDescricao }).then((response: IServico) => {
-          if (response.descricao === servicoAtualDescricao) {
-              setAlert('Descrição de serviço atualizada com sucesso!', 'Sucesso', 'success', 3000, Check);
-              atualizaDados();
-          }
-      })
-  }
-
-  function handleAvaliar(servico_id: string) {
-      servicoServices.avaliarServico(servico_id, { status: servicoAtualStatus, observacao: servicoAtualObservacao }).then((response: IServico) => {
-          if (response.status === servicoAtualStatus) {
-              setAlert('Ordem avaliada com sucesso!', 'Sucesso', 'success', 3000, Check);
-              atualizaDados();
-          }
-      })
-  }
-
-  function handleSuspensao() {
-      servicoServices.adicionarSuspensao(servicoSuspensao, { motivo: motivoSuspensao }).then((response: ISuspensao) => {
-          if (response.motivo === motivoSuspensao) {
-              setMotivoSuspensao('');
-              setServicoSuspensao('');
-              setAdicionaSuspensaoModal(false);
-              setAlert('Serviço suspenso!', 'Sucesso', 'warning', 3000, Check);
-              atualizaDados();
-          }
-      })
-  }
-
-  function handleRetomar(servico_id: string) {
-      servicoServices.retomarServico(servico_id).then((response: ISuspensao) => {
-          if (response.status === false) {
-              setAlert('Serviço retomado!', 'Sucesso', 'success', 3000, Check);
-              atualizaDados();
-          }
-      })
-  }
-
-  function handleAdicionarMaterial() {
-      servicoServices.adicionarMaterial(adicionaMaterialServico, { nome: nomeMaterial, quantidade: quantidadeMaterial, medida: medidaMaterial })
-          .then((response: IMaterial) => {
-              if (response.nome === nomeMaterial) {
-                  setNomeMaterial('');
-                  setQuantidadeMaterial(0);
-                  setMedidaMaterial('un');
-                  setAdicionaMaterialServico('');
-                  setAdicionaMaterialModal(false);
-                  atualizaDados();
-              }
-          })
-  }
-
-  function handleRemoverMaterial(material_id: string) {
-      servicoServices.removerMaterial(material_id).then((response: { status: boolean }) => {
-          atualizaDados();
-      })
-  }
-
-  const socket = io('http://localhost:3000');
-
-  function handleSubmit() {
-      if (!id) {
-          let erros = 0;
-          if (unidade_id === '') {
-              setUnidade_idError('É obrigatório informar a unidade');
-              erros++;
-          }
-          if (!andar) {
-              setAndarError('É obrigatório informar o andar');
-              erros++;
-          }
-          if (!sistema) {
-              setSistemaError('É obrigatório informar o sistema');
-              erros++;
-          }
-          if (telefone === '') {
-              setTelefoneError('É obrigatório informar o telefone');
-              erros++;
-          }
-          if (sala === '') {
-              setSalaError('É obrigatório informar a sala');
-              erros++;
-          }
-          if (observacoes === '') {
-              setObservacoesError('É obrigatório informar a descrição do problema');
-              erros++;
-          }
-          if (erros === 0)
-              ordemServices.criar({
-                  unidade_id,
-                  andar,
-                  sala,
-                  sistema_id: sistema,
-                  observacoes,
-                  telefone,
-                  tratar_com,
-                  categoria_id,
-                  subcategoria_id
-              }).then((ordem: IOrdem) => {
-                  if (!ordem) setAlert('Erro', 'Erro ao criar chamado!', 'danger', 3000, Cancel);
-                  if (ordem) {
-                    router.push('/chamados?criado=1')
-                    socket.emit('servicos', true)
-                  };
-              });
-      } else {
-          ordemServices.atualizar(id, {
-              prioridade
-          }).then((ordem: IOrdem) => {
-              if (!ordem) setAlert('Erro', 'Erro ao atualizar chamado!', 'danger', 3000, Cancel);
-              if (ordem) router.push('/chamados?criado=2');
-          });
-      }
-  }
-  function formatarTelefone(value: string): string {
-      if (!value) return value;
-      const onlyNumbers = value.replace(/\D/g, '').substring(0, 9);
-      if (onlyNumbers.length <= 4)
-          return onlyNumbers.replace(/(\d{0,4})/, '$1');
-      if (onlyNumbers.length <= 8)
-          return onlyNumbers.replace(/(\d{0,4})(\d{0,4})/, '$1-$2');
-      return onlyNumbers.replace(/(\d{0,5})(\d{0,4})/, '$1-$2');
-  }
-
-  useEffect(() => {
-      setAvisoStatus(true);
-      const buscaAvisos = async () => setAvisos(await buscarTudo());
-      buscaAvisos();
-  }, []);
-
-  return (<>
-    { 
-      avisoStatus 
-      && avisos?.data 
-      && avisos.data.length !== 0 
-      && <ModalAviso avisos={avisos.data} /> 
+    function atualizaDados() {
+        if (id) ordemServices.buscarPorId(id)
+            .then((ordem: IOrdem) => {
+                setOrdem(ordem);
+                setUnidade_id(ordem.unidade_id);
+                setAndar(ordem.andar);
+                setSistema((ordem.sistema || '').toString());
+                setTelefone(ordem.telefone);
+                setSala(ordem.sala);
+                setObservacoes(ordem.observacoes);
+                setPrioridade(ordem.prioridade);
+                setServicos(ordem.servicos);
+                ordem.tratar_com && setTratar_com(ordem.tratar_com);
+            });
+        unidadeServices.listaCompleta()
+            .then((response: IUnidade[]) => {
+                setUnidades(response);
+            })
+        usuarioServices.validaUsuario().then((response: IUsuario) => {
+            setUsuario(response);
+        })
     }
-    <Modal open={adicionaMaterialModal} sx={{ zIndex: 99 }} onClose={() => setAdicionaMaterialModal(false)}>
-        <ModalDialog>
-            <DialogTitle>Adicionar material utilizado</DialogTitle>
-            <Stack spacing={2}>
-                <FormControl>
-                    <FormLabel>Material</FormLabel>
-                    <Input value={nomeMaterial} onChange={(event) => setNomeMaterial(event.target.value)} />
-                </FormControl>
-                <FormControl>
-                    <FormLabel>Quantidade</FormLabel>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Input type="number" value={quantidadeMaterial} onChange={(event) => {
-                            const value = parseFloat(event.target.value) || 0;
-                            setQuantidadeMaterial(value < 0 ? 0 : value);
-                        }} />
-                        <Select value={medidaMaterial} sx={{ zIndex: 100 }} onChange={(_, value) => setMedidaMaterial(value || "un")}>
-                            <Option value="un">unidade(s)</Option>
-                            <Option value="m">metro(s)</Option>
-                            <Option value="kg">kg(s)</Option>
-                        </Select>
-                    </Box>
-                </FormControl>
-                <Button color="success" onClick={() => handleAdicionarMaterial()}>Adicionar</Button>
-            </Stack>
-        </ModalDialog>
-    </Modal>
-    <Modal open={adicionaSuspensaoModal} onClose={() => {
-        setAdicionaSuspensaoModal(false);
-        setMotivoSuspensao('');
-    }}>
-        <ModalDialog>
-            <DialogTitle>Pausar serviço</DialogTitle>
-            <DialogContent>
+
+    function buscaMotivos(id: string) {
+        ordemServices.buscaMotivos(id)
+            .then((response) => {
+                setMotivos([response]);
+                setSistema(response.categoria.sistema.id)
+                setCategoria_id(response.categoria.id)
+                setSubcategoria_id(response.id)
+            }).then(() => {
+                nextSearchParams.delete('desc');
+                nextSearchParams.delete('id');
+                router.replace(`${pathname}?${nextSearchParams}`)
+            })
+    }
+
+    useEffect(() => {
+        atualizaDados();
+    }, [id]);
+
+    useEffect(() => {
+        buscaMotivos(idMotivo ? idMotivo : '');
+        setObservacoes(desc ? desc : '');
+    }, [])
+
+    function handleFinalizar(servico_id: string) {
+        servicoServices.finalizarServico(servico_id).then((response: IServico) => {
+            if (response.status === 2) {
+                setAlert('Ordem finalizada com sucesso!', 'Sucesso', 'success', 3000, Check);
+                atualizaDados();
+            }
+        })
+    }
+
+    function handleAtualizar(servico_id: string) {
+        servicoServices.atualizar(servico_id, { descricao: servicoAtualDescricao }).then((response: IServico) => {
+            if (response.descricao === servicoAtualDescricao) {
+                setAlert('Descrição de serviço atualizada com sucesso!', 'Sucesso', 'success', 3000, Check);
+                atualizaDados();
+            }
+        })
+    }
+
+    function handleAvaliar(servico_id: string) {
+        servicoServices.avaliarServico(servico_id, { status: servicoAtualStatus, observacao: servicoAtualObservacao }).then((response: IServico) => {
+            if (response.status === servicoAtualStatus) {
+                setAlert('Ordem avaliada com sucesso!', 'Sucesso', 'success', 3000, Check);
+                atualizaDados();
+            }
+        })
+    }
+
+    function handleSuspensao() {
+        servicoServices.adicionarSuspensao(servicoSuspensao, { motivo: motivoSuspensao }).then((response: ISuspensao) => {
+            if (response.motivo === motivoSuspensao) {
+                setMotivoSuspensao('');
+                setServicoSuspensao('');
+                setAdicionaSuspensaoModal(false);
+                setAlert('Serviço suspenso!', 'Sucesso', 'warning', 3000, Check);
+                atualizaDados();
+            }
+        })
+    }
+
+    function handleRetomar(servico_id: string) {
+        servicoServices.retomarServico(servico_id).then((response: ISuspensao) => {
+            if (response.status === false) {
+                setAlert('Serviço retomado!', 'Sucesso', 'success', 3000, Check);
+                atualizaDados();
+            }
+        })
+    }
+
+    function handleAdicionarMaterial() {
+        servicoServices.adicionarMaterial(adicionaMaterialServico, { nome: nomeMaterial, quantidade: quantidadeMaterial, medida: medidaMaterial })
+            .then((response: IMaterial) => {
+                if (response.nome === nomeMaterial) {
+                    setNomeMaterial('');
+                    setQuantidadeMaterial(0);
+                    setMedidaMaterial('un');
+                    setAdicionaMaterialServico('');
+                    setAdicionaMaterialModal(false);
+                    atualizaDados();
+                }
+            })
+    }
+
+    function handleRemoverMaterial(material_id: string) {
+        servicoServices.removerMaterial(material_id).then((response: { status: boolean }) => {
+            atualizaDados();
+        })
+    }
+
+    const socket = io('http://localhost:3000');
+
+    function handleSubmit() {
+        if (!id) {
+            let erros = 0;
+            if (unidade_id === '') {
+                setUnidade_idError('É obrigatório informar a unidade');
+                erros++;
+            }
+            if (!andar) {
+                setAndarError('É obrigatório informar o andar');
+                erros++;
+            }
+            if (!sistema) {
+                setSistemaError('É obrigatório informar o sistema');
+                erros++;
+            }
+            if (telefone === '') {
+                setTelefoneError('É obrigatório informar o telefone');
+                erros++;
+            }
+            if (sala === '') {
+                setSalaError('É obrigatório informar a sala');
+                erros++;
+            }
+            if (observacoes === '') {
+                setObservacoesError('É obrigatório informar a descrição do problema');
+                erros++;
+            }
+            if (erros === 0)
+                ordemServices.criar({
+                    unidade_id,
+                    andar,
+                    sala,
+                    sistema_id: sistema,
+                    observacoes,
+                    telefone,
+                    tratar_com,
+                    categoria_id,
+                    subcategoria_id
+                }).then((ordem: IOrdem) => {
+                    if (!ordem) setAlert('Erro', 'Erro ao criar chamado!', 'danger', 3000, Cancel);
+                    if (ordem) {
+                        router.push('/chamados?criado=1')
+                        socket.emit('servicos', true)
+                    };
+                });
+        } else {
+            ordemServices.atualizar(id, {
+                prioridade
+            }).then((ordem: IOrdem) => {
+                if (!ordem) setAlert('Erro', 'Erro ao atualizar chamado!', 'danger', 3000, Cancel);
+                if (ordem) router.push('/chamados?criado=2');
+            });
+        }
+    }
+    function formatarTelefone(value: string): string {
+        if (!value) return value;
+        const onlyNumbers = value.replace(/\D/g, '').substring(0, 9);
+        if (onlyNumbers.length <= 4)
+            return onlyNumbers.replace(/(\d{0,4})/, '$1');
+        if (onlyNumbers.length <= 8)
+            return onlyNumbers.replace(/(\d{0,4})(\d{0,4})/, '$1-$2');
+        return onlyNumbers.replace(/(\d{0,5})(\d{0,4})/, '$1-$2');
+    }
+
+    useEffect(() => {
+        setAvisoStatus(true);
+        const buscaAvisos = async () => setAvisos(await buscarTudo());
+        buscaAvisos();
+    }, []);
+
+    return (<>
+        {
+            avisoStatus
+            && avisos?.data
+            && avisos.data.length !== 0
+            && <ModalAviso avisos={avisos.data} />
+        }
+        <Modal open={adicionaMaterialModal} sx={{ zIndex: 99 }} onClose={() => setAdicionaMaterialModal(false)}>
+            <ModalDialog>
+                <DialogTitle>Adicionar material utilizado</DialogTitle>
                 <Stack spacing={2}>
                     <FormControl>
-                        <FormLabel>Motivo da Paralização</FormLabel>
-                        <Textarea
-                            value={motivoSuspensao}
-                            onChange={(event) => setMotivoSuspensao(event.target.value)}
-                            minRows={4}
-                            maxRows={4}
-                            required
-                            autoFocus
-                        />
+                        <FormLabel>Material</FormLabel>
+                        <Input value={nomeMaterial} onChange={(event) => setNomeMaterial(event.target.value)} />
                     </FormControl>
+                    <FormControl>
+                        <FormLabel>Quantidade</FormLabel>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Input type="number" value={quantidadeMaterial} onChange={(event) => {
+                                const value = parseFloat(event.target.value) || 0;
+                                setQuantidadeMaterial(value < 0 ? 0 : value);
+                            }} />
+                            <Select value={medidaMaterial} sx={{ zIndex: 100 }} onChange={(_, value) => setMedidaMaterial(value || "un")}>
+                                <Option value="un">unidade(s)</Option>
+                                <Option value="m">metro(s)</Option>
+                                <Option value="kg">kg(s)</Option>
+                            </Select>
+                        </Box>
+                    </FormControl>
+                    <Button color="success" onClick={() => handleAdicionarMaterial()}>Adicionar</Button>
                 </Stack>
-            </DialogContent>
-            <Button color="warning" disabled={!motivoSuspensao} onClick={handleSuspensao}>Pausar</Button>
-        </ModalDialog>
-    </Modal>
-    <Content
-        breadcrumbs={[
-            { label: 'Chamados', href: '/chamados' },
-            { label: id ? `${id}` : 'Novo chamado', href: `/chamados/detalhes/${id ? id : ''}` || '' },
-        ]}
-        titulo={id ? `Chamado #${id}` : 'Novo chamado'}
-        tags={id ? [
-            <Chip key={ordem?.status || 0} size="lg" color={statusChip[ordem?.status || 0].color} title={statusChip[ordem?.status || 0].label}>{statusChip[ordem?.status || 0].label}</Chip>,
-        ] : []}
-        pagina="chamados"
-    >
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '90%',
-                maxWidth: 1000,
-                mx: 'auto',
-                px: { xs: 2, md: 6 },
-                py: { xs: 2, md: 3 },
-                gap: 2,
-            }}
+            </ModalDialog>
+        </Modal>
+        <Modal open={adicionaSuspensaoModal} onClose={() => {
+            setAdicionaSuspensaoModal(false);
+            setMotivoSuspensao('');
+        }}>
+            <ModalDialog>
+                <DialogTitle>Pausar serviço</DialogTitle>
+                <DialogContent>
+                    <Stack spacing={2}>
+                        <FormControl>
+                            <FormLabel>Motivo da Paralização</FormLabel>
+                            <Textarea
+                                value={motivoSuspensao}
+                                onChange={(event) => setMotivoSuspensao(event.target.value)}
+                                minRows={4}
+                                maxRows={4}
+                                required
+                                autoFocus
+                            />
+                        </FormControl>
+                    </Stack>
+                </DialogContent>
+                <Button color="warning" disabled={!motivoSuspensao} onClick={handleSuspensao}>Pausar</Button>
+            </ModalDialog>
+        </Modal>
+        <Content
+            breadcrumbs={[
+                { label: 'Chamados', href: '/chamados' },
+                { label: id ? `${id}` : 'Novo chamado', href: `/chamados/detalhes/${id ? id : ''}` || '' },
+            ]}
+            titulo={id ? `Chamado #${id}` : 'Novo chamado'}
+            tags={id ? [
+                <Chip key={ordem?.status || 0} size="lg" color={statusChip[ordem?.status || 0].color} title={statusChip[ordem?.status || 0].label}>{statusChip[ordem?.status || 0].label}</Chip>,
+            ] : []}
+            pagina="chamados"
         >
-            <Timeline
+            <Box
                 sx={{
-                    [`& .${timelineOppositeContentClasses.root}`]: {
-                        flex: 0.25,
-                    },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '90%',
+                    maxWidth: 1000,
+                    mx: 'auto',
+                    px: { xs: 2, md: 6 },
+                    py: { xs: 2, md: 3 },
+                    gap: 2,
                 }}
             >
-                {servicos ? servicos.map((servico: IServico, index: number) => (
-                    <>
-                        {servico.status === 1 || servico.status === 5 ? null :
-                            <TimelineItem key={index}>
-                                <TimelineOppositeContent>
-                                    {servico.avaliado_em ?
-                                        `${new Date(servico.avaliado_em).toLocaleDateString('pt-BR')} - ${new Date(servico.avaliado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
-                                        : ''}
-                                </TimelineOppositeContent>
-                                <TimelineSeparator>
-                                    <TimelineDot color={servico.status === 2 ? 'grey' : (servico.status === 3 ? 'success' : 'error')} sx={{ p: 0 }}>
-                                        {servico.status === 3 ? <Check sx={{ fontSize: 10 }} /> :
-                                            (servico.status === 2 ? <Timer sx={{ fontSize: 10 }} /> : <Close sx={{ fontSize: 10 }} />)}
-                                    </TimelineDot>
-                                    <TimelineConnector />
-                                </TimelineSeparator>
-                                <TimelineContent sx={{ flexGrow: 1 }}>
-                                    <Card>
-                                        {/* permissao
+                <Timeline
+                    sx={{
+                        [`& .${timelineOppositeContentClasses.root}`]: {
+                            flex: 0.25,
+                        },
+                    }}
+                >
+                    {servicos ? servicos.map((servico: IServico, index: number) => (
+                        <>
+                            {servico.status === 1 || servico.status === 5 ? null :
+                                <TimelineItem key={index}>
+                                    <TimelineOppositeContent>
+                                        {servico.avaliado_em ?
+                                            `${new Date(servico.avaliado_em).toLocaleDateString('pt-BR')} - ${new Date(servico.avaliado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                                            : ''}
+                                    </TimelineOppositeContent>
+                                    <TimelineSeparator>
+                                        <TimelineDot color={servico.status === 2 ? 'grey' : (servico.status === 3 ? 'success' : 'error')} sx={{ p: 0 }}>
+                                            {servico.status === 3 ? <Check sx={{ fontSize: 10 }} /> :
+                                                (servico.status === 2 ? <Timer sx={{ fontSize: 10 }} /> : <Close sx={{ fontSize: 10 }} />)}
+                                        </TimelineDot>
+                                        <TimelineConnector />
+                                    </TimelineSeparator>
+                                    <TimelineContent sx={{ flexGrow: 1 }}>
+                                        <Card>
+                                            {/* permissao
                                         {(servico.status === 2 && (usuario?.permissao !== 'USR' && usuario?.id !== ordem?.solicitante_id)) ? <Typography level='title-md'>Aguardando avaliação</Typography> :
                                             <Stack spacing={2}>
                                                 <Stack direction="row" spacing={2}>
@@ -422,120 +422,120 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                                     </CardOverflow>
                                                     : null}
                                             </Stack>} */}
-                                    </Card>
-                                </TimelineContent>
-                            </TimelineItem>
-                        }
-                        {servico.status !== 1 && servico.status !== 5 ?
-                            <TimelineItem key={index}>
-                                <TimelineOppositeContent>
-                                    {servico.data_fim ?
-                                        `${new Date(servico.data_fim).toLocaleDateString('pt-BR')} - ${new Date(servico.data_fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
-                                        : ''}
-                                </TimelineOppositeContent>
-                                <TimelineSeparator>
-                                    <TimelineDot color='success' sx={{ p: 0 }}>
-                                        <Check sx={{ fontSize: 10 }} />
-                                    </TimelineDot>
-                                    <TimelineConnector />
-                                </TimelineSeparator>
-                                <TimelineContent sx={{ flexGrow: 1 }}>
-                                    <Card sx={{ width: '100%' }}>
-                                        <Typography level="title-md">Serviço concluído.</Typography>
-                                        {servico.tecnico ? <Typography level="body-sm">{servico.tecnico.nome || ''}</Typography> : null}
-                                    </Card>
-                                </TimelineContent>
-                            </TimelineItem>
-                            : null}
-                        {!servico.suspensoes ? null :
-                            servico.suspensoes.map((suspensao: ISuspensao, index: number) => (<>
-                                {suspensao.status ? null :
+                                        </Card>
+                                    </TimelineContent>
+                                </TimelineItem>
+                            }
+                            {servico.status !== 1 && servico.status !== 5 ?
+                                <TimelineItem key={index}>
+                                    <TimelineOppositeContent>
+                                        {servico.data_fim ?
+                                            `${new Date(servico.data_fim).toLocaleDateString('pt-BR')} - ${new Date(servico.data_fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                                            : ''}
+                                    </TimelineOppositeContent>
+                                    <TimelineSeparator>
+                                        <TimelineDot color='success' sx={{ p: 0 }}>
+                                            <Check sx={{ fontSize: 10 }} />
+                                        </TimelineDot>
+                                        <TimelineConnector />
+                                    </TimelineSeparator>
+                                    <TimelineContent sx={{ flexGrow: 1 }}>
+                                        <Card sx={{ width: '100%' }}>
+                                            <Typography level="title-md">Serviço concluído.</Typography>
+                                            {servico.tecnico ? <Typography level="body-sm">{servico.tecnico.nome || ''}</Typography> : null}
+                                        </Card>
+                                    </TimelineContent>
+                                </TimelineItem>
+                                : null}
+                            {!servico.suspensoes ? null :
+                                servico.suspensoes.map((suspensao: ISuspensao, index: number) => (<>
+                                    {suspensao.status ? null :
+                                        <TimelineItem key={servico.id + 'fim'}>
+                                            <TimelineOppositeContent>
+                                                {new Date(suspensao.termino).toLocaleDateString('pt-BR')} - {new Date(suspensao.termino).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                            </TimelineOppositeContent>
+                                            <TimelineSeparator>
+                                                <TimelineDot color='success' sx={{ p: 0 }}>
+                                                    <PlayArrow sx={{ fontSize: 10 }} />
+                                                </TimelineDot>
+                                                <TimelineConnector />
+                                            </TimelineSeparator>
+                                            <TimelineContent>
+                                                <Card sx={{ width: '100%' }}>
+                                                    <Typography level="title-md">Suspensão encerrada</Typography>
+                                                </Card>
+                                            </TimelineContent>
+                                        </TimelineItem>
+                                    }
                                     <TimelineItem key={servico.id + 'fim'}>
                                         <TimelineOppositeContent>
-                                            {new Date(suspensao.termino).toLocaleDateString('pt-BR')} - {new Date(suspensao.termino).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                            {new Date(suspensao.inicio).toLocaleDateString('pt-BR')} - {new Date(suspensao.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                         </TimelineOppositeContent>
                                         <TimelineSeparator>
-                                            <TimelineDot color='success' sx={{ p: 0 }}>
-                                                <PlayArrow sx={{ fontSize: 10 }} />
+                                            <TimelineDot color='warning' sx={{ p: 0 }}>
+                                                <Pause sx={{ fontSize: 10 }} />
                                             </TimelineDot>
                                             <TimelineConnector />
                                         </TimelineSeparator>
                                         <TimelineContent>
                                             <Card sx={{ width: '100%' }}>
-                                                <Typography level="title-md">Suspensão encerrada</Typography>
+                                                <Typography level="title-md">Início de suspensão</Typography>
+                                                <Typography level="body-sm">{suspensao.motivo}</Typography>
                                             </Card>
                                         </TimelineContent>
                                     </TimelineItem>
-                                }
-                                <TimelineItem key={servico.id + 'fim'}>
-                                    <TimelineOppositeContent>
-                                        {new Date(suspensao.inicio).toLocaleDateString('pt-BR')} - {new Date(suspensao.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                                    </TimelineOppositeContent>
-                                    <TimelineSeparator>
-                                        <TimelineDot color='warning' sx={{ p: 0 }}>
-                                            <Pause sx={{ fontSize: 10 }} />
-                                        </TimelineDot>
-                                        <TimelineConnector />
-                                    </TimelineSeparator>
-                                    <TimelineContent>
-                                        <Card sx={{ width: '100%' }}>
-                                            <Typography level="title-md">Início de suspensão</Typography>
-                                            <Typography level="body-sm">{suspensao.motivo}</Typography>
-                                        </Card>
-                                    </TimelineContent>
-                                </TimelineItem>
-                            </>))
-                        }
-                        <TimelineItem key={servico.id}>
-                            <TimelineOppositeContent>
-                                {servico.data_inicio ?
-                                    `${new Date(servico.data_inicio).toLocaleDateString('pt-BR')} - ${new Date(servico.data_inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
-                                    : ''}
-                            </TimelineOppositeContent>
-                            <TimelineSeparator>
-                                <TimelineDot color='info' sx={{ p: 0 }}>
-                                    <Handyman sx={{ fontSize: 10 }} />
-                                </TimelineDot>
-                                <TimelineConnector />
-                            </TimelineSeparator>
-                            <TimelineContent>
-                                <Card sx={{ width: '100%' }}>
-                                    <Stack spacing={2}>
-                                        <Stack direction="row" spacing={2}>
-                                            <FormControl sx={{ flexGrow: 1 }}>
-                                                <FormLabel>Técnico</FormLabel>
-                                                <Input value={servico.tecnico?.nome} disabled />
-                                            </FormControl>
-                                        </Stack>
-                                        {servico.descricao || servico.status === 1 ? <><Divider />
+                                </>))
+                            }
+                            <TimelineItem key={servico.id}>
+                                <TimelineOppositeContent>
+                                    {servico.data_inicio ?
+                                        `${new Date(servico.data_inicio).toLocaleDateString('pt-BR')} - ${new Date(servico.data_inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                                        : ''}
+                                </TimelineOppositeContent>
+                                <TimelineSeparator>
+                                    <TimelineDot color='info' sx={{ p: 0 }}>
+                                        <Handyman sx={{ fontSize: 10 }} />
+                                    </TimelineDot>
+                                    <TimelineConnector />
+                                </TimelineSeparator>
+                                <TimelineContent>
+                                    <Card sx={{ width: '100%' }}>
+                                        <Stack spacing={2}>
                                             <Stack direction="row" spacing={2}>
                                                 <FormControl sx={{ flexGrow: 1 }}>
-                                                    <FormLabel>Descrição</FormLabel>
-                                                    <Textarea
-                                                        minRows={3}
-                                                        maxRows={3}
-                                                        value={
-                                                            index === 0 ?
-                                                                (!servicoAtualDescricao && servicoAtualSalvar ? servico.descricao : servicoAtualDescricao)
-                                                                :
-                                                                servico.descricao
-                                                        }
-                                                        onChange={(event) => {
-                                                            if (index === 0)
-                                                                setServicoAtualDescricao(event.target.value);
-                                                            setServicoAtualSalvar(event.target.value === servico.descricao);
-                                                        }}
-                                                        // permissao disabled={servico.status > 1 || !['TEC'].includes(usuario?.permissao || '')}
-                                                    />
+                                                    <FormLabel>Técnico</FormLabel>
+                                                    <Input value={servico.tecnico?.nome} disabled />
                                                 </FormControl>
-                                            </Stack></> : null}
-                                    </Stack>
-                                    {servico.materiais && servico.materiais.length > 0 ?
-                                        <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 2 }}>
-                                            <Stack spacing={2}>
-                                                <FormLabel>Materiais utilizados</FormLabel>
-                                                <List component={Card} variant="outlined" sx={{ borderRadius: 8, p: 1 }}>
-                                                    {/* permissao
+                                            </Stack>
+                                            {servico.descricao || servico.status === 1 ? <><Divider />
+                                                <Stack direction="row" spacing={2}>
+                                                    <FormControl sx={{ flexGrow: 1 }}>
+                                                        <FormLabel>Descrição</FormLabel>
+                                                        <Textarea
+                                                            minRows={3}
+                                                            maxRows={3}
+                                                            value={
+                                                                index === 0 ?
+                                                                    (!servicoAtualDescricao && servicoAtualSalvar ? servico.descricao : servicoAtualDescricao)
+                                                                    :
+                                                                    servico.descricao
+                                                            }
+                                                            onChange={(event) => {
+                                                                if (index === 0)
+                                                                    setServicoAtualDescricao(event.target.value);
+                                                                setServicoAtualSalvar(event.target.value === servico.descricao);
+                                                            }}
+                                                        // permissao disabled={servico.status > 1 || !['TEC'].includes(usuario?.permissao || '')}
+                                                        />
+                                                    </FormControl>
+                                                </Stack></> : null}
+                                        </Stack>
+                                        {servico.materiais && servico.materiais.length > 0 ?
+                                            <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 2 }}>
+                                                <Stack spacing={2}>
+                                                    <FormLabel>Materiais utilizados</FormLabel>
+                                                    <List component={Card} variant="outlined" sx={{ borderRadius: 8, p: 1 }}>
+                                                        {/* permissao
                                                     {servico.materiais.map((material: IMaterial, index: number) => (
                                                         <ListItem key={material.id}
                                                             endAction={
@@ -550,11 +550,11 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                                             <ListItemButton sx={{ borderRadius: 8 }}>{material.nome} ({material.quantidade}{material.medida})</ListItemButton>
                                                         </ListItem>
                                                     ))} */}
-                                                </List>
-                                            </Stack>
-                                        </CardOverflow>
-                                        : null}
-                                    {/*
+                                                    </List>
+                                                </Stack>
+                                            </CardOverflow>
+                                            : null}
+                                        {/*
                                         permissao 
                                     {(servico.status === 1 || servico.status === 5) && ['TEC'].includes(usuario?.permissao || '') ?
                                         <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 2 }}>
@@ -585,37 +585,37 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                                 </Box> : null}
                                             </Stack>
                                         </CardOverflow> : null} */}
-                                    {servico.status === 1 && servico.tecnico_id === usuario?.id ?
-                                        <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
-                                            <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-                                                <Button disabled={servicoAtualSalvar} size="sm" variant="solid" color="success" onClick={() => handleAtualizar(servico.id)}>
-                                                    Salvar
-                                                </Button>
-                                                <Button size="sm" variant="solid" color="primary" onClick={() => handleFinalizar(servico.id)}>
-                                                    Finalizar
-                                                </Button>
-                                            </CardActions>
-                                        </CardOverflow> : null
-                                    }
-                                </Card>
-                            </TimelineContent>
-                        </TimelineItem>
-                    </>)) : null}
-                <TimelineItem key={ordem?.id}>
-                    <TimelineOppositeContent>
-                        {ordem?.data_solicitacao ?
-                            `${new Date(ordem?.data_solicitacao).toLocaleDateString('pt-BR')} - ${new Date(ordem?.data_solicitacao).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
-                            : 'Chamado novo'}
-                    </TimelineOppositeContent>
-                    <TimelineSeparator>
-                        <TimelineDot color='info' sx={{ p: 0 }}>
-                            <Handyman sx={{ fontSize: 10 }} />
-                        </TimelineDot>
-                        <TimelineConnector />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                        <Card sx={{ width: '100%' }}>
-                            {/* permissao {ordem && usuario?.permissao !== 'USR' ?
+                                        {servico.status === 1 && servico.tecnico_id === usuario?.id ?
+                                            <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
+                                                <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
+                                                    <Button disabled={servicoAtualSalvar} size="sm" variant="solid" color="success" onClick={() => handleAtualizar(servico.id)}>
+                                                        Salvar
+                                                    </Button>
+                                                    <Button size="sm" variant="solid" color="primary" onClick={() => handleFinalizar(servico.id)}>
+                                                        Finalizar
+                                                    </Button>
+                                                </CardActions>
+                                            </CardOverflow> : null
+                                        }
+                                    </Card>
+                                </TimelineContent>
+                            </TimelineItem>
+                        </>)) : null}
+                    <TimelineItem key={ordem?.id}>
+                        <TimelineOppositeContent>
+                            {ordem?.data_solicitacao ?
+                                `${new Date(ordem?.data_solicitacao).toLocaleDateString('pt-BR')} - ${new Date(ordem?.data_solicitacao).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                                : 'Chamado novo'}
+                        </TimelineOppositeContent>
+                        <TimelineSeparator>
+                            <TimelineDot color='info' sx={{ p: 0 }}>
+                                <Handyman sx={{ fontSize: 10 }} />
+                            </TimelineDot>
+                            <TimelineConnector />
+                        </TimelineSeparator>
+                        <TimelineContent>
+                            <Card sx={{ width: '100%' }}>
+                                {/* permissao {ordem && usuario?.permissao !== 'USR' ?
                                 <><Stack direction="row" spacing={2}>
                                     <FormControl sx={{ flexGrow: 1 }}>
                                         <FormLabel>Prioridade</FormLabel>
@@ -627,163 +627,166 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                         </Select>
                                     </FormControl>
                                 </Stack><Divider /></> : null} */}
-                            {ordem && ordem.solicitante ? <>
+                                {ordem && ordem.solicitante ? <>
+                                    <Stack direction="row" spacing={2}>
+                                        <FormControl sx={{ flexGrow: 1 }}>
+                                            <FormLabel>Solicitante</FormLabel>
+                                            <Input value={ordem.solicitante.nome} disabled />
+                                        </FormControl>
+                                    </Stack>
+                                    <Divider />
+                                </> : null}
                                 <Stack direction="row" spacing={2}>
                                     <FormControl sx={{ flexGrow: 1 }}>
-                                        <FormLabel>Solicitante</FormLabel>
-                                        <Input value={ordem.solicitante.nome} disabled />
+                                        <FormLabel>Unidade *</FormLabel>
+                                        {!ordem ? <Autocomplete
+                                            autoFocus
+                                            options={unidades}
+                                            getOptionLabel={(option) => option && option.sigla}
+                                            renderOption={(props, option) => (
+                                                <AutocompleteOption {...props} key={option.id} value={option.id}>
+                                                    {option.sigla}
+                                                </AutocompleteOption>
+                                            )}
+                                            value={unidade_id && unidade_id !== '' ? unidades.find((unidade: IUnidade) => unidade.id === unidade_id) : null}
+                                            onChange={(_, value) => {
+                                                value && setUnidade_id(value?.id);
+                                                setUnidade_idError('');
+                                            }}
+                                            filterOptions={(options, { inputValue }) => {
+                                                if (unidades) return (options as IUnidade[]).filter((option) => (
+                                                    (option).nome.toLowerCase().includes(inputValue.toLowerCase()) ||
+                                                    (option).sigla.toLowerCase().includes(inputValue.toLowerCase())
+                                                ));
+                                                return [];
+                                            }}
+                                            noOptionsText="Nenhuma unidade encontrada"
+                                        /> : <Input value={ordem && ordem.unidade ? ordem.unidade.sigla : ""} disabled />}
+                                        <FormHelperText sx={{ color: 'danger.500' }}>{unidade_idError}</FormHelperText>
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>Andar *</FormLabel>
+                                        <Select
+                                            size="sm"
+                                            value={andar}
+                                            onChange={(_, value) => {
+                                                setAndar(value ? value : 8)
+                                                setAndarError('');
+                                            }}
+                                            placeholder="Andar"
+                                            disabled={id ? true : false}
+                                        >
+                                            <Option value={8}>8</Option>
+                                            <Option value={17}>17</Option>
+                                            <Option value={18}>18</Option>
+                                            <Option value={19}>19</Option>
+                                            <Option value={20}>20</Option>
+                                            <Option value={21}>21</Option>
+                                            <Option value={22}>22</Option>
+                                        </Select>
+                                        <FormHelperText sx={{ color: 'danger.500' }}>{andarError}</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{ flexGrow: 1 }}>
+                                        <FormLabel>Sala *</FormLabel>
+                                        <Input
+                                            size="sm"
+                                            type="text"
+                                            placeholder="Sala"
+                                            value={sala}
+                                            onChange={(event) => {
+                                                setSala(event.target.value && event.target.value)
+                                                setSalaError('');
+                                            }}
+                                            disabled={id ? true : false}
+                                        />
+                                        <FormHelperText sx={{ color: 'danger.500' }}>{salaError}</FormHelperText>
                                     </FormControl>
                                 </Stack>
                                 <Divider />
-                            </> : null}
-                            <Stack direction="row" spacing={2}>
-                                <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Unidade *</FormLabel>
-                                    {!ordem ? <Autocomplete
-                                        autoFocus
-                                        options={unidades}
-                                        getOptionLabel={(option) => option && option.sigla}
-                                        renderOption={(props, option) => (
-                                            <AutocompleteOption {...props} key={option.id} value={option.id}>
-                                                {option.sigla}
-                                            </AutocompleteOption>
-                                        )}
-                                        value={unidade_id && unidade_id !== '' ? unidades.find((unidade: IUnidade) => unidade.id === unidade_id) : null}
-                                        onChange={(_, value) => {
-                                            value && setUnidade_id(value?.id);
-                                            setUnidade_idError('');
-                                        }}
-                                        filterOptions={(options, { inputValue }) => {
-                                            if (unidades) return (options as IUnidade[]).filter((option) => (
-                                                (option).nome.toLowerCase().includes(inputValue.toLowerCase()) ||
-                                                (option).sigla.toLowerCase().includes(inputValue.toLowerCase())
-                                            ));
-                                            return [];
-                                        }}
-                                        noOptionsText="Nenhuma unidade encontrada"
-                                    /> : <Input value={ordem && ordem.unidade ? ordem.unidade.sigla : ""} disabled />}
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{unidade_idError}</FormHelperText>
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel>Andar *</FormLabel>
-                                    <Select
-                                        size="sm"
-                                        value={andar}
-                                        onChange={(_, value) => {
-                                            setAndar(value ? value : 8)
-                                            setAndarError('');
-                                        }}
-                                        placeholder="Andar"
-                                        disabled={id ? true : false}
-                                    >
-                                        <Option value={8}>8</Option>
-                                        <Option value={17}>17</Option>
-                                        <Option value={18}>18</Option>
-                                        <Option value={19}>19</Option>
-                                        <Option value={20}>20</Option>
-                                        <Option value={21}>21</Option>
-                                        <Option value={22}>22</Option>
-                                    </Select>
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{andarError}</FormHelperText>
-                                </FormControl>
-                                <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Sala *</FormLabel>
-                                    <Input
-                                        size="sm"
-                                        type="text"
-                                        placeholder="Sala"
-                                        value={sala}
-                                        onChange={(event) => {
-                                            setSala(event.target.value && event.target.value)
-                                            setSalaError('');
-                                        }}
-                                        disabled={id ? true : false}
-                                    />
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{salaError}</FormHelperText>
-                                </FormControl>
-                            </Stack>
-                            <Divider />
-                            <Stack direction="row" spacing={2}>
-                                <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Sistema</FormLabel>
-                                    <Input
-                                        size="sm"
-                                        type="text"
-                                        placeholder="Responsável que irá receber o técnico na unidade"
-                                        value={motivos?.[0]?.categoria?.sistema?.nome}
-                                        disabled
-                                    />
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{sistemaError}</FormHelperText>
-                                </FormControl>
-                                <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Categoria</FormLabel>
-                                    <Input
-                                        size="sm"
-                                        type="text"
-                                        value={motivos?.[0]?.categoria?.nome}
-                                        disabled
-                                    />
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{sistemaError}</FormHelperText>
-                                </FormControl>
-                                <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Sub Categoria</FormLabel>
-                                    <Input
-                                        size="sm"
-                                        type="text"
-                                        value={motivos?.[0]?.nome}
-                                        disabled
-                                    />
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{sistemaError}</FormHelperText>
-                                </FormControl>
-                            </Stack>
-                            <Divider />
-                            <Stack direction="row" spacing={2}>
-                                <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Telefone *</FormLabel>
-                                    <Input
-                                        size="sm"
-                                        type="text"
-                                        placeholder="Telefone de contato"
-                                        value={telefone}
-                                        onChange={(event) => {
-                                            if (event.target.value.length > 0)
-                                                event.target.value = formatarTelefone(event.target.value);
-                                            setTelefone(event.target.value && event.target.value)
-                                            setTelefoneError('');
-                                        }}
-                                        disabled={id ? true : false}
-                                    />
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{telefoneError}</FormHelperText>
-                                </FormControl>
-                                <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Tratar com</FormLabel>
-                                    <Input
-                                        size="sm"
-                                        type="text"
-                                        placeholder="Responsável que irá receber o técnico na unidade"
-                                        value={tratar_com}
-                                        onChange={(event) => {
-                                            setTratar_com(event.target.value && event.target.value)
-                                        }}
-                                        disabled={id ? true : false}
-                                    />
-                                </FormControl>
-                            </Stack>
-                            <Divider />
-                            <Stack direction="row" spacing={2}>
-                                <FormControl sx={{ flexGrow: 1 }}>
-                                    <FormLabel>Descricão do problema *</FormLabel>
-                                    <Textarea
-                                        minRows={5}
-                                        maxRows={10}
-                                        placeholder="Descreva de maneira sucinta a ocorrência/problema"
-                                        value={observacoes}
-                                        disabled={true}
-                                    />
-                                    <FormHelperText sx={{ color: 'danger.500' }}>{observacoesError}</FormHelperText>
-                                </FormControl>
-                            </Stack>
-                            {/* permissao {!ordem || (['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || 'USR') && [1, 2, 5].includes(ordem?.status || 1)) ?
+                                <Stack direction="row" spacing={2}>
+                                    <FormControl sx={{ flexGrow: 1 }}>
+                                        <FormLabel>Sistema</FormLabel>
+                                        <Input
+                                            size="sm"
+                                            type="text"
+                                            placeholder="Responsável que irá receber o técnico na unidade"
+                                            value={motivos?.[0]?.categoria?.sistema?.nome}
+                                            disabled
+                                        />
+                                        <FormHelperText sx={{ color: 'danger.500' }}>{sistemaError}</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{ flexGrow: 1 }}>
+                                        <FormLabel>Categoria</FormLabel>
+                                        <Input
+                                            size="sm"
+                                            type="text"
+                                            value={motivos?.[0]?.categoria?.nome}
+                                            disabled
+                                        />
+                                        <FormHelperText sx={{ color: 'danger.500' }}>{sistemaError}</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{ flexGrow: 1 }}>
+                                        <FormLabel>Sub Categoria</FormLabel>
+                                        <Input
+                                            size="sm"
+                                            type="text"
+                                            value={motivos?.[0]?.nome}
+                                            disabled
+                                        />
+                                        <FormHelperText sx={{ color: 'danger.500' }}>{sistemaError}</FormHelperText>
+                                    </FormControl>
+                                </Stack>
+                                <Divider />
+                                <Stack direction="row" spacing={2}>
+                                    <FormControl sx={{ flexGrow: 1 }}>
+                                        <FormLabel>Telefone *</FormLabel>
+                                        <Input
+                                            size="sm"
+                                            type="text"
+                                            placeholder="Telefone de contato"
+                                            value={telefone}
+                                            onChange={(event) => {
+                                                if (event.target.value.length > 0)
+                                                    event.target.value = formatarTelefone(event.target.value);
+                                                setTelefone(event.target.value && event.target.value)
+                                                setTelefoneError('');
+                                            }}
+                                            disabled={id ? true : false}
+                                        />
+                                        <FormHelperText sx={{ color: 'danger.500' }}>{telefoneError}</FormHelperText>
+                                    </FormControl>
+                                    <FormControl sx={{ flexGrow: 1 }}>
+                                        <FormLabel>Tratar com</FormLabel>
+                                        <Input
+                                            size="sm"
+                                            type="text"
+                                            placeholder="Responsável que irá receber o técnico na unidade"
+                                            value={tratar_com}
+                                            onChange={(event) => {
+                                                setTratar_com(event.target.value && event.target.value)
+                                            }}
+                                            disabled={id ? true : false}
+                                        />
+                                    </FormControl>
+                                </Stack>
+                                <Divider />
+                                <Stack direction="row" spacing={2}>
+                                    <FormControl sx={{ flexGrow: 1 }}>
+                                        <FormLabel>Descricão do problema *</FormLabel>
+                                        <Textarea
+                                            minRows={5}
+                                            maxRows={10}
+                                            placeholder="Descreva de maneira sucinta a ocorrência/problema"
+                                            value={observacoes}
+                                            disabled={true}
+                                        />
+                                        <FormHelperText sx={{ color: 'danger.500' }}>{observacoesError}</FormHelperText>
+                                    </FormControl>
+                                </Stack>
+                                <Button size="sm" variant="solid" color="primary" onClick={handleSubmit}>
+                                    Salvar
+                                </Button>
+                                {/* permissao {!ordem || (['DEV', 'ADM', 'TEC'].includes(usuario?.permissao || 'USR') && [1, 2, 5].includes(ordem?.status || 1)) ?
                                 <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
                                     <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
                                         {!ordem ? <Button size="sm" variant="outlined" color="neutral" onClick={() => router.back()}>
@@ -794,11 +797,11 @@ export default function ChamadoDetalhes(props: { params: { id: string } }) {
                                         </Button>
                                     </CardActions>
                                 </CardOverflow> : null} */}
-                        </Card>
-                    </TimelineContent>
-                </TimelineItem>
-            </Timeline>
-        </Box>
-    </Content>
-  </>);
+                            </Card>
+                        </TimelineContent>
+                    </TimelineItem>
+                </Timeline>
+            </Box>
+        </Content>
+    </>);
 }

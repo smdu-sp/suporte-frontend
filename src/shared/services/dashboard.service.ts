@@ -1,7 +1,6 @@
 'use server'
 
 import { getServerSession } from "next-auth";
-import { IUsuario } from "./usuario.services";
 import { signOut } from "next-auth/react";
 import { authOptions } from "../auth/authOptions";
 
